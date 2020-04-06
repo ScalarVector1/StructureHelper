@@ -12,7 +12,7 @@ using Terraria.ID;
 
 namespace StructureHelper
 {
-    class StructureSaver : ModItem
+    class CopyWand : ModItem
     {
         public bool SecondPoint { get; set; }
         public Point16 TopLeft { get; set; }
@@ -33,6 +33,7 @@ namespace StructureHelper
         {
             ModRecipe r = new ModRecipe(mod);
             r.AddIngredient(ItemID.DirtBlock, 1);
+            r.SetResult(this);
             r.AddRecipe();          
         }
         public override bool UseItem(Player player)
