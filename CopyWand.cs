@@ -28,6 +28,7 @@ namespace StructureHelper
             item.useStyle = 1;
             item.useTime = 20;
             item.useAnimation = 20;
+            item.rare = 1;
         }
         public override void AddRecipes()
         {
@@ -78,11 +79,11 @@ namespace StructureHelper
             }
             if (TopLeft != null) spriteBatch.Draw(tex, TopLeft.ToVector2() * 16 - Main.screenPosition, tex.Frame(), Color.Cyan, 0, tex.Frame().Size() / 2, 1, 0, 0);
         }
-        private void SaveStructure(Rectangle target)
+        public void SaveStructure(Rectangle target, string targetPath = null)
         {
             string path = ModLoader.ModPath.Replace("Mods", "SavedStructures");
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            string thisPath = path + "/" + "SavedStructure_" + DateTime.Now.ToString("d-M-y----H-m-s-f");
+            string thisPath = targetPath ?? path + "/" + "SavedStructure_" + DateTime.Now.ToString("d-M-y----H-m-s-f");
             Main.NewText("Structure saved as " + thisPath, Color.Yellow);
             FileStream stream = File.Create(thisPath);
             stream.Close();
@@ -111,7 +112,7 @@ namespace StructureHelper
                         (byte)tile.wire3().ToInt(),
                         (byte)tile.wire4().ToInt()
                     };
-                    data.Add(new TileSaveData(tile.active(), tileName, wallName, tile.frameX, tile.frameY, (short)tile.wallFrameX(), (short)tile.wallFrameY(), tile.slope(), tile.liquid, tile.color(), tile.wallColor(), wireArray));
+                    data.Add(new TileSaveData(tile.active(), tileName, wallName, tile.frameX, tile.frameY, (short)tile.wallFrameX(), (short)tile.wallFrameY(), tile.slope(), tile.halfBrick(), tile.actuator(), tile.nactive(), tile.liquid, tile.liquidType(), tile.color(), tile.wallColor(), wireArray));
                 }
             }
             tag.Add("TileData", data);
