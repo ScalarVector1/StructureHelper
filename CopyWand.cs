@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using Terraria.ModLoader.IO;
+using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace StructureHelper
 {
@@ -35,7 +34,7 @@ namespace StructureHelper
             ModRecipe r = new ModRecipe(mod);
             r.AddIngredient(ItemID.DirtBlock, 1);
             r.SetResult(this);
-            r.AddRecipe();          
+            r.AddRecipe();
         }
         public override bool UseItem(Player player)
         {
@@ -68,22 +67,11 @@ namespace StructureHelper
         {
             return true;
         }
-        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-        {
-            Texture2D tex = ModContent.GetTexture("StructureHelper/corner");
-            Texture2D tex2 = ModContent.GetTexture("StructureHelper/box");
-            if (Width != 0 && TopLeft != null)
-            {
-                spriteBatch.Draw(tex2, new Rectangle((int)(TopLeft.X * 16 - Main.screenPosition.X), (int)(TopLeft.Y * 16 - Main.screenPosition.Y), Width * 16 + 16, Height * 16 + 16), tex2.Frame(), Color.White * 0.25f);
-                spriteBatch.Draw(tex, (TopLeft.ToVector2() + new Vector2(Width + 1, Height + 1)) * 16 - Main.screenPosition, tex.Frame(), Color.Red, 0, tex.Frame().Size() / 2, 1, 0, 0);
-            }
-            if (TopLeft != null) spriteBatch.Draw(tex, TopLeft.ToVector2() * 16 - Main.screenPosition, tex.Frame(), Color.Cyan, 0, tex.Frame().Size() / 2, 1, 0, 0);
-        }
         public void SaveStructure(Rectangle target, string targetPath = null)
         {
             string path = ModLoader.ModPath.Replace("Mods", "SavedStructures");
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            string thisPath = targetPath ?? path + "/" + "SavedStructure_" + DateTime.Now.ToString("d-M-y----H-m-s-f");
+            string thisPath = targetPath ?? Path.Combine(path, "SavedStructure_" + DateTime.Now.ToString("d-M-y----H-m-s-f"));
             Main.NewText("Structure saved as " + thisPath, Color.Yellow);
             FileStream stream = File.Create(thisPath);
             stream.Close();
@@ -119,5 +107,5 @@ namespace StructureHelper
 
             TagIO.ToFile(tag, thisPath);
         }
-    }   
+    }
 }

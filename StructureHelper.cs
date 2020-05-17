@@ -1,19 +1,42 @@
 
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Terraria.DataStructures;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using System;
 
 namespace StructureHelper
 {
-	public class StructureHelper : Mod
-	{
-		public StructureHelper()
-		{
-		}
+    public class StructureHelper : Mod
+    {
+        public StructureHelper() { }
+
+        public override void PostDrawInterface(SpriteBatch spriteBatch)
+        {
+            if (Main.LocalPlayer.HeldItem.modItem is CopyWand)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin();
+
+                Texture2D tex = ModContent.GetTexture("StructureHelper/corner");
+                Texture2D tex2 = ModContent.GetTexture("StructureHelper/box");
+                Point16 TopLeft = (Main.LocalPlayer.HeldItem.modItem as CopyWand).TopLeft;
+                int Width = (Main.LocalPlayer.HeldItem.modItem as CopyWand).Width;
+                int Height = (Main.LocalPlayer.HeldItem.modItem as CopyWand).Height;
+
+                if (Width != 0 && TopLeft != null)
+                {
+                    spriteBatch.Draw(tex2, new Rectangle((int)(TopLeft.X * 16 - Main.screenPosition.X), (int)(TopLeft.Y * 16 - Main.screenPosition.Y), Width * 16 + 16, Height * 16 + 16), tex2.Frame(), Color.White * 0.25f);
+                    spriteBatch.Draw(tex, (TopLeft.ToVector2() + new Vector2(Width + 1, Height + 1)) * 16 - Main.screenPosition, tex.Frame(), Color.Red, 0, tex.Frame().Size() / 2, 1, 0, 0);
+                }
+                if (TopLeft != null) spriteBatch.Draw(tex, TopLeft.ToVector2() * 16 - Main.screenPosition, tex.Frame(), Color.Cyan, 0, tex.Frame().Size() / 2, 1, 0, 0);
+            }
+        }
+
         /// <summary>
         /// This method generates a structure from a file within your mod.
         /// </summary>

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StructureHelper
 {
@@ -71,6 +66,6 @@ namespace StructureHelper
         {
             StructureHelper.GenerateStructure(ModLoader.ModPath.Replace("Mods", "SavedStructures") + "/TestWandCache", (Main.MouseWorld / 16).ToPoint16(), mod, true);
             return true;
-        }   
+        }
     }
 }
