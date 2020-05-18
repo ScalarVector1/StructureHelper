@@ -70,7 +70,13 @@ namespace StructureHelper
 
                     if (!int.TryParse(d.Tile, out int type))
                     {
-                        try
+                        string[] parts = d.Tile.Split();
+                        if (parts.Length > 1 && ModLoader.GetMod(parts[0]) != null && ModLoader.GetMod(parts[0]).TileType(parts[1]) != 0)
+                        {
+                            type = ModLoader.GetMod(parts[0]).TileType(parts[1]);
+                        }
+
+                        else try
                         {
                             Type tileType = Type.GetType(d.Tile);
                             var getType = typeof(ModContent).GetMethod("TileType", BindingFlags.Static | BindingFlags.Public);
@@ -81,7 +87,13 @@ namespace StructureHelper
 
                     if (!int.TryParse(d.Wall, out int wallType))
                     {
-                        try
+                        string[] parts = d.Wall.Split();
+                        if (parts.Length > 1 && ModLoader.GetMod(parts[0]) != null && ModLoader.GetMod(parts[0]).WallType(parts[1]) != 0)
+                        {
+                            wallType = ModLoader.GetMod(parts[0]).WallType(parts[1]);
+                        }
+
+                        else try
                         {
                             Type wallTypeType = Type.GetType(d.Wall); //I am so sorry for this name
                             var getWallType = typeof(ModContent).GetMethod("WallType", BindingFlags.Static | BindingFlags.Public);
@@ -105,7 +117,7 @@ namespace StructureHelper
                         tile.slope(d.Slope);
                         tile.halfBrick(d.HalfSlab);
                         tile.actuator(d.HasActuator);
-                        tile.inActive(!d.Actuated);
+                        tile.inActive(d.Actuated);
                         tile.liquid = d.Liquid;
                         tile.liquidType(d.LiquidType);
                         tile.color(d.Color);
@@ -115,6 +127,23 @@ namespace StructureHelper
                         tile.wire3(d.Wire[2] > 0);
                         tile.wire4(d.Wire[3] > 0);
                         tile.active(d.Active);
+
+                        if(d.TEType != "") //place and load a tile entity
+                        {
+                            int typ;
+
+                            if (!int.TryParse(d.TEType, out typ))
+                            {
+                                string[] parts = d.TEType.Split();
+                                typ = ModLoader.GetMod(parts[0]).TileEntityType(parts[1]);
+                            }
+
+                            if (d.TEType != "")
+                            {
+                                TileEntity.PlaceEntityNet(pos.X + x, pos.Y + y, typ);
+                                if (d.TEData != null && typ > 2) (TileEntity.ByPosition[new Point16(pos.X + x, pos.Y + y)] as ModTileEntity).Load(d.TEData);
+                            }
+                        }
                     }
 
                 }

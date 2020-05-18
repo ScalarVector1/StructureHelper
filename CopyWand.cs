@@ -29,13 +29,6 @@ namespace StructureHelper
             item.useAnimation = 20;
             item.rare = 1;
         }
-        public override void AddRecipes()
-        {
-            ModRecipe r = new ModRecipe(mod);
-            r.AddIngredient(ItemID.DirtBlock, 1);
-            r.SetResult(this);
-            r.AddRecipe();
-        }
         public override bool UseItem(Player player)
         {
             if (player.altFunctionUse == 2 && !SecondPoint && TopLeft != null)
@@ -88,10 +81,35 @@ namespace StructureHelper
                     Tile tile = Framing.GetTileSafely(x, y);
                     string tileName;
                     string wallName;
-                    if (tile.type > Main.maxTileSets) tileName = ModContent.GetModTile(tile.type).GetType().AssemblyQualifiedName;
+                    string teName;
+                    if (tile.type > Main.maxTileSets) tileName = ModContent.GetModTile(tile.type).mod.Name + " " + ModContent.GetModTile(tile.type).Name;
                     else tileName = tile.type.ToString();
-                    if (tile.wall > Main.maxWallTypes) wallName = ModContent.GetModWall(tile.wall).GetType().AssemblyQualifiedName;
+                    if (tile.wall > Main.maxWallTypes) wallName = ModContent.GetModWall(tile.wall).mod.Name + " " + ModContent.GetModWall(tile.wall).Name;
                     else wallName = tile.wall.ToString();
+
+                    TileEntity teTarget = null; //grabbing TE data
+                    TagCompound entityTag = null;
+
+                    if (TileEntity.ByPosition.ContainsKey(new Point16(x, y))) teTarget = TileEntity.ByPosition[new Point16(x, y)];
+
+                    if (teTarget != null)
+                    {
+                        if (teTarget.type < 2)
+                        {
+                            teName = teTarget.type.ToString();
+                        }
+                        else
+                        {
+                            ModTileEntity entityTarget = ModTileEntity.GetTileEntity(teTarget.type);
+                            if (entityTarget != null)
+                            {
+                                teName = entityTarget.mod.Name + " " + entityTarget.Name;
+                                entityTag = (teTarget as ModTileEntity).Save();
+                            }
+                            else teName = "";
+                        }
+                    }
+                    else teName = "";
 
                     byte[] wireArray = new byte[]
                     {
@@ -100,7 +118,9 @@ namespace StructureHelper
                         (byte)tile.wire3().ToInt(),
                         (byte)tile.wire4().ToInt()
                     };
-                    data.Add(new TileSaveData(tile.active(), tileName, wallName, tile.frameX, tile.frameY, (short)tile.wallFrameX(), (short)tile.wallFrameY(), tile.slope(), tile.halfBrick(), tile.actuator(), tile.nactive(), tile.liquid, tile.liquidType(), tile.color(), tile.wallColor(), wireArray));
+                    data.Add(new TileSaveData(tile.active(), tileName, wallName, tile.frameX, tile.frameY, (short)tile.wallFrameX(), (short)tile.wallFrameY(),
+                        tile.slope(), tile.halfBrick(), tile.actuator(), !tile.nactive(), tile.liquid, tile.liquidType(), tile.color(), tile.wallColor(), wireArray, 
+                        teName, entityTag));
                 }
             }
             tag.Add("TileData", data);

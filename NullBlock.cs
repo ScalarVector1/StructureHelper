@@ -35,13 +35,6 @@ namespace StructureHelper
             item.rare = 1;
             item.createTile = ModContent.TileType<NullBlock>();
         }
-        public override void AddRecipes()
-        {
-            ModRecipe r = new ModRecipe(mod);
-            r.AddIngredient(ItemID.DirtBlock, 1);
-            r.SetResult(this);
-            r.AddRecipe();
-        }
     }
 
     class NullWallItem : ModItem
@@ -64,13 +57,6 @@ namespace StructureHelper
             item.useStyle = 1;
             item.rare = 1;
             item.createWall = ModContent.WallType<NullWall>();
-        }
-        public override void AddRecipes()
-        {
-            ModRecipe r = new ModRecipe(mod);
-            r.AddIngredient(ItemID.DirtBlock, 1);
-            r.SetResult(this);
-            r.AddRecipe();
         }
     }
 
@@ -95,13 +81,6 @@ namespace StructureHelper
             item.rare = 1;
             item.createTile = ModContent.TileType<NullBlock>();
             item.createWall = ModContent.WallType<NullWall>();
-        }
-        public override void AddRecipes()
-        {
-            ModRecipe r = new ModRecipe(mod);
-            r.AddIngredient(ItemID.DirtBlock, 1);
-            r.SetResult(this);
-            r.AddRecipe();
         }
     }
 }

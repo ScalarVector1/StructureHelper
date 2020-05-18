@@ -1,5 +1,6 @@
 ﻿using System;
 using Terraria.ModLoader.IO;
+using Terraria.ModLoader;
 
 namespace StructureHelper
 {
@@ -21,7 +22,11 @@ namespace StructureHelper
         public byte Color;
         public byte WallColor;
         public byte[] Wire;
-        public TileSaveData(bool active, string tile, string wall, short frameX, short frameY, short wFrameX, short wFrameY, byte slope, bool halfSlab, bool hasActuator, bool actuated, byte liquid, byte liquidType, byte color, byte wallColor, byte[] wire)
+
+        public string TEType;
+        public TagCompound TEData;
+
+        public TileSaveData(bool active, string tile, string wall, short frameX, short frameY, short wFrameX, short wFrameY, byte slope, bool halfSlab, bool hasActuator, bool actuated, byte liquid, byte liquidType, byte color, byte wallColor, byte[] wire, string teType, TagCompound teData)
         {
             Active = active;
             Tile = tile;
@@ -39,6 +44,9 @@ namespace StructureHelper
             Color = color;
             WallColor = wallColor;
             Wire = wire;
+
+            TEType = teType;
+            TEData = teData;
         }
         public static Func<TagCompound, TileSaveData> DESERIALIZER = s => DeserializeData(s);
         public static TileSaveData DeserializeData(TagCompound tag)
@@ -59,7 +67,9 @@ namespace StructureHelper
             tag.GetByte("LiquidType"),
             tag.GetByte("Color"),
             tag.GetByte("WallColor"),
-            tag.GetByteArray("Wire")
+            tag.GetByteArray("Wire"),
+            tag.GetString("TEType"),
+            tag.Get<TagCompound>("TEData")
             );
         }
 
@@ -82,7 +92,9 @@ namespace StructureHelper
                 ["LiquidType"] = LiquidType,
                 ["Color"] = Color,
                 ["WallColor"] = WallColor,
-                ["Wire"] = Wire
+                ["Wire"] = Wire,
+                ["TEType"] = TEType,
+                ["TEData"] = TEData
             };
         }
     }

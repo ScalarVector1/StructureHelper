@@ -55,13 +55,6 @@ namespace StructureHelper
             item.useAnimation = 20;
             item.rare = 1;
         }
-        public override void AddRecipes()
-        {
-            ModRecipe r = new ModRecipe(mod);
-            r.AddIngredient(ItemID.DirtBlock, 1);
-            r.SetResult(this);
-            r.AddRecipe();
-        }
         public override bool UseItem(Player player)
         {
             StructureHelper.GenerateStructure(ModLoader.ModPath.Replace("Mods", "SavedStructures") + "/TestWandCache", (Main.MouseWorld / 16).ToPoint16(), mod, true);
