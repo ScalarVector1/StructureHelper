@@ -11,7 +11,7 @@ namespace StructureHelper
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Test Structure Wand");
-            Tooltip.SetDefault("Select 2 points in the world, then right click to save a structure as the test structure.\nTHIS WILL OVERRIDE THE OLD TEST STRUCTURE");
+            Tooltip.SetDefault("Select 2 points in the world, then right click to save a structure as the test structure.\nthis will override the old test structure.");
         }
         public override bool UseItem(Player player)
         {
@@ -58,6 +58,40 @@ namespace StructureHelper
         public override bool UseItem(Player player)
         {
             StructureHelper.GenerateStructure(ModLoader.ModPath.Replace("Mods", "SavedStructures") + "/TestWandCache", (Main.MouseWorld / 16).ToPoint16(), mod, true);
+            return true;
+        }
+    }
+    class MultiWandCopy : MultiWand
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Test Multitructure Wand");
+            Tooltip.SetDefault("Use to spawn the currently stored test multistructure.");
+        }
+        public override void RightClick(Player player)
+        {
+            item.stack++;
+            if (StructureCache.Count > 1) SaveMeForGood(ModLoader.ModPath.Replace("Mods", "SavedStructures") + "/TestWandCacheMulti");
+            else Main.NewText("Not enough structures! If you want to test a single structure, use the normal structure test wand instead!", Color.Red);
+        }
+    }
+    class MultiWandPaste : ModItem
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Test Multitructure Spawning Wand");
+            Tooltip.SetDefault("Use to spawn the currently stored test multistructure.");
+        }
+        public override void SetDefaults()
+        {
+            item.useStyle = 1;
+            item.useTime = 20;
+            item.useAnimation = 20;
+            item.rare = 1;
+        }
+        public override bool UseItem(Player player)
+        {
+            StructureHelper.GenerateMultistructureRandom(ModLoader.ModPath.Replace("Mods", "SavedStructures") + "/TestWandCacheMulti", (Main.MouseWorld / 16).ToPoint16(), mod, true);
             return true;
         }
     }

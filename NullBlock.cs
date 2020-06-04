@@ -32,7 +32,7 @@ namespace StructureHelper
             item.useAnimation = 2;
             item.useTime = 2;
             item.useStyle = 1;
-            item.rare = 1;
+            item.rare = 8;
             item.createTile = ModContent.TileType<NullBlock>();
         }
     }
@@ -55,7 +55,7 @@ namespace StructureHelper
             item.useAnimation = 2;
             item.useTime = 2;
             item.useStyle = 1;
-            item.rare = 1;
+            item.rare = 8;
             item.createWall = ModContent.WallType<NullWall>();
         }
     }
@@ -78,7 +78,7 @@ namespace StructureHelper
             item.useAnimation = 2;
             item.useTime = 2;
             item.useStyle = 1;
-            item.rare = 1;
+            item.rare = 8;
             item.createTile = ModContent.TileType<NullBlock>();
             item.createWall = ModContent.WallType<NullWall>();
         }

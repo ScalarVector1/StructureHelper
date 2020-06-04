@@ -1,26 +1,29 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Terraria;
-using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using Microsoft.Xna.Framework;
+using Terraria.DataStructures;
+using System.IO;
+using Terraria.ID;
 
 namespace StructureHelper
 {
-    class CopyWand : ModItem
+    class MultiWand : ModItem
     {
         public bool SecondPoint { get; set; }
         public Point16 TopLeft { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+        internal List<TagCompound> StructureCache { get; set; } = new List<TagCompound>();
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Structure Wand");
-            Tooltip.SetDefault("Select 2 points in the world, then right click to save a structure");
+            DisplayName.SetDefault("Multistructure Wand");
+            Tooltip.SetDefault("Select 2 points in the world, then right click to add a structure. Right click in your inventory when done to save.");
         }
         public override void SetDefaults()
         {
@@ -29,6 +32,14 @@ namespace StructureHelper
             item.useAnimation = 20;
             item.rare = 1;
         }
+        public override bool CanRightClick() => true;
+        public override void RightClick(Player player)
+        {
+            item.stack++;
+            if (StructureCache.Count > 1) SaveMeForGood();
+            else Main.NewText("Not enough structures! If you want to save a single structure, use the normal structure wand instead!", Color.Red);
+        }
+
         public override bool UseItem(Player player)
         {
             if (player.altFunctionUse == 2 && !SecondPoint && TopLeft != null)
@@ -50,7 +61,7 @@ namespace StructureHelper
                 Point16 bottomRight = (Main.MouseWorld / 16).ToPoint16();
                 Width = bottomRight.X - TopLeft.X - 1;
                 Height = bottomRight.Y - TopLeft.Y - 1;
-                Main.NewText("Ready to save! Right click to save this structure...");
+                Main.NewText("Ready to add! Right click to add this structure, Right click in inventory to save all structures");
                 SecondPoint = false;
             }
 
@@ -60,15 +71,24 @@ namespace StructureHelper
         {
             return true;
         }
-        public void SaveStructure(Rectangle target, string targetPath = null)
+        internal void SaveMeForGood(string targetPath = null)
         {
             string path = ModLoader.ModPath.Replace("Mods", "SavedStructures");
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            string thisPath = targetPath ?? Path.Combine(path, "SavedStructure_" + DateTime.Now.ToString("d-M-y----H-m-s-f"));
+            string thisPath = targetPath ?? Path.Combine(path, "SavedMultiStructure_" + DateTime.Now.ToString("d-M-y----H-m-s-f"));
             Main.NewText("Structure saved as " + thisPath, Color.Yellow);
             FileStream stream = File.Create(thisPath);
             stream.Close();
 
+            TagCompound tag = new TagCompound();
+            tag.Add("Structures", StructureCache);
+
+            TagIO.ToFile(tag, thisPath);
+
+            StructureCache.Clear();
+        }
+        public void SaveStructure(Rectangle target)
+        {
             TagCompound tag = new TagCompound();
             tag.Add("Width", Width);
             tag.Add("Height", Height);
@@ -119,13 +139,19 @@ namespace StructureHelper
                         (byte)tile.wire4().ToInt()
                     };
                     data.Add(new TileSaveData(tile.active(), tileName, wallName, tile.frameX, tile.frameY, (short)tile.wallFrameX(), (short)tile.wallFrameY(),
-                        tile.slope(), tile.halfBrick(), tile.actuator(), !tile.nactive(), tile.liquid, tile.liquidType(), tile.color(), tile.wallColor(), wireArray, 
+                        tile.slope(), tile.halfBrick(), tile.actuator(), !tile.nactive(), tile.liquid, tile.liquidType(), tile.color(), tile.wallColor(), wireArray,
                         teName, entityTag));
                 }
             }
             tag.Add("TileData", data);
 
-            TagIO.ToFile(tag, thisPath);
+            StructureCache.Add(tag);
+            Main.NewText("Structure added. Total structure count: " + StructureCache.Count, Color.Cyan);
+
+            TopLeft = default;
+            SecondPoint = false;
+            Width = 0;
+            Height = 0;
         }
     }
 }
