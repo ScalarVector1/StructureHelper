@@ -10,7 +10,7 @@ namespace StructureHelper.ChestHelper
 {
     class ChestRule
     {
-        public List<Loot> pool;
+        public List<Loot> pool = new List<Loot>();
 
         public void AddItem(Item item)
         {
@@ -103,7 +103,7 @@ namespace StructureHelper.ChestHelper
 
         public static Loot Deserialze(TagCompound tag)
         {
-            return new Loot(tag.Get<Item>("LootItem"), tag.GetInt("Min"), tag.GetInt("Max"));
+            return new Loot(tag.Get<Item>("Item"), tag.GetInt("Min"), tag.GetInt("Max"));
         }
     }
 }

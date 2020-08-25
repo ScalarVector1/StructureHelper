@@ -13,7 +13,7 @@ namespace StructureHelper.ChestHelper
 {
     class ChestEntity
     {
-        public List<ChestRule> rules;
+        public List<ChestRule> rules = new List<ChestRule>();
 
         public void SaveChestRulesFile()
         {

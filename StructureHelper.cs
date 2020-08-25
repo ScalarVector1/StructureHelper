@@ -182,14 +182,16 @@ namespace StructureHelper
 
         public static void GenerateChest(string path, Point16 pos, Mod mod, int tileType)
         {
-            WorldGen.PlaceObject(pos.X, pos.Y, tileType, true);
+            int i = WorldGen.PlaceChest(pos.X, pos.Y, (ushort)tileType);
+            if (i == -1) return;
 
             var tag = TagIO.FromStream(mod.GetFileStream(path));
             if (tag == null) throw new Exception("Path to chest was unable to be found. Are you passing the correct path?");
 
-            Chest chest = Main.chest.FirstOrDefault(n => n == null);
-            chest.x = pos.X;
-            chest.y = pos.Y;
+            Item item = new Item();
+            item.SetDefaults(1);
+
+            Chest chest = Main.chest[i];
             ChestEntity.SetChest(chest, ChestEntity.LoadChestRules(tag));
         }
 
