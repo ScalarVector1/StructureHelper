@@ -8,19 +8,61 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using System.Linq;
+using StructureHelper.ChestHelper;
 
 namespace StructureHelper
 {
     public class StructureHelper : Mod
     {
-        public StructureHelper() { }
+        public StructureHelper() { Instance = this; }
+
+        public int PreviewWidth;
+        public int PreviewHeight;
+        public static StructureHelper Instance { get; set; }
+
+        public override void Load()
+        {
+            if (System.IO.File.Exists(ModLoader.ModPath.Replace("Mods", "SavedStructures") + "/TestWandCache"))
+            {
+                TagCompound tag = TagIO.FromFile(ModLoader.ModPath.Replace("Mods", "SavedStructures") + "/TestWandCache");
+                PreviewWidth = tag.GetInt("Width");
+                PreviewHeight = tag.GetInt("Height");
+            }
+        }
+
+        public override void Unload()
+        {
+            Instance = null;
+        }
 
         public override void PostDrawInterface(SpriteBatch spriteBatch)
         {
+            if (Main.LocalPlayer.HeldItem.modItem is TestWandPaste)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+                Texture2D tex = ModContent.GetTexture("StructureHelper/box");
+
+                if (PreviewWidth >= 0 && PreviewHeight >= 0)
+                {
+                    float tileScale = 16 * Main.GameViewMatrix.Zoom.Length() * 0.707106688737f;
+                    Vector2 pos = (Main.MouseWorld / tileScale).ToPoint16().ToVector2() * tileScale - Main.screenPosition;
+                    pos = Vector2.Transform(pos, Matrix.Invert(Main.GameViewMatrix.ZoomMatrix));
+                    pos = Vector2.Transform(pos, Main.UIScaleMatrix);
+
+                    spriteBatch.Draw(tex, new Rectangle((int)pos.X, (int)pos.Y, PreviewWidth * 16 + 16, PreviewHeight * 16 + 16), tex.Frame(), Color.White * 0.25f, 0, Vector2.Zero, 0, 0);
+                }
+
+                spriteBatch.End();
+                spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+            }
+
             if (Main.LocalPlayer.HeldItem.modItem is CopyWand)
             {
                 spriteBatch.End();
-                spriteBatch.Begin();
+                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
                 Texture2D tex = ModContent.GetTexture("StructureHelper/corner");
                 Texture2D tex2 = ModContent.GetTexture("StructureHelper/box");
@@ -28,7 +70,11 @@ namespace StructureHelper
                 int Width = (Main.LocalPlayer.HeldItem.modItem as CopyWand).Width;
                 int Height = (Main.LocalPlayer.HeldItem.modItem as CopyWand).Height;
 
-                Vector2 pos = (Main.MouseWorld / 16).ToPoint16().ToVector2() * 16 - Main.screenPosition;
+                float tileScale = 16 * Main.GameViewMatrix.Zoom.Length() * 0.707106688737f;
+                Vector2 pos = (Main.MouseWorld / tileScale).ToPoint16().ToVector2() * tileScale - Main.screenPosition;
+                pos = Vector2.Transform(pos, Matrix.Invert(Main.GameViewMatrix.ZoomMatrix));
+                pos = Vector2.Transform(pos, Main.UIScaleMatrix);
+
                 spriteBatch.Draw(tex, pos, tex.Frame(), Color.White * 0.5f, 0, tex.Frame().Size() / 2, 1, 0, 0);
 
                 if (Width != 0 && TopLeft != null)
@@ -37,11 +83,15 @@ namespace StructureHelper
                     spriteBatch.Draw(tex, (TopLeft.ToVector2() + new Vector2(Width + 1, Height + 1)) * 16 - Main.screenPosition, tex.Frame(), Color.Red, 0, tex.Frame().Size() / 2, 1, 0, 0);
                 }
                 if (TopLeft != null) spriteBatch.Draw(tex, TopLeft.ToVector2() * 16 - Main.screenPosition, tex.Frame(), Color.Cyan, 0, tex.Frame().Size() / 2, 1, 0, 0);
+
+                spriteBatch.End();
+                spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
             }
+
             if (Main.LocalPlayer.HeldItem.modItem is MultiWand)
             {
                 spriteBatch.End();
-                spriteBatch.Begin();
+                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
                 Texture2D tex = ModContent.GetTexture("StructureHelper/corner");
                 Texture2D tex2 = ModContent.GetTexture("StructureHelper/box");
@@ -50,7 +100,11 @@ namespace StructureHelper
                 int Height = (Main.LocalPlayer.HeldItem.modItem as MultiWand).Height;
                 int count = (Main.LocalPlayer.HeldItem.modItem as MultiWand).StructureCache.Count;
 
-                Vector2 pos = (Main.MouseWorld / 16).ToPoint16().ToVector2() * 16 - Main.screenPosition;
+                float tileScale = 16 * Main.GameViewMatrix.Zoom.Length() * 0.707106688737f;
+                Vector2 pos = (Main.MouseWorld / tileScale).ToPoint16().ToVector2() * tileScale - Main.screenPosition;
+                pos = Vector2.Transform(pos, Matrix.Invert(Main.GameViewMatrix.ZoomMatrix));
+                pos = Vector2.Transform(pos, Main.UIScaleMatrix);
+
                 spriteBatch.Draw(tex, pos, tex.Frame(), Color.White * 0.5f, 0, tex.Frame().Size() / 2, 1, 0, 0);
 
                 if (Width != 0 && TopLeft != null)
@@ -59,7 +113,13 @@ namespace StructureHelper
                     spriteBatch.Draw(tex, (TopLeft.ToVector2() + new Vector2(Width + 1, Height + 1)) * 16 - Main.screenPosition, tex.Frame(), Color.Yellow, 0, tex.Frame().Size() / 2, 1, 0, 0);
                 }
                 if (TopLeft != null) spriteBatch.Draw(tex, TopLeft.ToVector2() * 16 - Main.screenPosition, tex.Frame(), Color.LimeGreen, 0, tex.Frame().Size() / 2, 1, 0, 0);
+
+                spriteBatch.End();
+                spriteBatch.Begin();
                 Utils.DrawBorderString(spriteBatch, "Structures to save: " + count, Main.MouseScreen + new Vector2(0, 30), Color.White);
+
+                spriteBatch.End();
+                spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
             }
         }
 
@@ -73,29 +133,32 @@ namespace StructureHelper
         public static void GenerateStructure(string path, Point16 pos, Mod mod, bool fullPath = false)
         {
             TagCompound tag;
-            if (!fullPath)
-            {
-                tag = TagIO.FromStream(mod.GetFileStream(path));
-            }
-            else
-            {
-                tag = TagIO.FromFile(path);
-            }
+
+            if (!fullPath) tag = TagIO.FromStream(mod.GetFileStream(path));
+            else tag = TagIO.FromFile(path);
+
             if (tag == null) throw new Exception("Path to structure was unable to be found. Are you passing the correct path?");
             Generate(tag, pos);        
+        }
+
+        internal static void GenerateDebugStructure(string path, Point16 pos, Mod mod, bool fullPath = false)
+        {
+            TagCompound tag;
+
+            if (!fullPath) tag = TagIO.FromStream(mod.GetFileStream(path));
+            else tag = TagIO.FromFile(path);
+
+            if (tag == null) throw new Exception("Path to structure was unable to be found. Are you passing the correct path?");
+            Generate(tag, pos, true);
         }
 
         public static void GenerateMultistructureRandom(string path, Point16 pos, Mod mod, bool fullPath = false)
         {
             TagCompound tag;
-            if (!fullPath)
-            {
-                tag = TagIO.FromStream(mod.GetFileStream(path));
-            }
-            else
-            {
-                tag = TagIO.FromFile(path);
-            }
+
+            if (!fullPath) tag = TagIO.FromStream(mod.GetFileStream(path));
+            else tag = TagIO.FromFile(path);
+
             if (tag == null) throw new Exception("Path to structure was unable to be found. Are you passing the correct path?");
 
             List<TagCompound> structures = (List<TagCompound>)tag.GetList<TagCompound>("Structures");
@@ -107,21 +170,30 @@ namespace StructureHelper
         public static void GenerateMultistructureSpecific(string path, Point16 pos, Mod mod, int index, bool fullPath = false)
         {
             TagCompound tag;
-            if (!fullPath)
-            {
-                tag = TagIO.FromStream(mod.GetFileStream(path));
-            }
-            else
-            {
-                tag = TagIO.FromFile(path);
-            }
+
+            if (!fullPath) tag = TagIO.FromStream(mod.GetFileStream(path));
+            else tag = TagIO.FromFile(path);
+
             if (tag == null) throw new Exception("Path to structure was unable to be found. Are you passing the correct path?");
 
             TagCompound targetStructure = ((List<TagCompound>)tag.GetList<TagCompound>("Structures"))[index];
             Generate(targetStructure, pos);
         }
 
-        private static void Generate(TagCompound tag, Point16 pos)
+        public static void GenerateChest(string path, Point16 pos, Mod mod, int tileType)
+        {
+            WorldGen.PlaceObject(pos.X, pos.Y, tileType, true);
+
+            var tag = TagIO.FromStream(mod.GetFileStream(path));
+            if (tag == null) throw new Exception("Path to chest was unable to be found. Are you passing the correct path?");
+
+            Chest chest = Main.chest.FirstOrDefault(n => n == null);
+            chest.x = pos.X;
+            chest.y = pos.Y;
+            ChestEntity.SetChest(chest, ChestEntity.LoadChestRules(tag));
+        }
+
+        internal static void Generate(TagCompound tag, Point16 pos, bool ignoreNull = false)
         {
             List<TileSaveData> data = (List<TileSaveData>)tag.GetList<TileSaveData>("TileData");
             if(data == null) throw new Exception("Corrupt or Invalid structure data.");
@@ -139,11 +211,10 @@ namespace StructureHelper
                     if (!int.TryParse(d.Tile, out int type))
                     {
                         string[] parts = d.Tile.Split();
-                        if (parts.Length > 1 && ModLoader.GetMod(parts[0]) != null && ModLoader.GetMod(parts[0]).TileType(parts[1]) != 0)
-                        {
+                        if (parts[0] == "StructureHelper" && parts[1] == "NullBlock" && !ignoreNull) isNullTile = true;
+
+                        else if (parts.Length > 1 && ModLoader.GetMod(parts[0]) != null && ModLoader.GetMod(parts[0]).TileType(parts[1]) != 0)
                             type = ModLoader.GetMod(parts[0]).TileType(parts[1]);
-                            if (parts[0] == "StructureHelper" && parts[1] == "NullBlock") isNullTile = true;
-                        }
 
                         else try
                             {
@@ -157,12 +228,11 @@ namespace StructureHelper
                     if (!int.TryParse(d.Wall, out int wallType))
                     {
                         string[] parts = d.Wall.Split();
-                        if (parts.Length > 1 && ModLoader.GetMod(parts[0]) != null && ModLoader.GetMod(parts[0]).WallType(parts[1]) != 0)
-                        {
-                            wallType = ModLoader.GetMod(parts[0]).WallType(parts[1]);
-                            if (parts[0] == "StructureHelper" && parts[1] == "NullWall") isNullWall = true;
-                        }
+                        if (parts[0] == "StructureHelper" && parts[1] == "NullWall" && !ignoreNull) isNullWall = true;
 
+                        else if (parts.Length > 1 && ModLoader.GetMod(parts[0]) != null && ModLoader.GetMod(parts[0]).WallType(parts[1]) != 0)
+                            wallType = ModLoader.GetMod(parts[0]).WallType(parts[1]);
+                            
                         else try
                             {
                                 Type wallTypeType = Type.GetType(d.Wall); //I am so sorry for this name
@@ -174,7 +244,7 @@ namespace StructureHelper
 
 
                     if (!d.Active) isNullTile = false;
-                    if (!isNullTile) //leave everything else about the tile alone if its a null block
+                    if (!isNullTile || ignoreNull) //leave everything else about the tile alone if its a null block
                     {
                         tile.ClearEverything();
                         tile.type = (ushort)type;
@@ -213,7 +283,7 @@ namespace StructureHelper
                         }
                     }
 
-                    if (!isNullWall) //leave the wall alone if its a null wall
+                    if (!isNullWall || ignoreNull) //leave the wall alone if its a null wall
                     {
                         tile.wall = (ushort)wallType;
                         tile.wallFrameX(d.WFrameX);

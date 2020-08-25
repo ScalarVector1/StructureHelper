@@ -17,11 +17,13 @@ namespace StructureHelper
         public Point16 TopLeft { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Structure Wand");
             Tooltip.SetDefault("Select 2 points in the world, then right click to save a structure");
         }
+
         public override void SetDefaults()
         {
             item.useStyle = 1;
@@ -29,6 +31,7 @@ namespace StructureHelper
             item.useAnimation = 20;
             item.rare = 1;
         }
+
         public override bool UseItem(Player player)
         {
             if (player.altFunctionUse == 2 && !SecondPoint && TopLeft != null)
@@ -56,10 +59,9 @@ namespace StructureHelper
 
             return true;
         }
-        public override bool AltFunctionUse(Player player)
-        {
-            return true;
-        }
+
+        public override bool AltFunctionUse(Player player) => true;
+
         public void SaveStructure(Rectangle target, string targetPath = null)
         {
             string path = ModLoader.ModPath.Replace("Mods", "SavedStructures");
