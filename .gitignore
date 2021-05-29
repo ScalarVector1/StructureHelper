@@ -46,3 +46,5 @@ obj/StructureHelper.csproj.nuget.g.props
 obj/StructureHelper.csproj.nuget.g.targets
 Properties/launchSettings.json
 *.cache
+obj/Debug/net45/.NETFramework,Version=v4.5.AssemblyAttributes.cs
+bin/Debug/net45/Newtonsoft.Json.dll
