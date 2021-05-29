@@ -45,3 +45,4 @@ obj/StructureHelper.csproj.nuget.dgspec.json
 obj/StructureHelper.csproj.nuget.g.props
 obj/StructureHelper.csproj.nuget.g.targets
 Properties/launchSettings.json
+*.cache
