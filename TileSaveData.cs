@@ -6,96 +6,83 @@ namespace StructureHelper
 {
     public struct TileSaveData : TagSerializable
     {
-        public bool Active;
         public string Tile;
         public string Wall;
         public short FrameX;
         public short FrameY;
-        public short WFrameX;
-        public short WFrameY;
-        public byte Slope;
-        public bool HalfSlab;
-        public bool HasActuator;
-        public bool Actuated;
-        public byte Liquid;
-        public byte LiquidType;
-        public byte Color;
-        public byte WallColor;
-        public byte[] Wire;
+        public byte BHeader1;
+        public byte BHeader2;
+        public byte BHeader3;
+        public ushort SHeader;
 
         public string TEType;
         public TagCompound TEData;
 
-        public TileSaveData(bool active, string tile, string wall, short frameX, short frameY, short wFrameX, short wFrameY, byte slope, bool halfSlab, bool hasActuator, bool actuated, byte liquid, byte liquidType, byte color, byte wallColor, byte[] wire, string teType, TagCompound teData)
+        public bool Active => (SHeader & 0b00100000) == 0b00100000;
+
+        public TileSaveData(string tile, string wall, short frameX, short frameY, byte bHeader1, byte bHeader2, byte bHeader3, ushort sHeader, string teType = "", TagCompound teData = null)
         {
-            Active = active;
+
             Tile = tile;
             Wall = wall;
             FrameX = frameX;
             FrameY = frameY;
-            WFrameX = wFrameX;
-            WFrameY = wFrameY;
-            Slope = slope;
-            HalfSlab = halfSlab;
-            HasActuator = hasActuator;
-            Actuated = actuated;
-            Liquid = liquid;
-            LiquidType = liquidType;
-            Color = color;
-            WallColor = wallColor;
-            Wire = wire;
+            BHeader1 = bHeader1;
+            BHeader2 = bHeader2;
+            BHeader3 = bHeader3;
+            SHeader = sHeader;
 
             TEType = teType;
             TEData = teData;
         }
+
         public static Func<TagCompound, TileSaveData> DESERIALIZER = s => DeserializeData(s);
+
         public static TileSaveData DeserializeData(TagCompound tag)
         {
-            return new TileSaveData(
-            tag.GetBool("Active"),
+            var output = new TileSaveData(
             tag.GetString("Tile"),
             tag.GetString("Wall"),
             tag.GetShort("FrameX"),
             tag.GetShort("FrameY"),
-            tag.GetShort("WFrameX"),
-            tag.GetShort("WFrameY"),
-            tag.GetByte("Slope"),
-            tag.GetBool("HalfSlab"),
-            tag.GetBool("HasActuator"),
-            tag.GetBool("Actuated"),
-            tag.GetByte("Liquid"),
-            tag.GetByte("LiquidType"),
-            tag.GetByte("Color"),
-            tag.GetByte("WallColor"),
-            tag.GetByteArray("Wire"),
-            tag.GetString("TEType"),
-            tag.Get<TagCompound>("TEData")
+            
+            tag.GetByte("BHeader1"),
+            tag.GetByte("BHeader2"),
+            tag.GetByte("BHeader3"),
+            (ushort)tag.GetShort("SHeader")
             );
+
+            if(tag.ContainsKey("TEType"))
+			{
+                output.TEType = tag.GetString("TEType");
+                output.TEData = tag.Get<TagCompound>("TEData");
+            }
+
+            return output;
         }
 
         public TagCompound SerializeData()
         {
-            return new TagCompound()
+            var tag = new TagCompound()
             {
-                ["Active"] = Active,
                 ["Tile"] = Tile,
                 ["Wall"] = Wall,
                 ["FrameX"] = FrameX,
                 ["FrameY"] = FrameY,
-                ["WFrameX"] = WFrameX,
-                ["WFrameY"] = WFrameY,
-                ["Slope"] = Slope,
-                ["HalfSlab"] = HalfSlab,
-                ["HasActuator"] = HasActuator,
-                ["Actuated"] = Actuated,
-                ["Liquid"] = Liquid,
-                ["LiquidType"] = LiquidType,
-                ["Color"] = Color,
-                ["WallColor"] = WallColor,
-                ["Wire"] = Wire,
-                ["TEType"] = TEType,
-                ["TEData"] = TEData
+
+                ["BHeader1"] = BHeader1,
+                ["BHeader2"] = BHeader2,
+                ["BHeader3"] = BHeader3,
+                ["SHeader"] = SHeader
             };
+
+            if (TEType != "")
+            {
+                tag.Add("TEType", TEType);
+                tag.Add("TEData", TEData);
+            }
+
+            return tag;
         }
     }
 }
