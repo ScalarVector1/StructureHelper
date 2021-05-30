@@ -21,7 +21,7 @@ namespace StructureHelper.Items
 
 		public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Test Structure Wand Placer");
+            DisplayName.SetDefault("Structure Placer Wand");
             Tooltip.SetDefault("left click to place the selected structure, right click to open the structure selector");
         }
 

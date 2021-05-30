@@ -1,4 +1,4 @@
 displayName = Scalie's Structurizer
 author = Scalie
-version = 0.1.9
+version = 1.0.0
 homepage = https://forums.terraria.org/index.php?threads/scalies-structurizer-a-worldgen-helper-library.87189/

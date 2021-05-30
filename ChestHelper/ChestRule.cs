@@ -12,9 +12,18 @@ namespace StructureHelper.ChestHelper
     {
         public List<Loot> pool = new List<Loot>();
 
-        public void AddItem(Item item)
+        public virtual bool UsesWeight => false;
+
+        public virtual string Name => "Unknown Rule";
+
+        public virtual string Tooltip => "Probably a bug! Report me!";
+
+        public Loot AddItem(Item item)
         {
-            pool.Add(new Loot(item.DeepClone(), 1));
+            var loot = new Loot(item.DeepClone(), 1);
+            pool.Add(loot);
+
+            return loot;
         }
 
         public void RemoveItem(Loot loot) => pool.Remove(loot);
@@ -67,26 +76,29 @@ namespace StructureHelper.ChestHelper
         }
     }
 
-    struct Loot
+    class Loot
     {
         public Item LootItem;
         public int min;
         public int max;
+        public int weight;
 
-        public Loot(Item item, int min, int max = 0)
+        public Loot(Item item, int min, int max = 0, int weight = 1)
         {
             this.min = min;
             this.max = max == 0 ? min : max;
+            this.weight = weight;
 
             Item newItem = item.Clone();
             newItem.stack = 1;
             LootItem = newItem;
+
         }
 
         public Item GetLoot()
         {
             Item item = LootItem.Clone();
-            LootItem.stack = WorldGen.genRand.Next(min, max);
+            item.stack = WorldGen.genRand.Next(min, max);
             return item;
         }
 
@@ -96,14 +108,15 @@ namespace StructureHelper.ChestHelper
             {
                 { "Item", LootItem },
                 { "Min", min },
-                { "Max", max }
+                { "Max", max },
+                { "Weight", weight}
             };
             return tag;
         }
 
         public static Loot Deserialze(TagCompound tag)
         {
-            return new Loot(tag.Get<Item>("Item"), tag.GetInt("Min"), tag.GetInt("Max"));
+            return new Loot(tag.Get<Item>("Item"), tag.GetInt("Min"), tag.GetInt("Max"), tag.GetInt("Weight"));
         }
     }
 }

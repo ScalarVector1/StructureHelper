@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StructureHelper.GUI;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
@@ -14,10 +15,42 @@ namespace StructureHelper.ChestHelper.GUI
 { 
     class ChestCustomizerState : UIState
     {
+        public static bool Visible;
+
         internal UIList ruleElements = new UIList();
         internal UIScrollbar scrollBar = new UIScrollbar();
 
-        public void SetData(ChestEntity entity)
+        UIImageButton NewGuaranteed = new UIImageButton(GetTexture("StructureHelper/GUI/PlusR"));
+        UIImageButton NewChance = new UIImageButton(GetTexture("StructureHelper/GUI/PlusG"));
+        UIImageButton NewPool = new UIImageButton(GetTexture("StructureHelper/GUI/PlusP"));
+        UIImageButton NewPoolChance = new UIImageButton(GetTexture("StructureHelper/GUI/PlusB"));
+
+        public override void OnInitialize()
+		{
+            ManualGeneratorMenu.SetDims(ruleElements, -200, 0.5f, 0, 0.1f, 400, 0, 0, 0.8f);
+            ManualGeneratorMenu.SetDims(scrollBar, 232, 0.5f, 0, 0.1f, 32, 0, 0, 0.8f);
+            ruleElements.SetScrollbar(scrollBar);
+            Append(ruleElements);
+            Append(scrollBar);
+
+            ManualGeneratorMenu.SetDims(NewGuaranteed, -240, 0.5f, 0, 0.1f, 32, 0, 32, 0);
+            NewGuaranteed.OnClick += (n, m) => ruleElements.Add(new GuaranteedRuleElement());
+            Append(NewGuaranteed);
+
+            ManualGeneratorMenu.SetDims(NewChance, -240, 0.5f, 40, 0.1f, 32, 0, 32, 0);
+            NewChance.OnClick += (n, m) => ruleElements.Add(new ChanceRuleElement());
+            Append(NewChance);
+
+            ManualGeneratorMenu.SetDims(NewPool, -240, 0.5f, 80, 0.1f, 32, 0, 32, 0);
+            NewPool.OnClick += (n, m) => ruleElements.Add(new PoolRuleElement());
+            Append(NewPool);
+
+            ManualGeneratorMenu.SetDims(NewPoolChance, -240, 0.5f, 120, 0.1f, 32, 0, 32, 0);
+            NewPoolChance.OnClick += (n, m) => ruleElements.Add(new PoolChanceRuleElement());
+            Append(NewPoolChance);
+        }
+
+		public void SetData(ChestEntity entity)
         {
             entity.rules.Clear();
             for(int k = 0; k < ruleElements.Count; k++)
@@ -26,94 +59,27 @@ namespace StructureHelper.ChestHelper.GUI
             }
         }
 
-    }
+		public override void Draw(SpriteBatch spriteBatch)
+		{
+            Recalculate();
 
-    class ChestRuleElement : UIElement
-    {
-        internal ChestRule rule;
-        internal UIList lootElements = new UIList();
+            var rect = ruleElements.GetDimensions().ToRectangle();
+            rect.Inflate(30, 10);
+            ManualGeneratorMenu.DrawBox(spriteBatch, rect, new Color(20, 40, 60) * 0.8f);
 
-        public override void OnInitialize()
-        {
-            lootElements.Left.Set(10, 0);
-            lootElements.Top.Set(32, 0);
-            lootElements.Width.Set(GetDimensions().Width - 60, 0);
-            lootElements.Height.Set(60, 0);
-            base.Append(lootElements);
-        }
+            if (NewGuaranteed.IsMouseHovering)
+                Main.hoverItemName = "Add New Guaranteed Rule";
 
-        public override void Click(UIMouseEvent evt)
-        {
-            if (Main.mouseItem.IsAir) return;
+            if (NewChance.IsMouseHovering)
+                Main.hoverItemName = "Add New Chance Rule";
 
-            AddItem(Main.mouseItem);
-        }
+            if (NewPool.IsMouseHovering)
+                Main.hoverItemName = "Add New Pool Rule";
 
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            Texture2D backTex = GetTexture("StructureHelper/ChestHelper/GUI/Assets/RuleElement");
-            Vector2 pos = GetDimensions().ToRectangle().TopLeft();
-            spriteBatch.Draw(backTex, pos, Color.White);
+            if (NewPoolChance.IsMouseHovering)
+                Main.hoverItemName = "Add New Pool + Chance Rule";
 
             base.Draw(spriteBatch);
-        }
-
-        //These handle adding/removing the elements and items from the appropriate lists, as well as re-sizing the element.
-        public void AddItem(Item item)
-        {
-            rule.AddItem(item);
-
-            var element = new LootElement(new Loot(item, 1));
-            lootElements.Add(element);
-            lootElements.Height.Set(lootElements.Height.Pixels + element.Height.Pixels, 0);
-            Height.Set(Height.Pixels + element.Height.Pixels, 0);
-        }
-
-        public void RemoveItem(Loot loot, LootElement element)
-        {
-            rule.RemoveItem(loot);
-            lootElements.Remove(element);
-            lootElements.Height.Set(lootElements.Height.Pixels - element.Height.Pixels, 0);
-            Height.Set(Height.Pixels - element.Height.Pixels, 0);
-        }
-    }
-
-    class LootElement : UIElement
-    {
-        Loot loot;
-        UIImageButton removeButton = new UIImageButton(GetTexture("StructureHelper/ChestHelper/GUI/Assets/Cross"));
-
-        public LootElement(Loot loot) => this.loot = loot;
-
-        public override void OnInitialize()
-        {
-            removeButton.Left.Set(-36, 1);
-            removeButton.Width.Set(32, 0);
-            removeButton.Height.Set(32, 0);
-            removeButton.OnClick += Remove;
-            base.Append(removeButton);
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            Texture2D backTex = GetTexture("StructureHelper/ChestHelper/GUI/Assets/LootElement");
-            Vector2 pos = GetDimensions().ToRectangle().TopLeft();
-            spriteBatch.Draw(backTex, pos, Color.White);
-
-            spriteBatch.Draw(Helper.GetItemTexture(loot.LootItem), new Rectangle((int)pos.X, (int)pos.Y, 32, 32), Color.White);
-            Utils.DrawBorderString(spriteBatch, loot.LootItem.Name, pos + new Vector2(36, 8), Color.White);
-
-            Utils.DrawBorderString(spriteBatch, loot.min.ToString(), pos + Vector2.UnitY * 60, Color.White);
-
-            base.Draw(spriteBatch);
-        }
-
-        private void Remove(UIMouseEvent evt, UIElement listeningElement)
-        {
-            if (!(Parent is ChestRuleElement)) return;
-
-            ChestRuleElement parent = Parent as ChestRuleElement;
-            parent.RemoveItem(loot, this);
-        }
-    }
+		}
+	}
 }

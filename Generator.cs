@@ -216,8 +216,18 @@ namespace StructureHelper
 
                             if (d.TEType != "")
                             {
-                                TileEntity.PlaceEntityNet(pos.X + x, pos.Y + y, typ);
-                                if (d.TEData != null && typ > 2) (TileEntity.ByPosition[new Point16(pos.X + x, pos.Y + y)] as ModTileEntity).Load(d.TEData);
+                                if (d.TEType == "StructureHelper ChestEntity")
+                                {
+                                    GenerateChest(new Point16(pos.X + x, pos.Y + y), d.TEData);
+                                }
+
+                                else
+                                {
+                                    TileEntity.PlaceEntityNet(pos.X + x, pos.Y + y, typ);
+
+                                    if (d.TEData != null && typ > 2)
+                                        (TileEntity.ByPosition[new Point16(pos.X + x, pos.Y + y)] as ModTileEntity).Load(d.TEData);
+                                }
                             }
                         }
                     }
@@ -228,6 +238,19 @@ namespace StructureHelper
             }
 
             return true;
+        }
+
+        public static void GenerateChest(Point16 pos, TagCompound rules)
+        {
+            int i = Chest.CreateChest(pos.X, pos.Y);
+            if (i == -1) 
+                return;
+
+            Item item = new Item();
+            item.SetDefaults(1);
+
+            Chest chest = Main.chest[i];
+            ChestEntity.SetChest(chest, ChestEntity.LoadChestRules(rules));
         }
 
         internal static bool LoadFile(string path, Mod mod, bool fullPath = false)

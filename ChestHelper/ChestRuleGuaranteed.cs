@@ -10,12 +10,17 @@ namespace StructureHelper.ChestHelper
 {
     class ChestRuleGuaranteed : ChestRule
     {
+        public override string Name => "Guaranteed Rule";
+
+        public override string Tooltip => "Always generates every item in the rule";
+
         public override void PlaceItems(Chest chest, ref int nextIndex)
         {
             if (nextIndex >= 40) return;
 
             for (int k = 0; k < pool.Count; k++)
             {
+                if (nextIndex >= 40) return;
                 chest.item[nextIndex] = pool[k].GetLoot();
                 nextIndex++;
             }

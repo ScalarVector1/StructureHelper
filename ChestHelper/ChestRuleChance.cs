@@ -15,6 +15,10 @@ namespace StructureHelper.ChestHelper
         /// </summary>
         public float chance = 0;
 
+        public override string Name => "Chance Rule";
+
+        public override string Tooltip => "Attempts to generate all items in the rule, \nwith a configurable chance to generate each.";
+
         public override void PlaceItems(Chest chest, ref int nextIndex)
         {
             if (nextIndex >= 40) return;

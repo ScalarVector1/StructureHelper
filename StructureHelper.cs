@@ -13,6 +13,7 @@ using StructureHelper.ChestHelper;
 using StructureHelper.Items;
 using Terraria.UI;
 using StructureHelper.GUI;
+using StructureHelper.ChestHelper.GUI;
 
 namespace StructureHelper
 {
@@ -23,15 +24,20 @@ namespace StructureHelper
         public static StructureHelper Instance { get; set; }
 
         UserInterface GeneratorMenuUI;
-        ManualGeneratorMenu GeneratorMenu;
+        internal ManualGeneratorMenu GeneratorMenu;
+
+        UserInterface ChestMenuUI;
+        internal ChestCustomizerState ChestCustomizer;
 
         public override void Load()
         {
             GeneratorMenuUI = new UserInterface();
             GeneratorMenu = new ManualGeneratorMenu();
-
             GeneratorMenuUI.SetState(GeneratorMenu);
 
+            ChestMenuUI = new UserInterface();
+            ChestCustomizer = new ChestCustomizerState();
+            ChestMenuUI.SetState(ChestCustomizer);
         }
 
         public override void Unload()
@@ -41,7 +47,7 @@ namespace StructureHelper
 
 		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
 		{
-            layers.Insert(layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text")), new LegacyGameInterfaceLayer("Manual Generation",
+            layers.Insert(layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text")), new LegacyGameInterfaceLayer("GUI Menus",
                 delegate
                 {
                     if (ManualGeneratorMenu.Visible)
@@ -49,6 +55,13 @@ namespace StructureHelper
                         GeneratorMenuUI.Update(Main._drawInterfaceGameTime);
                         GeneratorMenu.Draw(Main.spriteBatch);
                     }
+
+                    if(ChestCustomizerState.Visible)
+					{
+                        ChestMenuUI.Update(Main._drawInterfaceGameTime);
+                        ChestCustomizer.Draw(Main.spriteBatch);
+					}
+
                     return true;
                 }, InterfaceScaleType.UI));
         }
@@ -117,21 +130,6 @@ namespace StructureHelper
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
             }
-        }
-
-        public static void GenerateChest(string path, Point16 pos, Mod mod, int tileType)
-        {
-            int i = WorldGen.PlaceChest(pos.X, pos.Y, (ushort)tileType);
-            if (i == -1) return;
-
-            var tag = TagIO.FromStream(mod.GetFileStream(path));
-            if (tag == null) throw new Exception("Path to chest was unable to be found. Are you passing the correct path?");
-
-            Item item = new Item();
-            item.SetDefaults(1);
-
-            Chest chest = Main.chest[i];
-            ChestEntity.SetChest(chest, ChestEntity.LoadChestRules(tag));
         }
     }
 }

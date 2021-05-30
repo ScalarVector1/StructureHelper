@@ -6,12 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace StructureHelper.ChestHelper
 {
-    class ChestEntity
+    class ChestEntity : ModTileEntity
     {
         public List<ChestRule> rules = new List<ChestRule>();
 
@@ -56,5 +57,26 @@ namespace StructureHelper.ChestHelper
             int index = 0;
             rules.ForEach(n => n.PlaceItems(chest, ref index));
         }
-    }
+
+		public override void Update()
+		{
+            Dust.NewDustPerfect(Position.ToVector2() * 16 + Vector2.One.RotatedByRandom(6.28f) * 8, 15, Vector2.Zero);
+		}
+
+		public override TagCompound Save()
+		{
+            return SaveChestRules();
+		}
+
+		public override void Load(TagCompound tag)
+		{
+            rules = LoadChestRules(tag);
+		}
+
+		public override bool ValidTile(int i, int j)
+		{
+            var tile = Framing.GetTileSafely(i, j);
+            return tile.type == TileID.Containers;
+		}
+	}
 }

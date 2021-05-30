@@ -115,13 +115,14 @@ namespace StructureHelper.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-            DrawBox(spriteBatch, ignoreButton.GetDimensions().ToRectangle(), ignoreButton.IsMouseHovering ? Color.White : Color.White * 0.8f);
-            DrawBox(spriteBatch, refreshButton.GetDimensions().ToRectangle(), refreshButton.IsMouseHovering ? Color.White : Color.White * 0.8f);
-            DrawBox(spriteBatch, closeButton.GetDimensions().ToRectangle(), closeButton.IsMouseHovering ? Color.White : Color.White * 0.8f);
+            var color = new Color(49, 84, 141);
+            DrawBox(spriteBatch, ignoreButton.GetDimensions().ToRectangle(), ignoreButton.IsMouseHovering ? color : color * 0.8f);
+            DrawBox(spriteBatch, refreshButton.GetDimensions().ToRectangle(), refreshButton.IsMouseHovering ? color : color * 0.8f);
+            DrawBox(spriteBatch, closeButton.GetDimensions().ToRectangle(), closeButton.IsMouseHovering ? color : color * 0.8f);
 
             var rect = structureElements.GetDimensions().ToRectangle();
             rect.Inflate(30, 10);
-            DrawBox(spriteBatch, rect, new Color(150, 150, 150) * 0.8f);
+            DrawBox(spriteBatch, rect, new Color(20, 40, 60) * 0.8f);
 
             base.Draw(spriteBatch);
 
@@ -153,7 +154,7 @@ namespace StructureHelper.GUI
             Texture2D tex = ModContent.GetTexture("StructureHelper/GUI/Box");
 
             if(color == default) 
-                color = Color.White * 0.8f;
+                color = new Color(49, 84, 141) * 0.8f;
 
             Rectangle sourceCorner = new Rectangle(0, 0, 6, 6);
             Rectangle sourceEdge = new Rectangle(6, 0, 4, 6);
@@ -208,7 +209,7 @@ namespace StructureHelper.GUI
             if (active)
                 color = Color.Yellow;
 
-            ManualGeneratorMenu.DrawBox(spriteBatch, mainBox, IsMouseHovering || active ? Color.White : Color.White * 0.6f);
+            ManualGeneratorMenu.DrawBox(spriteBatch, mainBox, IsMouseHovering || active ? new Color(49, 84, 141) : new Color(49, 84, 141) * 0.6f);
             Utils.DrawBorderString(spriteBatch, Name, mainBox.Center() + Vector2.UnitY * 4, color, 0.8f, 0.5f, 0.5f);
 
             base.Draw(spriteBatch);
@@ -280,7 +281,7 @@ namespace StructureHelper.GUI
             if (active)
                 color = Color.Yellow;
 
-            ManualGeneratorMenu.DrawBox(spriteBatch, GetDimensions().ToRectangle(), IsMouseHovering || active ? Color.White : Color.White * 0.6f);
+            ManualGeneratorMenu.DrawBox(spriteBatch, GetDimensions().ToRectangle(), IsMouseHovering || active ? new Color(49, 84, 141) : new Color(49, 84, 141) * 0.6f);
             Utils.DrawBorderString(spriteBatch, value.ToString(), pos + Vector2.UnitY * 4, color, 0.8f, 0.5f, 0.5f);
 
             base.Draw(spriteBatch);

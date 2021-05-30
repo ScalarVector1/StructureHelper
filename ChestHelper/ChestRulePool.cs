@@ -15,16 +15,44 @@ namespace StructureHelper.ChestHelper
         /// </summary>
         public int itemsToGenerate;
 
+        public override bool UsesWeight => true;
+
+        public override string Name => "Pool Rule";
+
+        public override string Tooltip => "Generates a configurable amount of items \nselected from the rule. Can make use of weight.";
+
         public override void PlaceItems(Chest chest, ref int nextIndex)
         {
             if (nextIndex >= 40) return;
 
             List<Loot> toLoot = pool;
-            Helper.RandomizeList<Loot>(ref toLoot);
 
             for(int k = 0; k < itemsToGenerate; k++)
             {
-                chest.item[nextIndex] = pool[k].GetLoot();
+                if (nextIndex >= 40) return;
+
+                int maxWeight = 1;
+
+                foreach (Loot loot in toLoot)
+                    maxWeight += loot.weight;
+
+                int selection = Main.rand.Next(maxWeight);
+                int weightTotal = 0;
+                Loot selectedLoot = null;
+
+                for (int i = 0; i < toLoot.Count; i++)
+                {
+                    weightTotal += toLoot[i].weight;
+
+                    if (selection < weightTotal + 1)
+                    {
+                        selectedLoot = toLoot[i];
+                        toLoot.Remove(selectedLoot);
+                        break;
+                    }
+                }
+
+                chest.item[nextIndex] = selectedLoot?.GetLoot();
                 nextIndex++;
             }
         }
