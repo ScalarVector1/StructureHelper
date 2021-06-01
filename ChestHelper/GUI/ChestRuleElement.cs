@@ -68,6 +68,9 @@ namespace StructureHelper.ChestHelper.GUI
             hideButton.SetVisibility(1, 0.5f);
             hideButton.OnClick += Hide;
             Append(hideButton);
+
+            foreach (Loot loot in rule.pool)
+                AddItem(loot);
         }
 
 		private void Hide(UIMouseEvent evt, UIElement listeningElement)
@@ -142,13 +145,15 @@ namespace StructureHelper.ChestHelper.GUI
 
             Utils.DrawBorderString(spriteBatch, rule.Name, pos + new Vector2(32, 8), Color.White, 0.8f);
 
-            removeButton.Draw(spriteBatch);
-            upButton.Draw(spriteBatch);
-            downButton.Draw(spriteBatch);
-            hideButton.Draw(spriteBatch);
-
             if (storedHeight == 0)
-                lootElements.Draw(spriteBatch);
+                base.Draw(spriteBatch);
+			else
+			{
+                removeButton.Draw(spriteBatch);
+                upButton.Draw(spriteBatch);
+                downButton.Draw(spriteBatch);
+                hideButton.Draw(spriteBatch);
+            }
         }
 
         //These handle adding/removing the elements and items from the appropriate lists, as well as re-sizing the element.
@@ -156,6 +161,14 @@ namespace StructureHelper.ChestHelper.GUI
         {
             var loot = rule.AddItem(item);
 
+            var element = new LootElement(loot, rule.UsesWeight);
+            lootElements.Add(element);
+            lootElements.Height.Set(lootElements.Height.Pixels + element.Height.Pixels + 4, 0);
+            Height.Set(Height.Pixels + element.Height.Pixels + 4, 0);
+        }
+
+        public void AddItem(Loot loot)
+		{
             var element = new LootElement(loot, rule.UsesWeight);
             lootElements.Add(element);
             lootElements.Height.Set(lootElements.Height.Pixels + element.Height.Pixels + 4, 0);

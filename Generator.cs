@@ -9,6 +9,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using System.Linq;
 using StructureHelper.ChestHelper;
+using Terraria.ID;
 
 namespace StructureHelper
 {
@@ -216,10 +217,8 @@ namespace StructureHelper
 
                             if (d.TEType != "")
                             {
-                                if (d.TEType == "StructureHelper ChestEntity")
-                                {
+                                if (d.TEType == "StructureHelper ChestEntity" && !ignoreNull)
                                     GenerateChest(new Point16(pos.X + x, pos.Y + y), d.TEData);
-                                }
 
                                 else
                                 {
@@ -230,6 +229,8 @@ namespace StructureHelper
                                 }
                             }
                         }
+                        else if (type == TileID.Containers && d.FrameX % 36 == 0 && d.FrameY % 36 == 0) //generate an empty chest if there is no chest data
+                            Chest.CreateChest(pos.X + x, pos.Y + y);
                     }
 
                     if (!isNullWall || ignoreNull) //leave the wall alone if its a null wall

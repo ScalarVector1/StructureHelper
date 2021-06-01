@@ -56,13 +56,22 @@ namespace StructureHelper.ChestHelper.GUI
             Append(closeButton);
         }
 
-		public void SetData(ChestEntity entity)
+		public bool SetData(ChestEntity entity)
         {
             entity.rules.Clear();
+
+            if (ruleElements.Count == 0)
+			{
+                entity.Kill(entity.Position.X, entity.Position.Y);
+                return false;
+			}
+
             for(int k = 0; k < ruleElements.Count; k++)
             {
-                entity.rules.Add((ruleElements._items[k] as ChestRuleElement).rule);
+                entity.rules.Add((ruleElements._items[k] as ChestRuleElement).rule.Clone());
             }
+
+            return true;
         }
 
         public override void Draw(SpriteBatch spriteBatch)

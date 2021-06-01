@@ -53,5 +53,17 @@ namespace StructureHelper.ChestHelper
 
             return rule;
         }
-    }
+
+		public override ChestRule Clone()
+		{
+            var clone = new ChestRuleChance();
+
+            for (int k = 0; k < pool.Count; k++)
+                clone.pool.Add(pool[k].Clone());
+
+            clone.chance = chance;
+
+            return clone;
+        }
+	}
 }

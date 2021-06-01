@@ -74,7 +74,17 @@ namespace StructureHelper.ChestHelper
 
             return loot;
         }
-    }
+
+		public virtual ChestRule Clone()
+		{
+            var clone = new ChestRule();
+
+            for (int k = 0; k < pool.Count; k++)
+                clone.pool.Add(pool[k].Clone());
+
+            return clone;
+		}
+	}
 
     class Loot
     {
@@ -116,7 +126,16 @@ namespace StructureHelper.ChestHelper
 
         public static Loot Deserialze(TagCompound tag)
         {
-            return new Loot(tag.Get<Item>("Item"), tag.GetInt("Min"), tag.GetInt("Max"), tag.GetInt("Weight"));
+            return new Loot(
+                tag.Get<Item>("Item"),
+                tag.GetInt("Min"),
+                tag.GetInt("Max"),
+                tag.GetInt("Weight"));
         }
-    }
+
+		public Loot Clone()
+		{
+            return new Loot(LootItem.DeepClone(), min, max, weight);
+		}
+	}
 }
