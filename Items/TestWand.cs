@@ -52,7 +52,7 @@ namespace StructureHelper.Items
                     Generator.GenerateStructure(ManualGeneratorMenu.selected.Path, pos, StructureHelper.Instance, true, ManualGeneratorMenu.ignoreNulls);
             }
             else
-                Main.NewText("No structure selected! Right click and select a structure from the menu to generate it!", Color.Red);
+                Main.NewText("No structure selected! Right click and select a structure from the menu to generate it.", Color.Red);
 
             return true;
         }
