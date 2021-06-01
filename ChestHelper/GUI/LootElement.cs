@@ -22,6 +22,9 @@ namespace StructureHelper.ChestHelper.GUI
         NumberSetter max;
         NumberSetter weight;
 
+        UIImageButton upButton = new UIImageButton(GetTexture("StructureHelper/GUI/Up"));
+        UIImageButton downButton = new UIImageButton(GetTexture("StructureHelper/GUI/Down"));
+
         public LootElement(Loot loot, bool hasWeight)
         {
             this.loot = loot;
@@ -47,6 +50,50 @@ namespace StructureHelper.ChestHelper.GUI
                 weight = new NumberSetter(loot.weight, "Weight", 160);
                 Append(weight);
             }
+			else
+			{
+                upButton.Left.Set(8, 0);
+                upButton.Top.Set(6, 0);
+                upButton.Width.Set(12, 0);
+                upButton.Height.Set(8, 0);
+                upButton.SetVisibility(1, 0.8f);
+                upButton.OnClick += MoveUp;
+                Append(upButton);
+
+                downButton.Left.Set(8, 0);
+                downButton.Top.Set(16, 0);
+                downButton.Width.Set(12, 0);
+                downButton.Height.Set(8, 0);
+                downButton.SetVisibility(1, 0.8f);
+                downButton.OnClick += MoveDown;
+                Append(downButton);
+            }
+        }
+
+        private void MoveDown(UIMouseEvent evt, UIElement listeningElement)
+        {
+            var list = Parent.Parent as UIList;
+            int i = list._items.IndexOf(this);
+
+            if (i < list.Count - 1)
+            {
+                var temp = list._items[i];
+                list._items[i] = list._items[i + 1];
+                list._items[i + 1] = temp;
+            }
+        }
+
+        private void MoveUp(UIMouseEvent evt, UIElement listeningElement)
+        {
+            var list = Parent.Parent as UIList;
+            int i = list._items.IndexOf(this);
+
+            if (i >= 1)
+            {
+                var temp = list._items[i];
+                list._items[i] = list._items[i - 1];
+                list._items[i - 1] = temp;
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -64,10 +111,14 @@ namespace StructureHelper.ChestHelper.GUI
 
             ManualGeneratorMenu.DrawBox(spriteBatch, target, color);
 
-            spriteBatch.Draw(Helper.GetItemTexture(loot.LootItem), new Rectangle((int)pos.X + 8, (int)pos.Y + 8, 16, 16), Color.White);
+            int xOff = 0;
+            if (weight is null)
+                xOff += 16;
+
+            spriteBatch.Draw(Helper.GetItemTexture(loot.LootItem), new Rectangle((int)pos.X + 8 + xOff, (int)pos.Y + 8, 16, 16), Color.White);
 
             string name = loot.LootItem.Name.Length > 25 ? loot.LootItem.Name.Substring(0, 23) + "..." : loot.LootItem.Name;
-            Utils.DrawBorderString(spriteBatch, name, pos + new Vector2(28, 10), Color.White, 0.7f);
+            Utils.DrawBorderString(spriteBatch, name, pos + new Vector2(28 + xOff, 10), Color.White, 0.7f);
 
             if (min.Value > max.Value)
                 min.Value = max.Value;

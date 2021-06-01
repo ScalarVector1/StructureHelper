@@ -45,6 +45,7 @@ namespace StructureHelper
 
             TagCompound tag = new TagCompound();
             tag.Add("Structures", toSave);
+            tag.Add("Version", StructureHelper.Instance.Version.ToString());
 
             TagIO.ToFile(tag, thisPath);
 

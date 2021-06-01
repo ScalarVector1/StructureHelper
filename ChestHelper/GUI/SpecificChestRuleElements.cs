@@ -11,13 +11,13 @@ namespace StructureHelper.ChestHelper.GUI
 	{
 		public GuaranteedRuleElement() : base(new ChestRuleGuaranteed())
 		{
-			color = Color.Red;
+			color = new Color(200, 0, 0);
 		}
 	}
 
 	class ChanceRuleElement : ChestRuleElement
 	{
-		NumberSetter chanceSetter = new NumberSetter(100, "Chance", 80, "%");
+		NumberSetter chanceSetter = new NumberSetter(100, "Chance", 100, "%");
 
 		public ChanceRuleElement() : base(new ChestRuleChance())
 		{
@@ -37,7 +37,7 @@ namespace StructureHelper.ChestHelper.GUI
 
 	class PoolRuleElement : ChestRuleElement
 	{
-		NumberSetter countSetter = new NumberSetter(1, "Amount to Pick", 80);
+		NumberSetter countSetter = new NumberSetter(1, "Amount to Pick", 100);
 
 		public PoolRuleElement() : base(new ChestRulePool())
 		{
@@ -57,12 +57,12 @@ namespace StructureHelper.ChestHelper.GUI
 
 	class PoolChanceRuleElement : ChestRuleElement
 	{
-		NumberSetter chanceSetter = new NumberSetter(100, "Chance", 80, "%");
-		NumberSetter countSetter = new NumberSetter(1, "Amount to Pick", 120);
+		NumberSetter chanceSetter = new NumberSetter(100, "Chance", 100, "%");
+		NumberSetter countSetter = new NumberSetter(1, "Amount to Pick", 140);
 
 		public PoolChanceRuleElement() : base(new ChestRulePoolChance())
 		{
-			color = Color.Blue;
+			color = new Color(50, 50, 200);
 			Append(chanceSetter);
 			Append(countSetter);
 		}

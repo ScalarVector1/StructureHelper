@@ -12,7 +12,7 @@ namespace StructureHelper.ChestHelper
     {
         public override string Name => "Guaranteed Rule";
 
-        public override string Tooltip => "Always generates every item in the rule";
+        public override string Tooltip => "Always generates every item in the rule\nItems are generated in the order they appear here";
 
         public override void PlaceItems(Chest chest, ref int nextIndex)
         {

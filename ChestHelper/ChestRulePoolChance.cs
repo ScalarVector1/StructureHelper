@@ -24,7 +24,7 @@ namespace StructureHelper.ChestHelper
 
         public override string Name => "Chance + Pool Rule";
 
-        public override string Tooltip => "Has a configurable chance to generate a \nconfigurable amount of items selected from \nthe rule. Can make use of weight.";
+        public override string Tooltip => "Has a configurable chance to generate a \nconfigurable amount of items randomly \nselected from the rule. \nCan make use of weight.";
 
         public override void PlaceItems(Chest chest, ref int nextIndex)
         {

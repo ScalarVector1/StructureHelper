@@ -17,7 +17,7 @@ namespace StructureHelper.ChestHelper
 
         public override string Name => "Chance Rule";
 
-        public override string Tooltip => "Attempts to generate all items in the rule, \nwith a configurable chance to generate each.";
+        public override string Tooltip => "Attempts to generate all items in the rule, \nwith a configurable chance to generate each.\nItems are attempted in the order they appear here";
 
         public override void PlaceItems(Chest chest, ref int nextIndex)
         {
