@@ -23,10 +23,10 @@ C:\Users\Alex\Documents\My Games\Terraria\ModLoader\Mod Sources\StructureHelper\
 C:\Users\Alex\Documents\My Games\Terraria\ModLoader\Mod Sources\StructureHelper\bin\Release\net45\tModLoader.xml
 C:\Users\Alex\Documents\My Games\Terraria\ModLoader\Mod Sources\StructureHelper\bin\Release\net45\MonoMod.RuntimeDetour.xml
 C:\Users\Alex\Documents\My Games\Terraria\ModLoader\Mod Sources\StructureHelper\bin\Release\net45\MonoMod.Utils.xml
-C:\Users\Alex\Documents\My Games\Terraria\ModLoader\Mod Sources\StructureHelper\obj\Release\net45\StructureHelper.csprojAssemblyReference.cache
 C:\Users\Alex\Documents\My Games\Terraria\ModLoader\Mod Sources\StructureHelper\obj\Release\net45\StructureHelper.AssemblyInfoInputs.cache
 C:\Users\Alex\Documents\My Games\Terraria\ModLoader\Mod Sources\StructureHelper\obj\Release\net45\StructureHelper.AssemblyInfo.cs
 C:\Users\Alex\Documents\My Games\Terraria\ModLoader\Mod Sources\StructureHelper\obj\Release\net45\StructureHelper.csproj.CoreCompileInputs.cache
 C:\Users\Alex\Documents\My Games\Terraria\ModLoader\Mod Sources\StructureHelper\obj\Release\net45\StructureHelper.csproj.CopyComplete
 C:\Users\Alex\Documents\My Games\Terraria\ModLoader\Mod Sources\StructureHelper\obj\Release\net45\StructureHelper.dll
 C:\Users\Alex\Documents\My Games\Terraria\ModLoader\Mod Sources\StructureHelper\obj\Release\net45\StructureHelper.pdb
+C:\Users\Alex\Documents\My Games\Terraria\ModLoader\Mod Sources\StructureHelper\obj\Release\net45\StructureHelper.csprojAssemblyReference.cache
