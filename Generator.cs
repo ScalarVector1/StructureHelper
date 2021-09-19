@@ -207,14 +207,6 @@ namespace StructureHelper
 
                         if (d.TEType != "") //place and load a tile entity
                         {
-                            int typ;
-
-                            if (!int.TryParse(d.TEType, out typ))
-                            {
-                                string[] parts = d.TEType.Split();
-                                typ = ModLoader.GetMod(parts[0]).TileEntityType(parts[1]);
-                            }
-
                             if (d.TEType != "")
                             {
                                 if (d.TEType == "StructureHelper ChestEntity" && !ignoreNull)
@@ -222,6 +214,14 @@ namespace StructureHelper
 
                                 else
                                 {
+                                    int typ;
+
+                                    if (!int.TryParse(d.TEType, out typ))
+                                    {
+                                        string[] parts = d.TEType.Split();
+                                        typ = ModLoader.GetMod(parts[0]).TileEntityType(parts[1]);
+                                    }
+
                                     TileEntity.PlaceEntityNet(pos.X + x, pos.Y + y, typ);
 
                                     if (d.TEData != null && typ > 2)
