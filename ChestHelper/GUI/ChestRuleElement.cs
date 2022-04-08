@@ -9,6 +9,7 @@ using StructureHelper.GUI;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StructureHelper.ChestHelper.GUI
@@ -20,11 +21,11 @@ namespace StructureHelper.ChestHelper.GUI
         internal float storedHeight = 0;
 
         internal UIList lootElements = new UIList();
-        UIImageButton removeButton = new UIImageButton(GetTexture("StructureHelper/GUI/Cross"));
+        UIImageButton removeButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
 
-        UIImageButton upButton = new UIImageButton(GetTexture("StructureHelper/GUI/UpLarge"));
-        UIImageButton downButton = new UIImageButton(GetTexture("StructureHelper/GUI/DownLarge"));
-        UIImageButton hideButton = new UIImageButton(GetTexture("StructureHelper/GUI/Eye"));
+        UIImageButton upButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/UpLarge"));
+        UIImageButton downButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/DownLarge"));
+        UIImageButton hideButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Eye"));
 
         public ChestRuleElement(ChestRule rule)
         {
@@ -77,13 +78,13 @@ namespace StructureHelper.ChestHelper.GUI
 		{
             if (storedHeight == 0)
             {
-                hideButton.SetImage(GetTexture("StructureHelper/GUI/EyeClosed"));
+                hideButton.SetImage(ModContent.Request<Texture2D>("StructureHelper/GUI/EyeClosed"));
                 storedHeight = GetDimensions().Height;
                 Height.Set(36, 0);
             }
 			else
 			{
-                hideButton.SetImage(GetTexture("StructureHelper/GUI/Eye"));
+                hideButton.SetImage(ModContent.Request<Texture2D>("StructureHelper/GUI/Eye"));
                 Height.Set(storedHeight, 0);
                 storedHeight = 0;
             }

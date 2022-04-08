@@ -28,15 +28,15 @@ namespace StructureHelper.Items
 
         public override void SetDefaults()
         {
-            item.useStyle = 1;
-            item.useTime = 20;
-            item.useAnimation = 20;
-            item.rare = 1;
+            Item.useStyle = 1;
+            Item.useTime = 20;
+            Item.useAnimation = 20;
+            Item.rare = 1;
         }
 
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)
         {
-            if (player.altFunctionUse == 2 && !SecondPoint && TopLeft != null)
+            if (player.altFunctionUse == 2 && !SecondPoint && TopLeft != default)
                 Saver.SaveToFile(new Rectangle(TopLeft.X, TopLeft.Y, Width, Height));
 
             else if (!SecondPoint)

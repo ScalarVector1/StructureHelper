@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader;
 using Terraria;
 using Terraria.ModLoader.IO;
+using Terraria.ModLoader;
 using Terraria.GameContent.UI.Elements;
 using StructureHelper.Items;
 using System.IO;
@@ -27,9 +28,9 @@ namespace StructureHelper.GUI
         public static UIList structureElements = new UIList();
         public static UIScrollbar scrollBar = new UIScrollbar();
 
-        public static UIImageButton refreshButton = new UIImageButton(ModContent.GetTexture("StructureHelper/GUI/Refresh"));
-        public static UIImageButton ignoreButton = new UIImageButton(ModContent.GetTexture("StructureHelper/GUI/Null"));
-        public static UIImageButton closeButton = new UIImageButton(ModContent.GetTexture("StructureHelper/GUI/Cross"));
+        public static UIImageButton refreshButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Refresh"));
+        public static UIImageButton ignoreButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Null"));
+        public static UIImageButton closeButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
 
         public static void LoadStructures()
 		{
@@ -128,7 +129,7 @@ namespace StructureHelper.GUI
 
             if (!ignoreNulls)
             {
-                var tex = ModContent.GetTexture("StructureHelper/GUI/Cross");
+                var tex = ModContent.Request<Texture2D>("StructureHelper/GUI/Cross").Value;
                 spriteBatch.Draw(tex, ignoreButton.GetDimensions().ToRectangle(), ignoreButton.IsMouseHovering ? Color.White : Color.White * 0.5f);
             }
         }
@@ -151,7 +152,7 @@ namespace StructureHelper.GUI
 
         public static void DrawBox(SpriteBatch sb, Rectangle target, Color color = default)
         {
-            Texture2D tex = ModContent.GetTexture("StructureHelper/GUI/Box");
+            Texture2D tex = ModContent.Request<Texture2D>("StructureHelper/GUI/Box").Value;
 
             if(color == default) 
                 color = new Color(49, 84, 141) * 0.8f;

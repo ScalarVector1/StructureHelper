@@ -9,6 +9,7 @@ using StructureHelper.GUI;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StructureHelper.ChestHelper.GUI
@@ -20,12 +21,12 @@ namespace StructureHelper.ChestHelper.GUI
         internal UIList ruleElements = new UIList();
         internal UIScrollbar scrollBar = new UIScrollbar();
 
-        UIImageButton NewGuaranteed = new UIImageButton(GetTexture("StructureHelper/GUI/PlusR"));
-        UIImageButton NewChance = new UIImageButton(GetTexture("StructureHelper/GUI/PlusG"));
-        UIImageButton NewPool = new UIImageButton(GetTexture("StructureHelper/GUI/PlusP"));
-        UIImageButton NewPoolChance = new UIImageButton(GetTexture("StructureHelper/GUI/PlusB"));
+        UIImageButton NewGuaranteed = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/PlusR"));
+        UIImageButton NewChance = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/PlusG"));
+        UIImageButton NewPool = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/PlusP"));
+        UIImageButton NewPoolChance = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/PlusB"));
 
-        public static UIImageButton closeButton = new UIImageButton(GetTexture("StructureHelper/GUI/Cross"));
+        public static UIImageButton closeButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
 
         public override void OnInitialize()
 		{

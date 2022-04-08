@@ -11,13 +11,13 @@ using Terraria.ModLoader.IO;
 
 namespace StructureHelper
 {
-	internal static class Saver
-	{
+    internal static class Saver
+    {
         public static void SaveToFile(Rectangle target, string targetPath = null)
-		{
+        {
             string path = ModLoader.ModPath.Replace("Mods", "SavedStructures");
 
-            if (!Directory.Exists(path)) 
+            if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
             string thisPath = targetPath ?? Path.Combine(path, "SavedStructure_" + DateTime.Now.ToString("d-M-y----H-m-s-f"));
@@ -31,10 +31,10 @@ namespace StructureHelper
         }
 
         public static void SaveMultistructureToFile(ref List<TagCompound> toSave, string targetPath = null)
-		{
+        {
             string path = ModLoader.ModPath.Replace("Mods", "SavedStructures");
 
-            if (!Directory.Exists(path)) 
+            if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
             string thisPath = targetPath ?? Path.Combine(path, "SavedMultiStructure_" + DateTime.Now.ToString("d-M-y----H-m-s-f"));
@@ -52,7 +52,7 @@ namespace StructureHelper
             toSave.Clear();
         }
 
-        public static TagCompound SaveStructure(Rectangle target)
+        public unsafe static TagCompound SaveStructure(Rectangle target)
         {
             TagCompound tag = new TagCompound();
             tag.Add("Version", StructureHelper.Instance.Version.ToString());
@@ -68,47 +68,63 @@ namespace StructureHelper
                     string tileName;
                     string wallName;
                     string teName;
-                    if (tile.type >= TileID.Count) tileName = ModContent.GetModTile(tile.type).mod.Name + " " + ModContent.GetModTile(tile.type).Name;
-                    else tileName = tile.type.ToString();
-                    if (tile.wall >= WallID.Count) wallName = ModContent.GetModWall(tile.wall).mod.Name + " " + ModContent.GetModWall(tile.wall).Name;
-                    else wallName = tile.wall.ToString();
+                    if (tile.TileType >= TileID.Count) tileName = ModContent.GetModTile(tile.TileType).Mod.Name + " " + ModContent.GetModTile(tile.TileType).Name;
+                    else tileName = tile.TileType.ToString();
+                    if (tile.WallType >= WallID.Count) wallName = ModContent.GetModWall(tile.WallType).Mod.Name + " " + ModContent.GetModWall(tile.WallType).Name;
+                    else wallName = tile.WallType.ToString();
 
                     TileEntity teTarget = null; //grabbing TE data
-                    TagCompound entityTag = null;
+                    TagCompound entityTag = new TagCompound();
 
-                    if (TileEntity.ByPosition.ContainsKey(new Point16(x, y))) teTarget = TileEntity.ByPosition[new Point16(x, y)];
+                    if (TileEntity.ByPosition.ContainsKey(new Point16(x, y)))
+                        teTarget = TileEntity.ByPosition[new Point16(x, y)];
 
                     if (teTarget != null)
                     {
                         if (teTarget.type < 2)
-                        {
                             teName = teTarget.type.ToString();
-                        }
                         else
                         {
-                            ModTileEntity entityTarget = ModTileEntity.GetTileEntity(teTarget.type);
+                            ModTileEntity entityTarget = teTarget as ModTileEntity;
+
                             if (entityTarget != null)
                             {
-                                teName = entityTarget.mod.Name + " " + entityTarget.Name;
-                                entityTag = (teTarget as ModTileEntity).Save();
+                                teName = entityTarget.Mod.Name + " " + entityTarget.Name;
+                                (teTarget as ModTileEntity).SaveData(entityTag);
                             }
-                            else teName = "";
+                            else
+                                teName = "";
                         }
                     }
-                    else teName = "";
+                    else
+                        teName = "";
+
+                    int wallWireData;
+                    short packedLiquidData;
+
+                    fixed (void* ptr = &tile.Get<TileWallWireStateData>())
+                    {
+                        var intPtr = (int*)(ptr);
+                        intPtr++;
+
+                        wallWireData = *intPtr;
+                    }
+
+                    fixed (void* ptr = &tile.Get<LiquidData>())
+                    {
+                        var shortPtr = (short*)ptr;
+
+                        packedLiquidData = *shortPtr;
+                    }
 
                     data.Add(
                         new TileSaveData(
                             tileName,
                             wallName,
-                            tile.frameX, 
-                            tile.frameY,
-
-                            tile.bTileHeader,
-                            tile.bTileHeader2,
-                            tile.bTileHeader3,
-                            tile.sTileHeader,
-
+                            tile.TileFrameX,
+                            tile.TileFrameY,
+                            wallWireData,
+                            packedLiquidData,
                             teName,
                             entityTag
                             ));
@@ -120,3 +136,4 @@ namespace StructureHelper
         }
     }
 }
+

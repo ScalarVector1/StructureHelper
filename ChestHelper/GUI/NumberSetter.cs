@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StructureHelper.GUI;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ModLoader;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
@@ -19,8 +20,8 @@ namespace StructureHelper.ChestHelper.GUI
         string Text;
         string Suffix;
 
-        UIImageButton IncrementButton = new UIImageButton(GetTexture("StructureHelper/GUI/Up"));
-        UIImageButton DecrementButton = new UIImageButton(GetTexture("StructureHelper/GUI/Down"));
+        UIImageButton IncrementButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Up"));
+        UIImageButton DecrementButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Down"));
 
         public NumberSetter(int value, string text, int xOff, string suffix = "")
         {
@@ -55,7 +56,7 @@ namespace StructureHelper.ChestHelper.GUI
             Vector2 pos = GetDimensions().ToRectangle().TopLeft();
             var target = new Rectangle((int)pos.X + 14, (int)pos.Y + 8, 20, 16);
 
-            spriteBatch.Draw(Main.magicPixel, target, Color.Black * 0.5f);
+            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, Color.Black * 0.5f);
             Utils.DrawBorderString(spriteBatch, Value.ToString() + Suffix, target.Center(), Color.White, 0.7f, 0.5f, 0.4f);
 
             if (Value < 1)

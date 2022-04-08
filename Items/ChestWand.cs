@@ -23,20 +23,20 @@ namespace StructureHelper.Items
 
         public override void SetDefaults()
         {
-            item.useStyle = 1;
-            item.useTime = 20;
-            item.useAnimation = 20;
-            item.rare = 1;
+            Item.useStyle = 1;
+            Item.useTime = 20;
+            Item.useAnimation = 20;
+            Item.rare = 1;
         }
 
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)
         {
             Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
 
-            if (tile.type == TileID.Containers)
+            if (tile.TileType == TileID.Containers)
             {
-                int xOff = tile.frameX % 36 / 18;
-                int yOff = tile.frameY % 36 / 18;
+                int xOff = tile.TileFrameX % 36 / 18;
+                int yOff = tile.TileFrameY % 36 / 18;
 
                 if (player.altFunctionUse == 2)
                 {
@@ -44,7 +44,7 @@ namespace StructureHelper.Items
                     {
                         var chestEntity = TileEntity.ByPosition[new Point16(Player.tileTargetX - xOff, Player.tileTargetY - yOff)] as ChestEntity;
 
-                        StructureHelper.Instance.ChestCustomizer.ruleElements.Clear();
+                        UIRenderer.ChestCustomizer.ruleElements.Clear();
 
                         for (int k = 0; k < chestEntity.rules.Count; k++)
                         {
@@ -57,11 +57,11 @@ namespace StructureHelper.Items
                             if (rule is ChestRulePool) elem = new PoolRuleElement(rule);
                             if (rule is ChestRulePoolChance) elem = new PoolChanceRuleElement(rule);
 
-                            StructureHelper.Instance.ChestCustomizer.ruleElements.Add(elem);
+                            UIRenderer.ChestCustomizer.ruleElements.Add(elem);
                         }
                     }
                     else
-                        StructureHelper.Instance.ChestCustomizer.ruleElements.Clear();
+                        UIRenderer.ChestCustomizer.ruleElements.Clear();
 
                     Main.NewText($"Copied chest rules from chest at {new Point16(Player.tileTargetX - xOff, Player.tileTargetY - yOff)}");
                 }
@@ -70,7 +70,7 @@ namespace StructureHelper.Items
                     bool overwrite = TileEntity.ByPosition.ContainsKey(new Point16(Player.tileTargetX - xOff, Player.tileTargetY - yOff));
 
                     TileEntity.PlaceEntityNet(Player.tileTargetX - xOff, Player.tileTargetY - yOff, ModContent.TileEntityType<ChestEntity>());
-                    bool cleared = !StructureHelper.Instance.ChestCustomizer.SetData(TileEntity.ByPosition[new Point16(Player.tileTargetX - xOff, Player.tileTargetY - yOff)] as ChestEntity);
+                    bool cleared = !UIRenderer.ChestCustomizer.SetData(TileEntity.ByPosition[new Point16(Player.tileTargetX - xOff, Player.tileTargetY - yOff)] as ChestEntity);
 
                     if (overwrite)
                     {

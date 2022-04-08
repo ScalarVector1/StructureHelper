@@ -6,7 +6,7 @@ namespace StructureHelper
 {
     class NullBlock : ModTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileSolid[Type] = true;
             TileID.Sets.DrawsWalls[Type] = true;
@@ -24,16 +24,16 @@ namespace StructureHelper
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 16;
-            item.maxStack = 1;
-            item.useTurn = true;
-            item.autoReuse = true;
-            item.useAnimation = 2;
-            item.useTime = 2;
-            item.useStyle = 1;
-            item.rare = 8;
-            item.createTile = ModContent.TileType<NullBlock>();
+            Item.width = 16;
+            Item.height = 16;
+            Item.maxStack = 1;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 2;
+            Item.useTime = 2;
+            Item.useStyle = 1;
+            Item.rare = 8;
+            Item.createTile = ModContent.TileType<NullBlock>();
         }
     }
 
@@ -47,16 +47,16 @@ namespace StructureHelper
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 16;
-            item.maxStack = 1;
-            item.useTurn = true;
-            item.autoReuse = true;
-            item.useAnimation = 2;
-            item.useTime = 2;
-            item.useStyle = 1;
-            item.rare = 8;
-            item.createWall = ModContent.WallType<NullWall>();
+            Item.width = 16;
+            Item.height = 16;
+            Item.maxStack = 1;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 2;
+            Item.useTime = 2;
+            Item.useStyle = 1;
+            Item.rare = 8;
+            Item.createWall = ModContent.WallType<NullWall>();
         }
     }
 
@@ -70,17 +70,17 @@ namespace StructureHelper
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 16;
-            item.maxStack = 1;
-            item.useTurn = true;
-            item.autoReuse = true;
-            item.useAnimation = 2;
-            item.useTime = 2;
-            item.useStyle = 1;
-            item.rare = 8;
-            item.createTile = ModContent.TileType<NullBlock>();
-            item.createWall = ModContent.WallType<NullWall>();
+            Item.width = 16;
+            Item.height = 16;
+            Item.maxStack = 1;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 2;
+            Item.useTime = 2;
+            Item.useStyle = 1;
+            Item.rare = 8;
+            Item.createTile = ModContent.TileType<NullBlock>();
+            Item.createWall = ModContent.WallType<NullWall>();
         }
     }
 }

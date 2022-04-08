@@ -29,15 +29,8 @@ namespace StructureHelper
         {
             TagCompound tag = GetTag(path, mod, fullPath);
 
-            if (!tag.ContainsKey("Version"))
-            {
-                if (!ignoreNull)
-                    LegacyGenerator.GenerateStructure(path, pos, mod, fullPath);
-                else
-                    LegacyGenerator.GenerateDebugStructure(path, pos, mod, fullPath);
-
-                return true;
-            }
+            if (!tag.ContainsKey("Version") || tag.GetString("Version")[0] <= 1)
+                throw new Exception("Legacy structures from 1.3 versions of this mod are not supported.");
 
             return Generate(tag, pos, ignoreNull);
         }
@@ -54,11 +47,8 @@ namespace StructureHelper
         {
             TagCompound tag = GetTag(path, mod, fullPath);
 
-            if (!tag.ContainsKey("Version"))
-            {
-                LegacyGenerator.GenerateMultistructureRandom(path, pos, mod, fullPath, ignoreNull);
-                return true;
-            }
+            if (!tag.ContainsKey("Version") || tag.GetString("Version")[0] <= 1)
+                throw new Exception("Legacy structures from 1.3 versions of this mod are not supported.");
 
             var structures = (List<TagCompound>)tag.GetList<TagCompound>("Structures");
             int index = WorldGen.genRand.Next(structures.Count);
@@ -80,11 +70,8 @@ namespace StructureHelper
         {
             TagCompound tag = GetTag(path, mod, fullPath);
 
-            if (!tag.ContainsKey("Version"))
-            {
-                LegacyGenerator.GenerateMultistructureSpecific(path, pos, mod, index, fullPath, ignoreNull);
-                return true;
-            }
+            if (!tag.ContainsKey("Version") || tag.GetString("Version")[0] <= 1)
+                throw new Exception("Legacy structures from 1.3 versions of this mod are not supported.");
 
             var structures = (List<TagCompound>)tag.GetList<TagCompound>("Structures");
 
@@ -143,7 +130,7 @@ namespace StructureHelper
             return true;
         }
 
-        internal static bool Generate(TagCompound tag, Point16 pos, bool ignoreNull = false)
+        internal static unsafe bool Generate(TagCompound tag, Point16 pos, bool ignoreNull = false)
         {
             List<TileSaveData> data = (List<TileSaveData>)tag.GetList<TileSaveData>("TileData");
 
@@ -172,8 +159,8 @@ namespace StructureHelper
                         string[] parts = d.Tile.Split();
                         if (parts[0] == "StructureHelper" && parts[1] == "NullBlock" && !ignoreNull) isNullTile = true;
 
-                        else if (parts.Length > 1 && ModLoader.GetMod(parts[0]) != null && ModLoader.GetMod(parts[0]).TileType(parts[1]) != 0)
-                            type = ModLoader.GetMod(parts[0]).TileType(parts[1]);
+                        else if (parts.Length > 1 && ModLoader.GetMod(parts[0]) != null && ModLoader.GetMod(parts[0]).TryFind<ModTile>(parts[1], out ModTile modTileType))
+                            type = modTileType.Type;
 
                         else type = 0;
                     }
@@ -183,8 +170,8 @@ namespace StructureHelper
                         string[] parts = d.Wall.Split();
                         if (parts[0] == "StructureHelper" && parts[1] == "NullWall" && !ignoreNull) isNullWall = true;
 
-                        else if (parts.Length > 1 && ModLoader.GetMod(parts[0]) != null && ModLoader.GetMod(parts[0]).WallType(parts[1]) != 0)
-                            wallType = ModLoader.GetMod(parts[0]).WallType(parts[1]);
+                        else if (parts.Length > 1 && ModLoader.GetMod(parts[0]) != null && ModLoader.GetMod(parts[0]).TryFind<ModWall>(parts[1], out ModWall modWallType))
+                            wallType = modWallType.Type;
 
                         else wallType = 0;
                     }
@@ -194,16 +181,26 @@ namespace StructureHelper
                     if (!isNullTile || ignoreNull) //leave everything else about the tile alone if its a null block
                     {
                         tile.ClearEverything();
-                        tile.type = (ushort)type;
-                        tile.frameX = d.FrameX;
-                        tile.frameY = d.FrameY;
+                        tile.TileType = (ushort)type;
+                        tile.TileFrameX = d.FrameX;
+                        tile.TileFrameY = d.FrameY;
 
-                        tile.bTileHeader = d.BHeader1;
-                        tile.bTileHeader2 = d.BHeader2;
-                        tile.bTileHeader3 = d.BHeader3;
-                        tile.sTileHeader = d.SHeader;
+                        fixed (void* ptr = &tile.Get<TileWallWireStateData>())
+                        {
+                            var intPtr = (int*)(ptr);
+                            intPtr++;
 
-                        if (!d.Active) tile.inActive(false);
+                            *intPtr = d.WallWireData;
+                        }
+
+                        fixed (void* ptr = &tile.Get<LiquidData>())
+                        {
+                            var shortPtr = (short*)ptr;
+
+                            *shortPtr = d.PackedLiquidData;
+                        }
+
+                        if (!d.Active) tile.HasTile = false;
 
                         if (d.TEType != "") //place and load a tile entity
                         {
@@ -219,13 +216,13 @@ namespace StructureHelper
                                     if (!int.TryParse(d.TEType, out typ))
                                     {
                                         string[] parts = d.TEType.Split();
-                                        typ = ModLoader.GetMod(parts[0]).TileEntityType(parts[1]);
+                                        typ = ModLoader.GetMod(parts[0]).Find<ModTileEntity>(parts[1]).Type;
                                     }
 
                                     TileEntity.PlaceEntityNet(pos.X + x, pos.Y + y, typ);
 
                                     if (d.TEData != null && typ > 2)
-                                        (TileEntity.ByPosition[new Point16(pos.X + x, pos.Y + y)] as ModTileEntity).Load(d.TEData);
+                                        (TileEntity.ByPosition[new Point16(pos.X + x, pos.Y + y)] as ModTileEntity).LoadData(d.TEData);
                                 }
                             }
                         }
@@ -234,7 +231,7 @@ namespace StructureHelper
                     }
 
                     if (!isNullWall || ignoreNull) //leave the wall alone if its a null wall
-                        tile.wall = (ushort)wallType;
+                        tile.WallType = (ushort)wallType;
                 }
             }
 

@@ -27,8 +27,8 @@ namespace StructureHelper
 
         public static Texture2D GetItemTexture(Item item)
         {
-            if (item.type < Main.maxItemTypes) return Main.itemTexture[item.type];
-            else return ModContent.GetTexture(item.modItem.Texture);
+            if (item.type < Main.maxItemTypes) return Terraria.GameContent.TextureAssets.Item[item.type].Value;
+            else return ModContent.Request<Texture2D>(item.ModItem.Texture).Value;
         }
     }
 }

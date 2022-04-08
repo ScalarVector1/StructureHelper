@@ -63,20 +63,23 @@ namespace StructureHelper.ChestHelper
             Dust.NewDustPerfect(Position.ToVector2() * 16 + Vector2.UnitY * 8 + Vector2.One.RotatedByRandom(6.28f) * 6, 111, Vector2.Zero, 0, default, 0.5f);
 		}
 
-		public override TagCompound Save()
+		public override void SaveData(TagCompound tag)
 		{
-            return SaveChestRules();
-		}
+            tag.Add("Count", rules.Count);
 
-		public override void Load(TagCompound tag)
+            for (int k = 0; k < rules.Count; k++)
+                tag.Add("Rule" + k, rules[k].Serizlize());
+        }
+
+		public override void LoadData(TagCompound tag)
 		{
             rules = LoadChestRules(tag);
 		}
 
-		public override bool ValidTile(int i, int j)
+		public override bool IsTileValidForEntity(int i, int j)
 		{
             var tile = Framing.GetTileSafely(i, j);
-            return tile.type == TileID.Containers;
+            return tile.TileType == TileID.Containers;
 		}
 	}
 }

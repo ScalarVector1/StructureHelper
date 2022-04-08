@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StructureHelper.GUI;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ModLoader;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
@@ -16,14 +17,14 @@ namespace StructureHelper.ChestHelper.GUI
     class LootElement : UIElement
     {
         Loot loot;
-        UIImageButton removeButton = new UIImageButton(GetTexture("StructureHelper/GUI/Cross"));
+        UIImageButton removeButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
 
         NumberSetter min;
         NumberSetter max;
         NumberSetter weight;
 
-        UIImageButton upButton = new UIImageButton(GetTexture("StructureHelper/GUI/Up"));
-        UIImageButton downButton = new UIImageButton(GetTexture("StructureHelper/GUI/Down"));
+        UIImageButton upButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Up"));
+        UIImageButton downButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Down"));
 
         public LootElement(Loot loot, bool hasWeight)
         {
