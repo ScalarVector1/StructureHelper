@@ -1,3 +1,5 @@
+NOTE: StructureHelper 2.0.0 is incompatible with structure files from 1.X.X versions of the mod! You will have to manually port your structrues over to use them!
+
 StructureHelper is a simple tool which allows mod creators to build world generation structures in-game and save them to external files, as opposed to manually encoding them into their source code, usually to the detriment of readability and organization. The nature of structures being saved to external files also allows for better organization, sharing, and editing/replacement of structures. The mod can also be used as a sort of world-editor allowing you to easily copy/paste sections of your world around.
 
 The mod contains a number of features which give you a large amount of control over the structures you create and save, such as null tiles/walls and multistructures. These allow you to create complex generation with significantly less complex code.
