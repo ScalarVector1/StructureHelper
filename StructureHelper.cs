@@ -14,6 +14,7 @@ using StructureHelper.Items;
 using Terraria.UI;
 using StructureHelper.GUI;
 using StructureHelper.ChestHelper.GUI;
+using System.IO;
 
 namespace StructureHelper
 {
@@ -23,7 +24,7 @@ namespace StructureHelper
 
         public static StructureHelper Instance { get; set; }
 
-        public override void Unload()
+		public override void Unload()
         {
             Generator.StructureDataCache.Clear();
         }

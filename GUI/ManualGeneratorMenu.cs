@@ -38,6 +38,8 @@ namespace StructureHelper.GUI
             selected = null;
 
             var folderPath = ModLoader.ModPath.Replace("Mods", "SavedStructures");
+            Directory.CreateDirectory(folderPath);
+
             var filePaths = Directory.GetFiles(folderPath);
 
             foreach(string path in filePaths)
