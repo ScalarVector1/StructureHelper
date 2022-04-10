@@ -79,7 +79,7 @@ namespace StructureHelper.ChestHelper
 		public override bool IsTileValidForEntity(int i, int j)
 		{
             var tile = Framing.GetTileSafely(i, j);
-            return tile.TileType == TileID.Containers;
+            return tile.TileType == TileID.Containers || TileID.Sets.BasicChest[tile.TileType];
 		}
 	}
 }

@@ -226,7 +226,7 @@ namespace StructureHelper
                                 }
                             }
                         }
-                        else if (type == TileID.Containers && d.FrameX % 36 == 0 && d.FrameY % 36 == 0) //generate an empty chest if there is no chest data
+                        else if ((type == TileID.Containers || TileID.Sets.BasicChest[tile.TileType]) && d.FrameX % 36 == 0 && d.FrameY % 36 == 0) //generate an empty chest if there is no chest data
                             Chest.CreateChest(pos.X + x, pos.Y + y);
                     }
 
