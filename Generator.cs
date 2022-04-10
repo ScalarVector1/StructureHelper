@@ -255,7 +255,13 @@ namespace StructureHelper
         {
             TagCompound tag;
 
-            if (!fullPath) tag = TagIO.FromStream(mod.GetFileStream(path));
+            if (!fullPath)
+            {
+                var stream = mod.GetFileStream(path);
+                tag = TagIO.FromStream(stream);
+                stream.Close();
+            }
+
             else tag = TagIO.FromFile(path);
 
             if (tag is null)
