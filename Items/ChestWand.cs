@@ -33,7 +33,7 @@ namespace StructureHelper.Items
         {
             Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
 
-            if (tile.TileType == TileID.Containers)
+            if (tile.TileType == TileID.Containers || TileID.Sets.BasicChest[tile.TileType])
             {
                 int xOff = tile.TileFrameX % 36 / 18;
                 int yOff = tile.TileFrameY % 36 / 18;
