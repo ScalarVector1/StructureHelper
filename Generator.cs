@@ -32,6 +32,9 @@ namespace StructureHelper
             if (!tag.ContainsKey("Version") || tag.GetString("Version")[0] <= 1)
                 throw new Exception("Legacy structures from 1.3 versions of this mod are not supported.");
 
+            if (tag.ContainsKey("Structures"))
+                throw new Exception($"Attempted to generate a multistructure '{path}' as a structure. Use GenerateMultistructureRandom or GenerateMultistructureSpecific instead.");
+
             return Generate(tag, pos, ignoreNull);
         }
 
@@ -49,6 +52,9 @@ namespace StructureHelper
 
             if (!tag.ContainsKey("Version") || tag.GetString("Version")[0] <= 1)
                 throw new Exception("Legacy structures from 1.3 versions of this mod are not supported.");
+
+            if (!tag.ContainsKey("Structures"))
+                throw new Exception($"Attempted to generate a structure '{path}' as a multistructure. use GenerateStructure instead.");
 
             var structures = (List<TagCompound>)tag.GetList<TagCompound>("Structures");
             int index = WorldGen.genRand.Next(structures.Count);
@@ -128,6 +134,25 @@ namespace StructureHelper
 
             dims = new Point16(targetStructure.GetInt("Width"), targetStructure.GetInt("Height"));
             return true;
+        }
+
+        /// <summary>
+        /// Checks if a structure file is a multistructure or not. Can be used to easily add support for parameterizing strucutres or multistructures in your mod.
+        /// </summary>
+        /// <param name="path">The path to the structure file you wish to check.</param>
+        /// <param name="mod">The instance of your mod to grab the file from.</param>
+        /// <returns>True if the file is a multistructure, False if the file is a structure, null if it is invalid.</returns>
+        public static bool? IsMultistructure(string path, Mod mod)
+        {
+            TagCompound tag = GetTag(path, mod);
+
+            if (tag is null)
+                return null;
+
+            if (tag.ContainsKey("Structures"))
+                return true;
+            else
+                return false;
         }
 
         internal static unsafe bool Generate(TagCompound tag, Point16 pos, bool ignoreNull = false)
