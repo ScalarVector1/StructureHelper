@@ -13,7 +13,7 @@ using Terraria.ID;
 
 namespace StructureHelper.Items
 {
-    class MultiWand : ModItem
+    internal class MultiWand : ModItem
     {
         public bool SecondPoint;
         public Point16 TopLeft;

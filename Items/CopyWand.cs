@@ -11,7 +11,7 @@ using Terraria.ModLoader.IO;
 
 namespace StructureHelper.Items
 {
-    class CopyWand : ModItem
+    internal class CopyWand : ModItem
     {
         public bool SecondPoint;
         public Point16 TopLeft;

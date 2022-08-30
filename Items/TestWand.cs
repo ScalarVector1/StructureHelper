@@ -12,7 +12,7 @@ using Terraria.ModLoader.IO;
 
 namespace StructureHelper.Items
 {
-    class TestWand : ModItem
+    internal class TestWand : ModItem
 	{
         public static bool ignoreNulls = false;
         public static bool UIVisible;

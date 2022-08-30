@@ -8,7 +8,7 @@ using Terraria.ModLoader.IO;
 
 namespace StructureHelper.ChestHelper
 {
-    class ChestRulePool : ChestRule
+    internal class ChestRulePool : ChestRule
     {
         /// <summary>
         /// How many items from the pool, picked at random, should be placed in the chest.

@@ -5,7 +5,7 @@ using Terraria;
 
 namespace StructureHelper
 {
-    public struct TileSaveData : TagSerializable
+    internal struct TileSaveData : TagSerializable
     {
         public string Tile;
         public string Wall;

@@ -8,7 +8,7 @@ using Terraria.ModLoader.IO;
 
 namespace StructureHelper.ChestHelper
 {
-    class ChestRule
+    internal class ChestRule
     {
         public List<Loot> pool = new List<Loot>();
 

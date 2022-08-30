@@ -9,10 +9,14 @@ using Terraria.ModLoader;
 
 namespace StructureHelper
 {
-    public static class Helper
+    internal static class Helper
     {
-        //Fisher-Yates algorithm
-        public static void RandomizeList<T>(ref List<T> input)
+        /// <summary>
+        /// Randomizes the order of a list using the Fischer-Yates algorithm
+        /// </summary>
+        /// <typeparam name="T">The type of the list to randomize</typeparam>
+        /// <param name="input">The list to randomize</param>
+        internal static void RandomizeList<T>(ref List<T> input)
         {
             int n = input.Count();
             while (n > 1)
@@ -25,10 +29,17 @@ namespace StructureHelper
             }
         }
 
-        public static Texture2D GetItemTexture(Item item)
+        /// <summary>
+        /// Gets the texture of an in-game item
+        /// </summary>
+        /// <param name="item">The item to retrieve the texture of</param>
+        /// <returns>The texture of the passed item</returns>
+        internal static Texture2D GetItemTexture(Item item)
         {
-            if (item.type < Main.maxItemTypes) return Terraria.GameContent.TextureAssets.Item[item.type].Value;
-            else return ModContent.Request<Texture2D>(item.ModItem.Texture).Value;
+            if (item.type < Main.maxItemTypes) 
+                return Terraria.GameContent.TextureAssets.Item[item.type].Value;
+            else 
+                return ModContent.Request<Texture2D>(item.ModItem.Texture).Value;
         }
     }
 }

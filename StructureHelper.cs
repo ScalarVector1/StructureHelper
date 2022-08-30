@@ -18,7 +18,7 @@ using System.IO;
 
 namespace StructureHelper
 {
-    public class StructureHelper : Mod
+    internal class StructureHelper : Mod
     {
         public StructureHelper() { Instance = this; }
 
@@ -30,7 +30,7 @@ namespace StructureHelper
         }
     }
 
-    public class UIRenderer : ModSystem
+    internal class UIRenderer : ModSystem
 	{
         internal static UserInterface GeneratorMenuUI;
         internal static ManualGeneratorMenu GeneratorMenu;

@@ -155,6 +155,13 @@ namespace StructureHelper
                 return false;
         }
 
+        /// <summary>
+        /// Parses and generates the actual tiles from a structure file
+        /// </summary>
+        /// <param name="tag">The structure data TagCompound to generate from</param>
+        /// <param name="pos">The position in the world of the top-leftmost tile to be placed at</param>
+        /// <param name="ignoreNull">If this structure should place null tiles or not</param>
+        /// <returns>If the structure successfully generated or not</returns>
         internal static unsafe bool Generate(TagCompound tag, Point16 pos, bool ignoreNull = false)
         {
             List<TileSaveData> data = (List<TileSaveData>)tag.GetList<TileSaveData>("TileData");
@@ -263,7 +270,12 @@ namespace StructureHelper
             return true;
         }
 
-        public static void GenerateChest(Point16 pos, TagCompound rules)
+        /// <summary>
+        /// Places a chest in the world and fills it according to a set of chest rules
+        /// </summary>
+        /// <param name="pos">The position of the top-leftmost corner of the chest</param>
+        /// <param name="rules">The TagCompound containing the chest rules you want to generate your chest with</param>
+        internal static void GenerateChest(Point16 pos, TagCompound rules)
         {
             int i = Chest.CreateChest(pos.X, pos.Y);
             if (i == -1) 
@@ -276,6 +288,13 @@ namespace StructureHelper
             ChestEntity.SetChest(chest, ChestEntity.LoadChestRules(rules));
         }
 
+        /// <summary>
+        /// Loads and caches a structure file.
+        /// </summary>
+        /// <param name="path">The path to the struture file to load</param>
+        /// <param name="mod">The mod to load the structure file from</param>
+        /// <param name="fullPath">If the given path is fully qualified</param>
+        /// <returns>If the file could successfully be loaded or not</returns>
         internal static bool LoadFile(string path, Mod mod, bool fullPath = false)
         {
             TagCompound tag;
@@ -299,6 +318,13 @@ namespace StructureHelper
             return true;
         }
 
+        /// <summary>
+        /// Attempts to get data from a structure/multistructure file. If the data is not cached, it will be loaded and cached.
+        /// </summary>
+        /// <param name="path">The path of the file to retrieve data from</param>
+        /// <param name="mod">The mod to load the structure file from</param>
+        /// <param name="fullPath">If the given path is fully qualified</param>
+        /// <returns>The TagCompound containing the structure/multistructure data</returns>
         internal static TagCompound GetTag(string path, Mod mod, bool fullPath = false)
         {
             TagCompound tag;

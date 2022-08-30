@@ -12,7 +12,7 @@ using Terraria.ModLoader.IO;
 
 namespace StructureHelper.ChestHelper
 {
-    class ChestEntity : ModTileEntity
+    internal class ChestEntity : ModTileEntity
     {
         public List<ChestRule> rules = new List<ChestRule>();
 

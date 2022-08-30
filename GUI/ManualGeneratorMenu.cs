@@ -16,7 +16,7 @@ using System.IO;
 
 namespace StructureHelper.GUI
 {
-	class ManualGeneratorMenu : UIState
+    internal class ManualGeneratorMenu : UIState
 	{
 		public static bool Visible => TestWand.UIVisible;
         public static StructureEntry selected;
@@ -180,7 +180,7 @@ namespace StructureHelper.GUI
         }
     }
 
-    class StructureEntry : UIElement
+    internal class StructureEntry : UIElement
 	{
         public string Name = "";
         public string Path;
@@ -257,7 +257,7 @@ namespace StructureHelper.GUI
         }
 	}
 
-    class MultiSelectionEntry : UIElement
+    internal class MultiSelectionEntry : UIElement
 	{
         public int value;
 

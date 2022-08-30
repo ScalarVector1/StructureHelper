@@ -8,7 +8,7 @@ using Terraria.ModLoader.IO;
 
 namespace StructureHelper.ChestHelper
 {
-    class ChestRuleChance : ChestRule
+    internal class ChestRuleChance : ChestRule
     {
         /// <summary>
         /// the chance for any individual item from this pool to generate, from 0 to 1. (0 = 0%, 1 = 100%) If you want to generate X items from the pool, use ChestRulePool instead. If you want multiple different chances, add another rule of this type.

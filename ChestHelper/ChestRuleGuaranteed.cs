@@ -8,7 +8,7 @@ using Terraria.ModLoader.IO;
 
 namespace StructureHelper.ChestHelper
 {
-    class ChestRuleGuaranteed : ChestRule
+    internal class ChestRuleGuaranteed : ChestRule
     {
         public override string Name => "Guaranteed Rule";
 

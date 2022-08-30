@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 namespace StructureHelper
 {
-    class NullBlock : ModTile
+    internal class NullBlock : ModTile
     {
         public override void SetStaticDefaults()
         {
@@ -12,9 +12,9 @@ namespace StructureHelper
             TileID.Sets.DrawsWalls[Type] = true;
         }
     }
-    class NullWall : ModWall { }
+    internal class NullWall : ModWall { }
 
-    class NullBlockItem : ModItem
+    internal class NullBlockItem : ModItem
     {
         public override void SetStaticDefaults()
         {
@@ -37,7 +37,7 @@ namespace StructureHelper
         }
     }
 
-    class NullWallItem : ModItem
+    internal class NullWallItem : ModItem
     {
         public override void SetStaticDefaults()
         {
@@ -60,7 +60,7 @@ namespace StructureHelper
         }
     }
 
-    class NullBoth : ModItem
+    internal class NullBoth : ModItem
     {
         public override void SetStaticDefaults()
         {

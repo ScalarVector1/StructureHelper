@@ -11,7 +11,7 @@ using Terraria.ModLoader.IO;
 
 namespace StructureHelper.Items
 {
-    class ChestWand : ModItem
+    internal class ChestWand : ModItem
     {
         public override bool AltFunctionUse(Player player) => true;
 
