@@ -28,6 +28,9 @@ namespace StructureHelper
 			if (!tag.ContainsKey("Version") || tag.GetString("Version")[0] <= 1)
 				throw new Exception("Legacy structures from 1.3 versions of this mod are not supported.");
 
+			if (tag.ContainsKey("Structures"))
+				throw new Exception($"Attempted to generate a multistructure '{path}' as a structure. Use GenerateMultistructureRandom or GenerateMultistructureSpecific instead.");
+
 			return Generate(tag, pos, ignoreNull);
 		}
 
@@ -45,6 +48,9 @@ namespace StructureHelper
 
 			if (!tag.ContainsKey("Version") || tag.GetString("Version")[0] <= 1)
 				throw new Exception("Legacy structures from 1.3 versions of this mod are not supported.");
+
+			if (!tag.ContainsKey("Structures"))
+				throw new Exception($"Attempted to generate a structure '{path}' as a multistructure. use GenerateStructure instead.");
 
 			var structures = (List<TagCompound>)tag.GetList<TagCompound>("Structures");
 			int index = WorldGen.genRand.Next(structures.Count);
@@ -126,6 +132,32 @@ namespace StructureHelper
 			return true;
 		}
 
+		/// <summary>
+		/// Checks if a structure file is a multistructure or not. Can be used to easily add support for parameterizing strucutres or multistructures in your mod.
+		/// </summary>
+		/// <param name="path">The path to the structure file you wish to check.</param>
+		/// <param name="mod">The instance of your mod to grab the file from.</param>
+		/// <returns>True if the file is a multistructure, False if the file is a structure, null if it is invalid.</returns>
+		public static bool? IsMultistructure(string path, Mod mod)
+		{
+			TagCompound tag = GetTag(path, mod);
+
+			if (tag is null)
+				return null;
+
+			if (tag.ContainsKey("Structures"))
+				return true;
+			else
+				return false;
+		}
+
+		/// <summary>
+		/// Parses and generates the actual tiles from a structure file
+		/// </summary>
+		/// <param name="tag">The structure data TagCompound to generate from</param>
+		/// <param name="pos">The position in the world of the top-leftmost tile to be placed at</param>
+		/// <param name="ignoreNull">If this structure should place null tiles or not</param>
+		/// <returns>If the structure successfully generated or not</returns>
 		internal static unsafe bool Generate(TagCompound tag, Point16 pos, bool ignoreNull = false)
 		{
 			var data = (List<TileSaveData>)tag.GetList<TileSaveData>("TileData");
@@ -244,20 +276,29 @@ namespace StructureHelper
 			return true;
 		}
 
-		public static void GenerateChest(Point16 pos, TagCompound rules)
+		/// <summary>
+		/// Places a chest in the world and fills it according to a set of chest rules
+		/// </summary>
+		/// <param name="pos">The position of the top-leftmost corner of the chest</param>
+		/// <param name="rules">The TagCompound containing the chest rules you want to generate your chest with</param>
+		internal static void GenerateChest(Point16 pos, TagCompound rules)
 		{
 			int i = Chest.CreateChest(pos.X, pos.Y);
 
 			if (i == -1)
 				return;
 
-			var item = new Item();
-			item.SetDefaults(1);
-
 			Chest chest = Main.chest[i];
 			ChestEntity.SetChest(chest, ChestEntity.LoadChestRules(rules));
 		}
 
+		/// <summary>
+		/// Loads and caches a structure file.
+		/// </summary>
+		/// <param name="path">The path to the struture file to load</param>
+		/// <param name="mod">The mod to load the structure file from</param>
+		/// <param name="fullPath">If the given path is fully qualified</param>
+		/// <returns>If the file could successfully be loaded or not</returns>
 		internal static bool LoadFile(string path, Mod mod, bool fullPath = false)
 		{
 			TagCompound tag;
@@ -283,6 +324,13 @@ namespace StructureHelper
 			return true;
 		}
 
+		/// <summary>
+		/// Attempts to get data from a structure/multistructure file. If the data is not cached, it will be loaded and cached.
+		/// </summary>
+		/// <param name="path">The path of the file to retrieve data from</param>
+		/// <param name="mod">The mod to load the structure file from</param>
+		/// <param name="fullPath">If the given path is fully qualified</param>
+		/// <returns>The TagCompound containing the structure/multistructure data</returns>
 		internal static TagCompound GetTag(string path, Mod mod, bool fullPath = false)
 		{
 			TagCompound tag;
