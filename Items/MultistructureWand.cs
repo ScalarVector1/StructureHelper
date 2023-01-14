@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -25,10 +26,10 @@ namespace StructureHelper.Items
 
 		public override void SetDefaults()
 		{
-			Item.useStyle = 1;
+			Item.useStyle = ItemUseStyleID.Swing;
 			Item.useTime = 20;
 			Item.useAnimation = 20;
-			Item.rare = 1;
+			Item.rare = ItemRarityID.Blue;
 		}
 
 		public override bool CanRightClick()

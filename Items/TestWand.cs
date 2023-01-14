@@ -2,6 +2,7 @@
 using StructureHelper.GUI;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StructureHelper.Items
@@ -19,10 +20,10 @@ namespace StructureHelper.Items
 
 		public override void SetDefaults()
 		{
-			Item.useStyle = 1;
+			Item.useStyle = ItemUseStyleID.Swing;
 			Item.useTime = 20;
 			Item.useAnimation = 20;
-			Item.rare = 1;
+			Item.rare = ItemRarityID.Blue;
 		}
 
 		public override bool AltFunctionUse(Player player)

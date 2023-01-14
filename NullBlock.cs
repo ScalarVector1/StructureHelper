@@ -34,8 +34,8 @@ namespace StructureHelper
 			Item.autoReuse = true;
 			Item.useAnimation = 2;
 			Item.useTime = 2;
-			Item.useStyle = 1;
-			Item.rare = 8;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.rare = ItemRarityID.Yellow;
 			Item.createTile = ModContent.TileType<NullBlock>();
 		}
 	}
@@ -57,8 +57,8 @@ namespace StructureHelper
 			Item.autoReuse = true;
 			Item.useAnimation = 2;
 			Item.useTime = 2;
-			Item.useStyle = 1;
-			Item.rare = 8;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.rare = ItemRarityID.Yellow;
 			Item.createWall = ModContent.WallType<NullWall>();
 		}
 	}
@@ -80,8 +80,8 @@ namespace StructureHelper
 			Item.autoReuse = true;
 			Item.useAnimation = 2;
 			Item.useTime = 2;
-			Item.useStyle = 1;
-			Item.rare = 8;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.rare = ItemRarityID.Yellow;
 			Item.createTile = ModContent.TileType<NullBlock>();
 			Item.createWall = ModContent.WallType<NullWall>();
 		}

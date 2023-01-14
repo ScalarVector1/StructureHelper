@@ -18,7 +18,7 @@ namespace StructureHelper.Items
 
 		public override void SetDefaults()
 		{
-			Item.useStyle = 1;
+			Item.useStyle = ItemUseStyleID.Swing;
 			Item.useTime = 20;
 			Item.useAnimation = 20;
 			Item.rare = ItemRarityID.Blue;
