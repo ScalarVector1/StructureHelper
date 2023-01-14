@@ -1,141 +1,146 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace StructureHelper.ChestHelper
 {
-    class ChestRule
-    {
-        public List<Loot> pool = new List<Loot>();
+	class ChestRule
+	{
+		public List<Loot> pool = new();
 
-        public virtual bool UsesWeight => false;
+		public virtual bool UsesWeight => false;
 
-        public virtual string Name => "Unknown Rule";
+		public virtual string Name => "Unknown Rule";
 
-        public virtual string Tooltip => "Probably a bug! Report me!";
+		public virtual string Tooltip => "Probably a bug! Report me!";
 
-        public Loot AddItem(Item item)
-        {
-            var loot = new Loot(item.Clone(), 1);
-            pool.Add(loot);
+		public Loot AddItem(Item item)
+		{
+			var loot = new Loot(item.Clone(), 1);
+			pool.Add(loot);
 
-            return loot;
-        }
+			return loot;
+		}
 
-        public void RemoveItem(Loot loot) => pool.Remove(loot);
+		public void RemoveItem(Loot loot)
+		{
+			pool.Remove(loot);
+		}
 
-        public virtual void PlaceItems(Chest chest, ref int nextIndex) {}
+		public virtual void PlaceItems(Chest chest, ref int nextIndex) { }
 
-        public virtual TagCompound Serizlize() => null;
+		public virtual TagCompound Serizlize()
+		{
+			return null;
+		}
 
-        public static ChestRule Deserialize(TagCompound tag)
-        {
-            string str = tag.GetString("Type");
+		public static ChestRule Deserialize(TagCompound tag)
+		{
+			string str = tag.GetString("Type");
 
-            ChestRule rule;
+			ChestRule rule = str switch
+			{
+				"Guaranteed" => ChestRuleGuaranteed.Deserialize(tag),
+				"Chance" => ChestRuleChance.Deserialize(tag),
+				"Pool" => ChestRulePool.Deserialize(tag),
+				"PoolChance" => ChestRulePoolChance.Deserialize(tag),
+				_ => null,
+			};
 
-            switch (str)
-            {
-                case "Guaranteed": rule = ChestRuleGuaranteed.Deserialize(tag); break;
-                case "Chance": rule = ChestRuleChance.Deserialize(tag); break;
-                case "Pool": rule = ChestRulePool.Deserialize(tag); break;
-                case "PoolChance": rule = ChestRulePoolChance.Deserialize(tag); break;
-                default: rule = null; break;
-            }
+			return rule;
+		}
 
-            return rule;
-        }
+		public TagCompound SerializePool()
+		{
+			var tag = new TagCompound
+			{
+				{ "Count", pool.Count }
+			};
 
-        public TagCompound SerializePool()
-        {
-            TagCompound tag = new TagCompound();
+			for (int k = 0; k < pool.Count; k++)
+			{
+				tag.Add("Pool" + k, pool[k].Serialize());
+			}
 
-            tag.Add("Count", pool.Count);
+			return tag;
+		}
 
-            for (int k = 0; k < pool.Count; k++)
-                tag.Add("Pool" + k, pool[k].Serialize());
+		public static List<Loot> DeserializePool(TagCompound tag)
+		{
+			var loot = new List<Loot>();
+			int count = tag.GetInt("Count");
 
-            return tag;
-        }
+			for (int k = 0; k < count; k++)
+			{
+				loot.Add(Loot.Deserialze(tag.GetCompound("Pool" + k)));
+			}
 
-        public static List<Loot> DeserializePool(TagCompound tag)
-        {
-            var loot = new List<Loot>();
-            int count = tag.GetInt("Count");
-
-            for(int k = 0; k < count; k++)
-            {
-                loot.Add(Loot.Deserialze(tag.GetCompound("Pool" + k)));
-            }
-
-            return loot;
-        }
+			return loot;
+		}
 
 		public virtual ChestRule Clone()
 		{
-            var clone = new ChestRule();
+			var clone = new ChestRule();
 
-            for (int k = 0; k < pool.Count; k++)
-                clone.pool.Add(pool[k].Clone());
+			for (int k = 0; k < pool.Count; k++)
+			{
+				clone.pool.Add(pool[k].Clone());
+			}
 
-            return clone;
+			return clone;
 		}
 	}
 
-    class Loot
-    {
-        public Item LootItem;
-        public int min;
-        public int max;
-        public int weight;
+	class Loot
+	{
+		public Item givenItem;
+		public int min;
+		public int max;
+		public int weight;
 
-        public Loot(Item item, int min, int max = 0, int weight = 1)
-        {
-            this.min = min;
-            this.max = max == 0 ? min : max;
-            this.weight = weight;
+		public Loot(Item item, int min, int max = 0, int weight = 1)
+		{
+			this.min = min;
+			this.max = max == 0 ? min : max;
+			this.weight = weight;
 
-            Item newItem = item.Clone();
-            newItem.stack = 1;
-            LootItem = newItem;
+			Item newItem = item.Clone();
+			newItem.stack = 1;
+			givenItem = newItem;
 
-        }
+		}
 
-        public Item GetLoot()
-        {
-            Item item = LootItem.Clone();
-            item.stack = WorldGen.genRand.Next(min, max);
-            return item;
-        }
+		public Item GetLoot()
+		{
+			Item item = givenItem.Clone();
+			item.stack = WorldGen.genRand.Next(min, max);
+			return item;
+		}
 
-        public TagCompound Serialize()
-        {
-            TagCompound tag = new TagCompound
-            {
-                { "Item", LootItem },
-                { "Min", min },
-                { "Max", max },
-                { "Weight", weight}
-            };
-            return tag;
-        }
+		public TagCompound Serialize()
+		{
+			var tag = new TagCompound
+			{
+				{ "Item", givenItem },
+				{ "Min", min },
+				{ "Max", max },
+				{ "Weight", weight}
+			};
+			return tag;
+		}
 
-        public static Loot Deserialze(TagCompound tag)
-        {
-            return new Loot(
-                tag.Get<Item>("Item"),
-                tag.GetInt("Min"),
-                tag.GetInt("Max"),
-                tag.GetInt("Weight"));
-        }
+		public static Loot Deserialze(TagCompound tag)
+		{
+			return new Loot(
+				tag.Get<Item>("Item"),
+				tag.GetInt("Min"),
+				tag.GetInt("Max"),
+				tag.GetInt("Weight"));
+		}
 
 		public Loot Clone()
 		{
-            return new Loot(LootItem.Clone(), min, max, weight);
+			return new Loot(givenItem.Clone(), min, max, weight);
 		}
 	}
 }

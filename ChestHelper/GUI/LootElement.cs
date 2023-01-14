@@ -116,9 +116,9 @@ namespace StructureHelper.ChestHelper.GUI
             if (weight is null)
                 xOff += 16;
 
-            spriteBatch.Draw(Helper.GetItemTexture(loot.LootItem), new Rectangle((int)pos.X + 8 + xOff, (int)pos.Y + 8, 16, 16), Color.White);
+            spriteBatch.Draw(Helper.GetItemTexture(loot.givenItem), new Rectangle((int)pos.X + 8 + xOff, (int)pos.Y + 8, 16, 16), Color.White);
 
-            string name = loot.LootItem.Name.Length > 25 ? loot.LootItem.Name.Substring(0, 23) + "..." : loot.LootItem.Name;
+            string name = loot.givenItem.Name.Length > 25 ? loot.givenItem.Name.Substring(0, 23) + "..." : loot.givenItem.Name;
             Utils.DrawBorderString(spriteBatch, name, pos + new Vector2(28 + xOff, 10), Color.White, 0.7f);
 
             if (min.Value > max.Value)

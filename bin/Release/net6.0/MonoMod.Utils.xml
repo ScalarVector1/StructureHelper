@@ -1292,6 +1292,27 @@
             Allows you to remap library paths / names and specify loading flags. Useful for cross-platform compatibility. Applies only to DynDll.
             </summary>
         </member>
+        <member name="M:MonoMod.Utils.DynDll.AsDelegate``1(System.IntPtr)">
+            <summary>
+            Extension method wrapping Marshal.GetDelegateForFunctionPointer
+            </summary>
+        </member>
+        <member name="M:MonoMod.Utils.DynDll.ResolveDynDllImports(System.Type,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{MonoMod.Utils.DynDllMapping}})">
+            <summary>
+            Fill all static delegate fields with the DynDllImport attribute.
+            Call this early on in the static constructor.
+            </summary>
+            <param name="type">The type containing the DynDllImport delegate fields.</param>
+            <param name="mappings">Any optional mappings similar to the static mappings.</param>
+        </member>
+        <member name="M:MonoMod.Utils.DynDll.ResolveDynDllImports(System.Object,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{MonoMod.Utils.DynDllMapping}})">
+            <summary>
+            Fill all instance delegate fields with the DynDllImport attribute.
+            Call this early on in the constructor.
+            </summary>
+            <param name="instance">An instance of a type containing the DynDllImport delegate fields.</param>
+            <param name="mappings">Any optional mappings similar to the static mappings.</param>
+        </member>
         <member name="M:MonoMod.Utils.DynDll.OpenLibrary(System.String,System.Boolean,System.Nullable{System.Int32})">
             <summary>
             Open a given library and get its handle.
@@ -1333,27 +1354,6 @@
             <param name="name">The function name.</param>
             <param name="functionPtr">The function pointer, or null if it wasn't found.</param>
             <returns>True if the function pointer was obtained, false otherwise.</returns>
-        </member>
-        <member name="M:MonoMod.Utils.DynDll.AsDelegate``1(System.IntPtr)">
-            <summary>
-            Extension method wrapping Marshal.GetDelegateForFunctionPointer
-            </summary>
-        </member>
-        <member name="M:MonoMod.Utils.DynDll.ResolveDynDllImports(System.Type,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{MonoMod.Utils.DynDllMapping}})">
-            <summary>
-            Fill all static delegate fields with the DynDllImport attribute.
-            Call this early on in the static constructor.
-            </summary>
-            <param name="type">The type containing the DynDllImport delegate fields.</param>
-            <param name="mappings">Any optional mappings similar to the static mappings.</param>
-        </member>
-        <member name="M:MonoMod.Utils.DynDll.ResolveDynDllImports(System.Object,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{MonoMod.Utils.DynDllMapping}})">
-            <summary>
-            Fill all instance delegate fields with the DynDllImport attribute.
-            Call this early on in the constructor.
-            </summary>
-            <param name="instance">An instance of a type containing the DynDllImport delegate fields.</param>
-            <param name="mappings">Any optional mappings similar to the static mappings.</param>
         </member>
         <member name="T:MonoMod.Utils.DynDllImportAttribute">
             <summary>
