@@ -13,7 +13,7 @@ namespace StructureHelper
 	/// <summary>
 	/// A static class providing utilities for saving structures.
 	/// </summary>
-	internal static class Saver
+	public static class Saver
 	{
 		/// <summary>
 		/// Saves a given region of the world as a structure file
