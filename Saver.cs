@@ -10,8 +10,16 @@ using Terraria.ModLoader.IO;
 
 namespace StructureHelper
 {
+	/// <summary>
+	/// A static class providing utilities for saving structures.
+	/// </summary>
 	internal static class Saver
 	{
+		/// <summary>
+		/// Saves a given region of the world as a structure file
+		/// </summary>
+		/// <param name="target">The region of the world to save, in tile coordinates</param>
+		/// <param name="targetPath">The name of the file to save. Automatically defaults to a file named after the date in the SavedStructures folder</param>
 		public static void SaveToFile(Rectangle target, string targetPath = null)
 		{
 			string path = ModLoader.ModPath.Replace("Mods", "SavedStructures");
@@ -29,6 +37,11 @@ namespace StructureHelper
 			TagIO.ToFile(tag, thisPath);
 		}
 
+		/// <summary>
+		/// Saves a given list of TagCompounds together as a multistructure file
+		/// </summary>
+		/// <param name="toSave">The tags to save</param>
+		/// <param name="targetPath">The name of the file to save. Automatically defaults to a file named after the date in the SavedStructures folder</param>
 		public static void SaveMultistructureToFile(ref List<TagCompound> toSave, string targetPath = null)
 		{
 			string path = ModLoader.ModPath.Replace("Mods", "SavedStructures");
@@ -53,6 +66,11 @@ namespace StructureHelper
 			toSave.Clear();
 		}
 
+		/// <summary>
+		/// Transforms a region of the world into a structure TagCompound. Must be called in an unsafe context!
+		/// </summary>
+		/// <param name="target">The region to transform</param>
+		/// <returns>The TagCompound that can be saved to a structure file</returns>
 		public unsafe static TagCompound SaveStructure(Rectangle target)
 		{
 			var tag = new TagCompound

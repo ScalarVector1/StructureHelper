@@ -9,6 +9,9 @@ using Terraria.ModLoader.IO;
 
 namespace StructureHelper
 {
+	/// <summary>
+	/// A static class providing utilities to generate structures.
+	/// </summary>
 	public static class Generator
 	{
 		internal static Dictionary<string, TagCompound> StructureDataCache = new();
