@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StructureHelper.Items;
+using StructureHelper.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,6 +17,8 @@ namespace StructureHelper.GUI
 	{
 		public static StructureEntry selected;
 		public static bool ignoreNulls = false;
+
+		public static StructurePreview preview;
 
 		public static bool multiMode = false;
 		public static int multiIndex;
@@ -149,7 +152,7 @@ namespace StructureHelper.GUI
 			ele.Height.Set(h, hp);
 		}
 
-		public static void DrawBox(SpriteBatch sb, Rectangle target, Color color = default)
+		public static void DrawBox(SpriteBatch sb, Rectangle target, Color color = default, bool outlineOnly = false)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>("StructureHelper/GUI/Box").Value;
 
@@ -163,7 +166,8 @@ namespace StructureHelper.GUI
 			Rectangle inner = target;
 			inner.Inflate(-4, -4);
 
-			sb.Draw(tex, inner, sourceCenter, color);
+			if (!outlineOnly)
+				sb.Draw(tex, inner, sourceCenter, color);
 
 			sb.Draw(tex, new Rectangle(target.X + 2, target.Y, target.Width - 4, 6), sourceEdge, color, 0, Vector2.Zero, 0, 0);
 			sb.Draw(tex, new Rectangle(target.X, target.Y - 2 + target.Height, target.Height - 4, 6), sourceEdge, color, -(float)Math.PI * 0.5f, Vector2.Zero, 0, 0);
@@ -228,6 +232,9 @@ namespace StructureHelper.GUI
 
 			if (!Generator.StructureDataCache.ContainsKey(path))
 				Generator.LoadFile(path, StructureHelper.Instance, true);
+
+			ManualGeneratorMenu.preview?.Dispose();
+			ManualGeneratorMenu.preview = new StructurePreview(name, Generator.StructureDataCache[path]);
 
 			if (Generator.StructureDataCache[path].ContainsKey("Structures"))
 			{

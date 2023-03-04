@@ -12,6 +12,11 @@ namespace StructureHelper.Items
 		public static bool ignoreNulls = false;
 		public static bool UIVisible;
 
+		public override void Load()
+		{
+			On.Terraria.Main.DrawPlayers_AfterProjectiles += DrawPreview;
+		}
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Structure Placer Wand");
@@ -54,6 +59,25 @@ namespace StructureHelper.Items
 			}
 
 			return true;
+		}
+
+		private void DrawPreview(On.Terraria.Main.orig_DrawPlayers_AfterProjectiles orig, Main self)
+		{
+			orig(self);
+
+			if (ManualGeneratorMenu.selected != null && Main.LocalPlayer.HeldItem.type == Item.type)
+			{
+				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+				var pos = new Point16(Player.tileTargetX, Player.tileTargetY);
+				Vector2 pos2 = pos.ToVector2() * 16 - Main.screenPosition;
+
+				ManualGeneratorMenu.DrawBox(Main.spriteBatch, new Rectangle((int)pos2.X - 4, (int)pos2.Y - 4, ManualGeneratorMenu.preview.Width + 8, ManualGeneratorMenu.preview.Height + 8), Color.Red, true);
+
+				Main.spriteBatch.Draw(ManualGeneratorMenu.preview?.preview, pos2, Color.White * 0.5f);
+
+				Main.spriteBatch.End();
+			}
 		}
 	}
 }

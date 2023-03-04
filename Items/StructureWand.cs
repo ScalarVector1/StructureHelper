@@ -46,10 +46,14 @@ namespace StructureHelper.Items
 				Main.NewText("Select Second Point");
 				secondPoint = true;
 			}
-
 			else
 			{
 				var bottomRight = (Main.MouseWorld / 16).ToPoint16();
+
+				//Swap the points if they're incorrectly oriented
+				if (bottomRight.X < topLeft.X || bottomRight.Y < topLeft.Y)
+					(bottomRight, topLeft) = (topLeft, bottomRight);
+
 				width = bottomRight.X - topLeft.X - 1;
 				height = bottomRight.Y - topLeft.Y - 1;
 				Main.NewText("Ready to save! Right click to save this structure...");
