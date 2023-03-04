@@ -73,9 +73,11 @@ namespace StructureHelper
 		/// <returns>The TagCompound that can be saved to a structure file</returns>
 		public unsafe static TagCompound SaveStructure(Rectangle target)
 		{
+			StructureHelper instance = StructureHelper.Instance;
+
 			var tag = new TagCompound
 			{
-				{ "Version", StructureHelper.Instance.Version.ToString() },
+				{ "Version", instance?.Version.ToString() ?? "Unknown" },
 				{ "Width", target.Width },
 				{ "Height", target.Height }
 			};

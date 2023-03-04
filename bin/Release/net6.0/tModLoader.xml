@@ -691,6 +691,16 @@
             <param name="bossBar">When this method returns, contains the IBigProgressBar associated with the specified NPC netID</param>
             <returns><see langword="true"/> if IBigProgressBar exists; otherwise, <see langword="false"/>.</returns>
         </member>
+        <member name="P:Terraria.GameContent.UI.ResourceSets.PlayerStatsSnapshot.AmountOfLifeHearts">
+            <summary>
+            How many life hearts should be drawn
+            </summary>
+        </member>
+        <member name="P:Terraria.GameContent.UI.ResourceSets.PlayerStatsSnapshot.AmountOfManaStars">
+            <summary>
+            How many mana stars should be drawn
+            </summary>
+        </member>
         <member name="M:Terraria.GameInput.PlayerInput.LockVanillaMouseScroll(System.String)">
             <summary>
             Locks the vanilla scrollbar for the upcoming cycle when called. Autoclears in Player.
@@ -2752,6 +2762,11 @@
             What tiles count as Pylons, which allow the player to teleport to any other valid Pylons on the map.
             </summary>
         </member>
+        <member name="F:Terraria.ID.TileID.Sets.WallsMergeWith">
+            <summary>
+            Tiles that are interpreted as a wall by nearby walls during framing, causing them to frame as if merging with this adjacent tile. Prevents wall from drawing within bounds for transparant tiles.
+            </summary>
+        </member>
         <member name="F:Terraria.Item.cachedItemSpawnsByType">
             <summary>
             The number of cached item spawns by type.<br/>
@@ -3062,17 +3077,20 @@
             <inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/>
             <br/><br/>This particular overload uses two Vector2 to determine the actual spawn position.
             </summary>
+            <returns><inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/></returns>
         </member>
         <member name="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,Microsoft.Xna.Framework.Vector2,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)">
             <summary>
             <inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/>
             <br/><br/>This particular overload uses a Vector2 instead of X and Y to determine the actual spawn position.
             </summary>
+            <returns><inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/></returns>
         </member>
         <member name="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)">
             <summary>
             Spawns an item into the game world with the given type and stack size. The X, Y, Width, and Height parameters dictate a rectangle, the item will be spawned centered within that rectangle. Other overloads support passing in a position directly, or just use 0 for Width and Height if the center is passed in a X and Y.
             This method should not be called on multiplayer clients. If you need to spawn items from client code, use <see cref="M:Terraria.Player.QuickSpawnItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32)"></see> instead, it handles the multiplayer syncing code needed.
+            See the <paramref name="noBroadcast"/> documentation if you need to customize attached ModItem or GlobalItem data prior to syncing.
             The source represents the entity causing this item to spawn. The return value is the index of the spawned Item within the <see cref="F:Terraria.Main.item"/> array. 
             </summary>
             <param name="source"></param>
@@ -3082,11 +3100,11 @@
             <param name="Height"></param>
             <param name="Type">Either an <see cref="T:Terraria.ID.ItemID"/> entry or <see cref="M:Terraria.ModLoader.ModContent.ItemType``1"/>, for example <see cref="F:Terraria.ID.ItemID.IronskinPotion"/> or ModContent.ItemType&lt;MyModItem&gt;()</param>
             <param name="Stack">Item stack</param>
-            <param name="noBroadcast"></param>
+            <param name="noBroadcast">Controls whether an item spawned on a server is synced using <see cref="M:Terraria.NetMessage.SendData(System.Int32,System.Int32,System.Int32,Terraria.Localization.NetworkText,System.Int32,System.Single,System.Single,System.Single,System.Int32,System.Int32,System.Int32)"/> and <see cref="F:Terraria.ID.MessageID.SyncItem"/>. If false, the item will be synced. If true, the calling code can modify the item instance and then sync the item with <see cref="F:Terraria.ID.MessageID.SyncItem"/>. Has no effect except on server. NewItem running on multiplayer clients always needs to manually sync, see <see cref="M:Terraria.Player.QuickSpawnItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32)"/> source code for an example.</param>
             <param name="pfix"></param>
             <param name="noGrabDelay"></param>
             <param name="reverseLookup"></param>
-            <returns></returns>
+            <returns>The index of the item within <see cref="F:Terraria.Main.item"/></returns>
         </member>
         <member name="P:Terraria.Item.attackSpeedOnlyAffectsWeaponAnimation">
             <summary>
@@ -3182,12 +3200,53 @@
             <inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/>
             <br/><br/>This particular overload uses a Rectangle instead of X, Y, Width, and Height to determine the actual spawn position.
             </summary>
+            <returns><inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/></returns>
         </member>
         <member name="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,Microsoft.Xna.Framework.Vector2,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)">
             <summary>
             <inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/>
             <br/><br/>This particular overload uses a Vector2 instead of X, Y, Width, and Height to determine the actual spawn position.
             </summary>
+            <returns><inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/></returns>
+        </member>
+        <member name="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,Terraria.Item,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            <inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/>
+            <br/><br/>This particular overload uses an Item instead of just the item type. All modded data will be preserved.
+            </summary>
+            <returns><inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/></returns>
+        </member>
+        <member name="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,Terraria.Item,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            <inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/>
+            <br/><br/>This particular overload uses an Item instead of just the item type. All modded data will be preserved.
+            <br/><br/>This particular overload uses a Vector2 instead of X and Y to determine the actual spawn position.
+            </summary>
+            <returns><inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/></returns>
+        </member>
+        <member name="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,Microsoft.Xna.Framework.Vector2,System.Int32,System.Int32,Terraria.Item,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            <inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/>
+            <br/><br/>This particular overload uses an Item instead of just the item type. All modded data will be preserved.
+            <br/><br/>This particular overload uses a Vector2 instead of X and Y to determine the actual spawn position.
+            </summary>
+            <returns><inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/></returns>
+        </member>
+        <member name="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,Microsoft.Xna.Framework.Vector2,Terraria.Item,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            <inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/>
+            <br/><br/>This particular overload uses an Item instead of just the item type. All modded data will be preserved.
+            <br/><br/>This particular overload uses a Vector2 instead of X, Y, Width, and Height to determine the actual spawn position.
+            </summary>
+            <returns><inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/></returns>
+        </member>
+        <member name="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,Microsoft.Xna.Framework.Rectangle,Terraria.Item,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            <inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/>
+            <br/><br/>This particular overload uses an Item instead of just the item type. All modded data will be preserved.
+            <br/><br/>This particular overload uses a Rectangle instead of X, Y, Width, and Height to determine the actual spawn position.
+            </summary>
+            <returns><inheritdoc cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/></returns>
         </member>
         <member name="F:Terraria.Main.persistentBuff">
             <summary>
@@ -3640,6 +3699,11 @@
             This attribute means the annotated item can possibly be null. This will allow the UI to make the item null. It is up to the modder to make sure the item isn't null in the ModConfig constructor and nested classes.
             </summary>
         </member>
+        <member name="T:Terraria.ModLoader.Config.ExpandAttribute">
+            <summary>
+            Affects whether this data will be expanded by default. The default value currently is true. Use the constructor with 2 parameters to control if list elements should be collapsed or expanded.
+            </summary>
+        </member>
         <member name="T:Terraria.ModLoader.Config.ReferenceDefaultsPreservingResolver">
             <summary>
             Custom ContractResolver for facilitating refernce type defaults.
@@ -3997,6 +4061,11 @@
         <member name="M:Terraria.ModLoader.DustLoader.GetDust(System.Int32)">
             <summary>
             Gets the ModDust instance with the given type. Returns null if no ModDust with the given type exists.
+            </summary>
+        </member>
+        <member name="T:Terraria.ModLoader.Engine.ErrorReporting">
+            <summary>
+            This class handles displaying errors that require a OS-provided modal message box. Fatal errors and errors that happen in situations where a suitable place to display an error doesn't exist (such as when initially loading). 
             </summary>
         </member>
         <member name="T:Terraria.ModLoader.Engine.FallbackSyncContext">
@@ -5678,6 +5747,22 @@
             </summary>
             <returns>Whether or not the items are allowed to stack</returns>
         </member>
+        <member name="M:Terraria.ModLoader.GlobalItem.OnStack(Terraria.Item,Terraria.Item,System.Int32)">
+            <summary>
+            Allows you to make things happen when items stack together.
+            </summary>
+            <param name="increase">The item that will have its stack increased.</param>
+            <param name="decrease">The item that will be removed or have its stack reduced.</param>
+            <param name="numberToBeTransfered">The number that will be transfered from decrease to increase.</param>
+        </member>
+        <member name="M:Terraria.ModLoader.GlobalItem.SplitStack(Terraria.Item,Terraria.Item,System.Int32)">
+            <summary>
+            Allows you to make things happen when an item stack is split.  Usually transfers 1 and only occurs with the first transfer.  Split stack is called before the stack values are modified.
+            </summary>
+            <param name="increase">The new item which is a clone of decrease.  increase.stack will always be 0.  It is increased after SplitStack.</param>
+            <param name="decrease">The original item that will have it's stack reduced.</param>
+            <param name="numberToBeTransfered">The number that will be transfered from decrease to increase.</param>
+        </member>
         <member name="M:Terraria.ModLoader.GlobalItem.ReforgePrice(Terraria.Item,System.Int32@,System.Boolean@)">
             <summary>
             Returns if the normal reforge pricing is applied.
@@ -6016,8 +6101,8 @@
         <member name="M:Terraria.ModLoader.GlobalNPC.SendExtraAI(Terraria.NPC,Terraria.ModLoader.IO.BitWriter,System.IO.BinaryWriter)">
             <summary>
             Use this judiciously to avoid straining the network.
-            <br/>Checks and methods such as <see cref="!:AppliesToEntity"/> can reduce how much data must be sent for how many projectiles.
-            <br/>Called whenever <see cref="!:MessageID.SyncNPC"/> is successfully sent, for example on projectile creation, or whenever Projectile.netUpdate is set to true in the update loop for that tick.
+            <br/>Checks and methods such as <see cref="M:Terraria.ModLoader.GlobalType`2.AppliesToEntity(`0,System.Boolean)"/> can reduce how much data must be sent for how many projectiles.
+            <br/>Called whenever <see cref="F:Terraria.ID.MessageID.SyncNPC"/> is successfully sent, for example on projectile creation, or whenever Projectile.netUpdate is set to true in the update loop for that tick.
             <br/>Can be called on the server.
             </summary>
             <param name="npc">The NPC.</param>
@@ -6027,7 +6112,7 @@
         <member name="M:Terraria.ModLoader.GlobalNPC.ReceiveExtraAI(Terraria.NPC,Terraria.ModLoader.IO.BitReader,System.IO.BinaryReader)">
             <summary>
             Use this to receive information that was sent in <see cref="M:Terraria.ModLoader.GlobalNPC.SendExtraAI(Terraria.NPC,Terraria.ModLoader.IO.BitWriter,System.IO.BinaryWriter)"/>.
-            <br/>Called whenever <see cref="!:MessageID.SyncNPC"/> is successfully received.
+            <br/>Called whenever <see cref="F:Terraria.ID.MessageID.SyncNPC"/> is successfully received.
             <br/>Can be called on multiplayer clients.
             </summary>
             <param name="npc">The NPC.</param>
@@ -6504,6 +6589,17 @@
             <param name="scale"></param>
             <param name="offset"></param>
         </member>
+        <member name="M:Terraria.ModLoader.GlobalNPC.ModifyCollisionData(Terraria.NPC,Microsoft.Xna.Framework.Rectangle,System.Int32@,System.Single@,Microsoft.Xna.Framework.Rectangle@)">
+            <summary>
+            Allows you to modify the npc's <seealso cref="T:Terraria.ID.ImmunityCooldownID"/>, damage multiplier, and hitbox. Useful for implementing dynamic damage hitboxes that change in dimensions or deal extra damage. Returns false to prevent vanilla code from running. Returns true by default.
+            </summary>
+            <param name="npc"></param>
+            <param name="victimHitbox"></param>
+            <param name="immunityCooldownSlot"></param>
+            <param name="damageMultiplier"></param>
+            <param name="npcHitbox"></param>
+            <returns></returns>
+        </member>
         <member name="M:Terraria.ModLoader.GlobalNPC.NeedSaving(Terraria.NPC)">
             <summary>
             Allows you to make a npc be saved even if it's not a townNPC and NPCID.Sets.SavesAndLoads[npc.type] is false.
@@ -6569,8 +6665,8 @@
         <member name="M:Terraria.ModLoader.GlobalProjectile.SendExtraAI(Terraria.Projectile,Terraria.ModLoader.IO.BitWriter,System.IO.BinaryWriter)">
             <summary>
             Use this judiciously to avoid straining the network.
-            <br/>Checks and methods such as <see cref="!:AppliesToEntity"/> can reduce how much data must be sent for how many projectiles.
-            <br/>Called whenever <see cref="!:MessageID.SyncProjectile"/> is successfully sent, for example on projectile creation, or whenever Projectile.netUpdate is set to true in the update loop for that tick.
+            <br/>Checks and methods such as <see cref="M:Terraria.ModLoader.GlobalType`2.AppliesToEntity(`0,System.Boolean)"/> can reduce how much data must be sent for how many projectiles.
+            <br/>Called whenever <see cref="F:Terraria.ID.MessageID.SyncProjectile"/> is successfully sent, for example on projectile creation, or whenever Projectile.netUpdate is set to true in the update loop for that tick.
             <br/>Can be called on both server and client, depending on who owns the projectile.
             </summary>
             <param name="projectile">The projectile.</param>
@@ -6580,7 +6676,7 @@
         <member name="M:Terraria.ModLoader.GlobalProjectile.ReceiveExtraAI(Terraria.Projectile,Terraria.ModLoader.IO.BitReader,System.IO.BinaryReader)">
             <summary>
             Use this to receive information that was sent in <see cref="M:Terraria.ModLoader.GlobalProjectile.SendExtraAI(Terraria.Projectile,Terraria.ModLoader.IO.BitWriter,System.IO.BinaryWriter)"/>.
-            <br/>Called whenever <see cref="!:MessageID.SyncProjectile"/> is successfully received.
+            <br/>Called whenever <see cref="F:Terraria.ID.MessageID.SyncProjectile"/> is successfully received.
             <br/>Can be called on both server and client, depending on who owns the projectile.
             </summary>
             <param name="projectile">The projectile.</param>
@@ -7205,6 +7301,18 @@
             Allows you to determine what happens when the wall at the given coordinates is killed or hit with a hammer. Fail determines whether the wall is mined (whether it is killed).
             </summary>
         </member>
+        <member name="M:Terraria.ModLoader.GlobalWall.WallFrame(System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32@,System.Int32@)">
+            <summary>
+            Called for every wall that updates due to being placed or being next to a wall that is changed. Return false to stop the game from carrying out its default WallFrame operations. If you return false, make sure to set <see cref="P:Terraria.Tile.WallFrameNumber"/>, <see cref="P:Terraria.Tile.WallFrameX"/>, and <see cref="P:Terraria.Tile.WallFrameY"/> according to the your desired custom framing design. Returns true by default.
+            </summary>
+            <param name="i">The x position in tile coordinates.</param>
+            <param name="j">The y position in tile coordinates.</param>
+            <param name="type">Type of the wall being framed</param>
+            <param name="randomizeFrame">True if the calling code intends that the frameNumber be randomly changed, such as when placing the wall initially or loading the world, but not when updating due to nearby tile or wall placements</param>
+            <param name="style">The style or orientation that will be applied</param>
+            <param name="frameNumber">The random style that will be applied</param>
+            <returns></returns>
+        </member>
         <member name="M:Terraria.ModLoader.GoreLoader.AddGoreFromTexture``1(Terraria.ModLoader.Mod,System.String)">
             <summary> Registers a new gore with the provided texture. </summary>
         </member>
@@ -7336,6 +7444,11 @@
             is that whenever all of the pylons are refreshed by vanilla, Tile Entities that extend this interface will get their own
             <seealso cref="T:Terraria.GameContent.TeleportPylonInfo"/> instance and it will be included along-side all of vanilla's pylons and any
             other modded pylons.
+            </summary>
+        </member>
+        <member name="F:Terraria.ModLoader.RecipeCreationContext.DestinationStack">
+            <summary>
+            An item stack that the created item will be combined with (via OnStack). For normal crafting, this is Main.mouseItem
             </summary>
         </member>
         <member name="F:Terraria.ModLoader.RecipeCreationContext.ConsumedItems">
@@ -7655,6 +7768,37 @@
             Calls all GlobalItem.CanStackInWorld hooks until one returns false then ModItem.CanStackInWorld. Returns whether any of the hooks returned false.
             </summary>
         </member>
+        <member name="M:Terraria.ModLoader.ItemLoader.TryStackItems(Terraria.Item,Terraria.Item,System.Int32@,System.Boolean)">
+            <summary>
+            Short-circuits if <see cref="M:Terraria.ModLoader.ItemLoader.CanStack(Terraria.Item,Terraria.Item)"/> hooks don't return true.
+            <br/> Returns the result of the initial check.
+            <br/>
+            <br/> <inheritdoc cref="M:Terraria.ModLoader.ItemLoader.StackItems(Terraria.Item,Terraria.Item,System.Int32@,System.Boolean,System.Nullable{System.Int32})"/>
+            </summary>
+            <param name="increase">Item where the stack is being increased.</param>
+            <param name="decrease">Item where the stack is being reduced.</param>
+            <param name="numTransfered">Amount to be transfered </param>
+            <param name="infiniteSource">The final stack of item2</param>
+        </member>
+        <member name="M:Terraria.ModLoader.ItemLoader.StackItems(Terraria.Item,Terraria.Item,System.Int32@,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Stacks <paramref name="increase"/> and <paramref name="decrease"/> items.
+            <br/> Calls all <see cref="M:Terraria.ModLoader.GlobalItem.OnStack(Terraria.Item,Terraria.Item,System.Int32)"/> and <see cref="M:Terraria.ModLoader.ModItem.OnStack(Terraria.Item,System.Int32)"/> hooks if <paramref name="increase"/>.stack is less than <paramref name="increase"/>.maxStack.
+            </summary>
+            <param name="increase">Item where the stack is being increased.</param>
+            <param name="decrease">Item where the stack is being reduced.</param>
+            <param name="numTransfered">Amount to be transfered </param>
+            <param name="infiniteSource"></param>
+            <param name="numToTransfer">Used to only transfer a specidied amount instead of all.</param>
+        </member>
+        <member name="M:Terraria.ModLoader.ItemLoader.SplitStack(Terraria.Item,Terraria.Item,System.Int32)">
+            <summary>
+            Called when splitting a stack of items.
+            </summary>
+            <param name="increase">A clone of decrease.  Stack is set to zero then incremented in SplitStack or after SplitStack is called.</param>
+            <param name="decrease">The original item with stack being reduced.</param>
+            <param name="numToTransfer">Usually 1, but possible to be higher.</param>
+        </member>
         <member name="M:Terraria.ModLoader.ItemLoader.ReforgePrice(Terraria.Item,System.Int32@,System.Boolean@)">
             <summary>
             Call all ModItem.ReforgePrice, then GlobalItem.ReforgePrice hooks.
@@ -7762,7 +7906,7 @@
             Registers a keybind with a <paramref name="name"/> and <paramref name="defaultBinding"/>. Use the returned <see cref="T:Terraria.ModLoader.ModKeybind"/> to detect when buttons are pressed.
             </summary>
             <param name="mod"> The mod that this keybind will belong to. Usually, this would be your mod instance. </param>
-            <param name="name"> The name of the keybind. </param>
+            <param name="name"> The internal name of the keybind. The localization key "Mods.{ModName}.Keybind.{KeybindName}" will be used for the display name. </param>
             <param name="defaultBinding"> The default binding. </param>
         </member>
         <member name="M:Terraria.ModLoader.KeybindLoader.RegisterKeybind(Terraria.ModLoader.Mod,System.String,System.String)">
@@ -7770,7 +7914,7 @@
             Registers a keybind with a <paramref name="name"/> and <paramref name="defaultBinding"/>. Use the returned <see cref="T:Terraria.ModLoader.ModKeybind"/> to detect when buttons are pressed.
             </summary>
             <param name="mod"> The mod that this keybind will belong to. Usually, this would be your mod instance. </param>
-            <param name="name"> The name of the keybind. </param>
+            <param name="name"> The internal name of the keybind. The localization key "Mods.{ModName}.Keybind.{KeybindName}" will be used for the display name. </param>
             <param name="defaultBinding"> The default binding. </param>
         </member>
         <member name="T:Terraria.ModLoader.Loader">
@@ -8129,7 +8273,11 @@
             <br/> Vanilla icons use a drop shadow at 40 percent opacity and the texture will be offset 1 pixel left and up from centered in the bestiary filter grid.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:Terraria.ModLoader.ModBiome.BackgroundPath" -->
+        <member name="P:Terraria.ModLoader.ModBiome.BackgroundPath">
+            <summary>
+            The path to the background texture that will appear for this biome behind npcs in the bestiary. Defaults to adding "_Background" onto the usual namespace+classname derived texture path.
+            </summary>
+        </member>
         <member name="P:Terraria.ModLoader.ModBiome.BackgroundColor">
             <summary>
             The color of the bestiary background.
@@ -9420,7 +9568,7 @@
             <summary>
             Allows you to decide if this item is allowed to stack with another of its type.
             <br/>This is only called when attempting to stack with an item of the same type.
-            <br/>This is usually not called for coins and ammo in the inventory/UI.
+            <br/>This is not called for coins in inventory/UI.
             <br/>This covers all scenarios, if you just need to change in-world stacking behavior, use <see cref="M:Terraria.ModLoader.ModItem.CanStackInWorld(Terraria.Item)"/>.
             </summary>
             <returns>Whether or not the item is allowed to stack</returns>
@@ -9431,6 +9579,22 @@
             <br/>This is only called when attempting to stack with an item of the same type.
             </summary>
             <returns>Whether or not the item is allowed to stack</returns>
+        </member>
+        <member name="M:Terraria.ModLoader.ModItem.OnStack(Terraria.Item,System.Int32)">
+            <summary>
+            Allows you to make things happen when items stack together.<br/>
+            This item will have its stack increased that will have its stack increased.
+            </summary>
+            <param name="decrease">The item that will be removed or have its stack reduced.</param>
+            <param name="numberToBeTransfered">The number that will be transfered from decrease to this item.</param>
+        </member>
+        <member name="M:Terraria.ModLoader.ModItem.SplitStack(Terraria.Item,System.Int32)">
+            <summary>
+            Allows you to make things happen when an item stack is split.  Usually transfers 1 and only occurs with the first transfer.  Split stack is called before the stack values are modified.<br/>
+            Item is always the new stack which is a clone of decrease.  Item.stack will always be 0.  It is increased after SplitStack.
+            </summary>
+            <param name="decrease">The original item that will have it's stack reduced.</param>
+            <param name="numberToBeTransfered">The number that will be transfered from decrease to this item.</param>
         </member>
         <member name="M:Terraria.ModLoader.ModItem.ReforgePrice(System.Int32@,System.Boolean@)">
             <summary>
@@ -10566,6 +10730,16 @@
             <param name="scale"></param>
             <param name="offset"></param>
         </member>
+        <member name="M:Terraria.ModLoader.ModNPC.ModifyCollisionData(Microsoft.Xna.Framework.Rectangle,System.Int32@,System.Single@,Microsoft.Xna.Framework.Rectangle@)">
+            <summary>
+            Allows you to modify the npc's <seealso cref="T:Terraria.ID.ImmunityCooldownID"/>, damage multiplier, and hitbox. Useful for implementing dynamic damage hitboxes that change in dimensions or deal extra damage. Returns false to prevent vanilla code from running. Returns true by default.
+            </summary>
+            <param name="victimHitbox"></param>
+            <param name="immunityCooldownSlot"></param>
+            <param name="damageMultiplier"></param>
+            <param name="npcHitbox"></param>
+            <returns></returns>
+        </member>
         <member name="M:Terraria.ModLoader.ModNPC.NeedSaving">
             <summary>
             Makes this ModNPC save along the world even if it's not a townNPC. Defaults to false.
@@ -10763,6 +10937,14 @@
             <summary>
             This is where you reset any fields you add to your ModPlayer subclass to their default states. This is necessary in order to reset your fields if they are conditionally set by a tick update but the condition is no longer satisfied.
             </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ModPlayer.ModifyMaxStats(Terraria.ModLoader.StatModifier@,Terraria.ModLoader.StatModifier@)">
+            <summary>
+            Allows you to modify the player's max stats.  This hook runs after vanilla increases from the Life Crystal, Life Fruit and Mana Crystal are applied<br/>
+            <b>NOTE:</b> You should NOT modify <see cref="F:Terraria.Player.statLifeMax"/> nor <see cref="F:Terraria.Player.statManaMax"/> here.  Use the <paramref name="health"/> and <paramref name="mana"/> parameters.
+            </summary>
+            <param name="health">The modifier to the player's maximum health</param>
+            <param name="mana">The modifier to the player's maximum mana</param>
         </member>
         <member name="M:Terraria.ModLoader.ModPlayer.UpdateDead">
             <summary>
@@ -12167,6 +12349,125 @@
             <param name="valueMult">The combined stat and prefix value scale. Can be used to implement super high or low value rarity adjustments outside normal vanilla ranges</param>
             <returns>The adjusted rarity type. Return <code>Type</code> for no change.</returns>
         </member>
+        <member name="T:Terraria.ModLoader.ModResourceDisplaySet">
+            <summary>
+            This class serves as a place for you to define your own logic for drawing the player's life and mana resources.<br/>
+            For modifying parts of the vanilla display sets, use <see cref="T:Terraria.ModLoader.ModResourceOverlay"/>.
+            </summary>
+        </member>
+        <member name="P:Terraria.ModLoader.ModResourceDisplaySet.DisplayedName">
+            <summary>
+            Gets the name for this resource display set based on its DisplayName and the current culture
+            </summary>
+        </member>
+        <member name="P:Terraria.ModLoader.ModResourceDisplaySet.NameKey">
+            <summary>
+            Included only for completion's sake.  Returns DisplayName.Key
+            </summary>
+        </member>
+        <member name="P:Terraria.ModLoader.ModResourceDisplaySet.ConfigKey">
+            <summary>
+            The name used to get this resource display set.  Returns <see cref="P:Terraria.ModLoader.ModType.FullName"/>
+            </summary>
+        </member>
+        <member name="P:Terraria.ModLoader.ModResourceDisplaySet.DisplayName">
+            <summary>
+            The translations for the display name of this item.
+            </summary>
+        </member>
+        <member name="P:Terraria.ModLoader.ModResourceDisplaySet.PlayerStats">
+            <summary>
+            The current snapshot of the life and mana stats for Main.LocalPlayer
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ModResourceDisplaySet.AutoStaticDefaults">
+            <summary>
+            Automatically sets certain static defaults. Override this if you do not want the properties to be set for you.
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ModResourceDisplaySet.PreDrawResources(Terraria.GameContent.UI.ResourceSets.PlayerStatsSnapshot)">
+            <summary>
+            Allows you to initialize fields, textures, etc. before drawing occurs
+            </summary>
+            <param name="snapshot">A copy of <see cref="P:Terraria.ModLoader.ModResourceDisplaySet.PlayerStats"/></param>
+        </member>
+        <member name="M:Terraria.ModLoader.ModResourceDisplaySet.DrawLife(Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <summary>
+            Draw the life resources for your display set here
+            </summary>
+            <param name="spriteBatch"></param>
+        </member>
+        <member name="M:Terraria.ModLoader.ModResourceDisplaySet.DrawMana(Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <summary>
+            Draw the mana resources for your display set here
+            </summary>
+            <param name="spriteBatch"></param>
+        </member>
+        <member name="M:Terraria.ModLoader.ModResourceDisplaySet.PreHover(System.Boolean@)">
+            <summary>
+            Allows you to specify if the vanilla life/mana hover text should display
+            </summary>
+            <param name="hoveringLife">Whether the hover text should be for life (<see langword="true"/>) or mana (<see langword="false"/>)</param>
+        </member>
+        <member name="T:Terraria.ModLoader.ModResourceOverlay">
+            <summary>
+            This class serves as a place for you to customize how the vanilla resource displays (Classic, Fancy and Bars) are drawn.<br/>
+            For implementing your own resource displays, use <see cref="T:Terraria.ModLoader.ModResourceDisplaySet"/>.
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ModResourceOverlay.PreDrawResource(Terraria.ModLoader.ResourceOverlayDrawContext)">
+            <summary>
+            Allows you to draw below any resource (hearts, stars, bars or panels) in a display set
+            </summary>
+            <param name="context">Contains the drawing data for the resource being drawn.  You should use the ResourceOverlayDrawContext.Draw method for all drawing</param>
+            <returns><see langword="true"/> if the intended resource sprite should draw, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="M:Terraria.ModLoader.ModResourceOverlay.PostDrawResource(Terraria.ModLoader.ResourceOverlayDrawContext)">
+            <summary>
+            Allows you to draw on top of any resource (hearts, stars, bars or panels) in a display set
+            </summary>
+            <param name="context">Contains the drawing data for the resource being drawn.  You should use the ResourceOverlayDrawContext.Draw method for all drawing</param>
+        </member>
+        <member name="M:Terraria.ModLoader.ModResourceOverlay.PreDrawResourceDisplay(Terraria.GameContent.UI.ResourceSets.PlayerStatsSnapshot,Terraria.GameContent.UI.ResourceSets.IPlayerResourcesDisplaySet,System.Boolean,Microsoft.Xna.Framework.Color@,System.Boolean@)">
+            <summary>
+            Allows you to draw before the resources (hearts, stars, bars and/or panels) in a display set are drawn.<br/>
+            If you want to implement your own display set, it is recommended to use <see cref="T:Terraria.ModLoader.ModResourceDisplaySet"/> instead of this hook.
+            </summary>
+            <param name="snapshot">A snapshot of the stats from Main.LocalPlayer</param>
+            <param name="displaySet">The display set being drawn</param>
+            <param name="drawingLife">
+            Whether the life or mana display is going to be drawn.
+            <see langword="true"/> if the life display is going to be drawn, <see langword="false"/> if the mana display is going to be drawn.
+            </param>
+            <param name="textColor">The color to draw the text above the resources with.  Only applies to the Classic display set.</param>
+            <param name="drawText">Whether the text above the resources should draw.  Only applies to the Classic display set.</param>
+            <returns>Whether the resources in the display set are drawn</returns>
+        </member>
+        <member name="M:Terraria.ModLoader.ModResourceOverlay.PostDrawResourceDisplay(Terraria.GameContent.UI.ResourceSets.PlayerStatsSnapshot,Terraria.GameContent.UI.ResourceSets.IPlayerResourcesDisplaySet,System.Boolean,Microsoft.Xna.Framework.Color,System.Boolean)">
+            <summary>
+            Allows you to draw after the resources (hearts, stars, bars and/or panels) in a display set are drawn
+            </summary>
+            <param name="snapshot">A snapshot of the stats from Main.LocalPlayer</param>
+            <param name="displaySet">The display set that was drawn</param>
+            <param name="drawingLife">
+            Whether the life or mana display was drawn.
+            <see langword="true"/> if the life display was drawn, <see langword="false"/> if the mana display was drawn.
+            </param>
+            <param name="textColor">The color the text above the resources was drawn with.  Only applies to the Class display set.</param>
+            <param name="drawText">Whether the text above the resources was drawn.  Only applies to the Classic display set.</param>
+        </member>
+        <member name="M:Terraria.ModLoader.ModResourceOverlay.DisplayHoverText(Terraria.GameContent.UI.ResourceSets.PlayerStatsSnapshot,Terraria.GameContent.UI.ResourceSets.IPlayerResourcesDisplaySet,System.Boolean)">
+            <summary>
+            Allows you to specify if the hover text for a resource (life or mana) should be displayed
+            </summary>
+            <param name="snapshot">A snapshot of the stats from Main.LocalPlayer</param>
+            <param name="displaySet">The display set that was drawn</param>
+            <param name="drawingLife">
+            Whether the life or mana display was drawn.
+            <see langword="true"/> if the life display was drawn, <see langword="false"/> if the mana display was drawn.
+            </param>
+            <returns>Whether the hover text should be displayed</returns>
+        </member>
         <member name="T:Terraria.ModLoader.ModSceneEffect">
             <summary>
             ModSceneEffect is an abstract class that your classes can derive from. It serves as a container for handling exclusive SceneEffect content such as backgrounds, music, and water styling.
@@ -13149,8 +13450,18 @@
         </member>
         <member name="M:Terraria.ModLoader.ModWall.AnimateWall(System.Byte@,System.Byte@)">
             <summary>
-            Allows you to animate your wall. Use frameCounter to keep track of how long the current frame has been active, and use frame to change the current frame.
+            Allows you to animate your wall. Use frameCounter to keep track of how long the current frame has been active, and use frame to change the current frame. Walls are drawn every 4 frames.
             </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ModWall.WallFrame(System.Int32,System.Int32,System.Boolean,System.Int32@,System.Int32@)">
+            <summary>
+            Called whenever this wall updates due to being placed or being next to a wall that is changed. Return false to stop the game from carrying out its default WallFrame operations. If you return false, make sure to set <see cref="P:Terraria.Tile.WallFrameNumber"/>, <see cref="P:Terraria.Tile.WallFrameX"/>, and <see cref="P:Terraria.Tile.WallFrameY"/> according to the your desired custom framing design. Returns true by default.
+            </summary>
+            <param name="i">The x position in tile coordinates.</param>
+            <param name="j">The y position in tile coordinates.</param>
+            <param name="randomizeFrame">True if the calling code intends that the frameNumber be randomly changed, such as when placing the wall initially or loading the world, but not when updating due to nearby tile or wall placements</param>
+            <param name="style">The style or orientation that will be applied</param>
+            <param name="frameNumber">The random style that will be applied</param>
         </member>
         <member name="T:Terraria.ModLoader.ModWaterStyle">
             <summary>
@@ -13547,6 +13858,20 @@
             This is where all ModPlayer hooks are gathered and called.
             </summary>
         </member>
+        <member name="M:Terraria.ModLoader.PlayerLoader.ResetMaxStatsToVanilla(Terraria.Player)">
+            <summary>
+            Resets <see cref="F:Terraria.Player.statLifeMax"/> and <see cref="F:Terraria.Player.statManaMax"/> to their expected values by vanilla
+            </summary>
+            <param name="player"></param>
+        </member>
+        <member name="M:Terraria.ModLoader.PlayerLoader.ModifyMaxStats(Terraria.Player)">
+            <summary>
+            Reset this player's <see cref="F:Terraria.Player.statLifeMax"/> and <see cref="F:Terraria.Player.statManaMax"/> to their vanilla defaults,
+            applies <see cref="M:Terraria.ModLoader.ModPlayer.ModifyMaxStats(Terraria.ModLoader.StatModifier@,Terraria.ModLoader.StatModifier@)"/> to them,
+            then modifies <see cref="F:Terraria.Player.statLifeMax2"/> and <see cref="F:Terraria.Player.statManaMax2"/>
+            </summary>
+            <param name="player"></param>
+        </member>
         <member name="M:Terraria.ModLoader.PlayerLoader.ModifyWeaponDamage(Terraria.Player,Terraria.Item,Terraria.ModLoader.StatModifier@)">
             <summary>
             Calls ModItem.HookModifyWeaponDamage, then all GlobalItem.HookModifyWeaponDamage hooks.
@@ -13685,18 +14010,22 @@
             <param name="recipe">The recipe to check.</param>
             <returns>Whether or not the conditions are met for this recipe.</returns>
         </member>
-        <member name="M:Terraria.ModLoader.RecipeLoader.OnCraft(Terraria.Item,Terraria.Recipe,System.Collections.Generic.List{Terraria.Item})">
+        <member name="M:Terraria.ModLoader.RecipeLoader.OnCraft(Terraria.Item,Terraria.Recipe,System.Collections.Generic.List{Terraria.Item},Terraria.Item)">
             <summary>
             recipe.OnCraftHooks followed by Calls ItemLoader.OnCreate with a RecipeCreationContext
             </summary>
             <param name="item">The item crafted.</param>
             <param name="recipe">The recipe used to craft the item.</param>
             <param name="consumedItems">Materials used to craft the item.</param>
+            <param name="destinationStack">The stack that the crafted item will be combined with</param>
         </member>
-        <member name="M:Terraria.ModLoader.RecipeLoader.OnCraft(Terraria.Item,Terraria.Recipe)">
+        <member name="M:Terraria.ModLoader.RecipeLoader.OnCraft(Terraria.Item,Terraria.Recipe,Terraria.Item)">
             <summary>
             Helper version of OnCraft, used in combination with Recipe.Create and the internal ConsumedItems list
             </summary>
+            <param name="item"></param>
+            <param name="recipe"></param>
+            <param name="destinationStack">The stack that the crafted item will be combined with</param>
         </member>
         <member name="M:Terraria.ModLoader.RecipeLoader.ConsumeItem(Terraria.Recipe,System.Int32,System.Int32@)">
             <summary>
@@ -13705,6 +14034,48 @@
             <param name="recipe">The recipe used for the craft.</param>
             <param name="type">Type of the ingredient.</param>
             <param name="amount">Modifiable amount of the item consumed.</param>
+        </member>
+        <member name="F:Terraria.ModLoader.ResourceOverlayDrawContext.snapshot">
+            <summary>
+            A snapshot of the player's health and mana stats
+            </summary>
+        </member>
+        <member name="F:Terraria.ModLoader.ResourceOverlayDrawContext.resourceNumber">
+            <summary>
+            Which heart/star/bar/panel is being drawn<br/>
+            <b>NOTE:</b> This value usually starts at 0, but it can start at other values
+            </summary>
+        </member>
+        <member name="F:Terraria.ModLoader.ResourceOverlayDrawContext.source">
+            <summary>
+            The slice of the texture to draw<br/>
+            <see langword="null"/> represents the entire texture
+            </summary>
+        </member>
+        <member name="F:Terraria.ModLoader.ResourceOverlayDrawContext.origin">
+            <summary>
+            The center for rotation and scaling within the source rectangle
+            </summary>
+        </member>
+        <member name="P:Terraria.ModLoader.ResourceOverlayDrawContext.DisplaySet">
+            <summary>
+            The resource display set that this context is drawing from
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ResourceOverlayDrawContext.#ctor(Terraria.GameContent.UI.ResourceSets.PlayerStatsSnapshot,Terraria.GameContent.UI.ResourceSets.IPlayerResourcesDisplaySet,System.Int32,ReLogic.Content.Asset{Microsoft.Xna.Framework.Graphics.Texture2D})">
+            <summary>
+            Creates a context for drawing resources from a display set
+            </summary>
+            <param name="snapshot">A snapshot of a player's life and mana stats</param>
+            <param name="displaySet">The display set that this context is for</param>
+            <param name="resourceNumber">The resource number within the resource set</param>
+            <param name="texture">The texture being drawn</param>
+        </member>
+        <member name="M:Terraria.ModLoader.ResourceOverlayLoader.DrawResource(Terraria.ModLoader.ResourceOverlayDrawContext)">
+            <summary>
+            Draws a resource, typically life or mana
+            </summary>
+            <param name="drawContext">The drawing context</param>
         </member>
         <member name="T:Terraria.ModLoader.SceneEffectLoader`1">
             <summary>
@@ -14322,6 +14693,16 @@
             </summary>
             <param name="type">The buff type</param>
         </member>
+        <member name="M:Terraria.Player.QuickSpawnItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32)">
+            <summary>
+            Spawns an item into the world at this players position. This is a simpler alternative to <see cref="M:Terraria.Item.NewItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Boolean,System.Boolean)"/>. This method can be called from multiplayer client code without necessitating manually syncing the item.
+            <br/> Use <see cref="M:Terraria.Player.QuickSpawnItem(Terraria.DataStructures.IEntitySource,Terraria.Item,System.Int32)"/> if a specific instance of an Item needs to be spawned into the world to preserve modded data.
+            </summary>
+            <param name="source"></param>
+            <param name="item"></param>
+            <param name="stack"></param>
+            <returns>The index of the item within <see cref="F:Terraria.Main.item"/></returns>
+        </member>
         <member name="M:Terraria.Player.OpenChest(System.Int32,System.Int32,System.Int32)">
             <summary>
             Handles boilerplate for gamepad and UI when opening or closing a container.
@@ -14335,7 +14716,6 @@
             <summary>
             Heals the player for a certain amount.
             </summary>
-            <param name="player">The player to heal.</param>
             <param name="amount">The amount to heal the player by.</param>
         </member>
         <member name="M:Terraria.Player.GetItemGrabRange(Terraria.Item)">
@@ -14397,6 +14777,36 @@
             <param name="projToShoot">The projectile that should be shot by the given weapon/ammo combination.</param>
             <returns>True if the ammo should be conserved on the given shot; false otherwise.</returns>
         </member>
+        <member name="P:Terraria.Player.ConsumedLifeCrystals">
+            <summary>
+            How many Life Crystals this player has consumed
+            </summary>
+        </member>
+        <member name="F:Terraria.Player.LifeCrystalMax">
+            <summary>
+            The maximum amount of Life Crystals this player is allowed to consume total
+            </summary>
+        </member>
+        <member name="P:Terraria.Player.ConsumedLifeFruit">
+            <summary>
+            How many Life Fruit this player has consumed
+            </summary>
+        </member>
+        <member name="F:Terraria.Player.LifeFruitMax">
+            <summary>
+            The maximum amount of Life Fruit this player is allowed to consume total
+            </summary>
+        </member>
+        <member name="P:Terraria.Player.ConsumedManaCrystals">
+            <summary>
+            How many Mana Crystals this player has consumed
+            </summary>
+        </member>
+        <member name="F:Terraria.Player.ManaCrystalMax">
+            <summary>
+            The maximum amount of Mana Crystals this player is allowed to consume total
+            </summary>
+        </member>
         <member name="M:Terraria.Player.GetModPlayer``1">
             <summary> Gets the instance of the specified ModPlayer type. This will throw exceptions on failure. </summary>
             <exception cref="T:System.Collections.Generic.KeyNotFoundException"/>
@@ -14417,20 +14827,26 @@
         </member>
         <member name="M:Terraria.Player.QuickSpawnClonedItem(Terraria.DataStructures.IEntitySource,Terraria.Item,System.Int32)">
             <summary>
-            Will spawn an item like QuickSpawnItem, but clones it (handy when you need to retain item infos)
+            Will spawn an item like <see cref="M:Terraria.Player.QuickSpawnItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32)"/>, but clones it (handy when you need to retain item infos)
             </summary>
             <param name="source">The spawn context</param>
             <param name="item">The item you want to be cloned</param>
             <param name="stack">The stack to give the item. Note that this will override maxStack if it's higher.</param>
         </member>
-        <member name="M:Terraria.Player.QuickSpawnClonedItemDirect(Terraria.DataStructures.IEntitySource,Terraria.Item,System.Int32)">
+        <member name="M:Terraria.Player.QuickSpawnItem(Terraria.DataStructures.IEntitySource,Terraria.Item,System.Int32)">
             <inheritdoc cref="M:Terraria.Player.QuickSpawnClonedItem(Terraria.DataStructures.IEntitySource,Terraria.Item,System.Int32)"/>
+        </member>
+        <member name="M:Terraria.Player.QuickSpawnClonedItemDirect(Terraria.DataStructures.IEntitySource,Terraria.Item,System.Int32)">
+            <summary><inheritdoc cref="M:Terraria.Player.QuickSpawnClonedItem(Terraria.DataStructures.IEntitySource,Terraria.Item,System.Int32)"/></summary>
+            <returns>Returns the Item instance</returns>
         </member>
         <member name="M:Terraria.Player.QuickSpawnItemDirect(Terraria.DataStructures.IEntitySource,Terraria.Item,System.Int32)">
-            <inheritdoc cref="M:Terraria.Player.QuickSpawnClonedItem(Terraria.DataStructures.IEntitySource,Terraria.Item,System.Int32)"/>
+            <summary><inheritdoc cref="M:Terraria.Player.QuickSpawnClonedItem(Terraria.DataStructures.IEntitySource,Terraria.Item,System.Int32)"/></summary>
+            <returns>Returns the Item instance</returns>
         </member>
         <member name="M:Terraria.Player.QuickSpawnItemDirect(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32)">
-            <inheritdoc cref="M:Terraria.Player.QuickSpawnClonedItem(Terraria.DataStructures.IEntitySource,Terraria.Item,System.Int32)"/>
+            <summary><inheritdoc cref="M:Terraria.Player.QuickSpawnItem(Terraria.DataStructures.IEntitySource,System.Int32,System.Int32)"/></summary>
+            <returns>Returns the Item instance</returns>
         </member>
         <member name="M:Terraria.Player.HasBuff(System.Int32)">
             <summary> Returns whether or not this Player currently has a (de)buff of the provided type. </summary>

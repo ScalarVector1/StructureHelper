@@ -161,7 +161,7 @@ namespace StructureHelper
 		/// <param name="pos">The position in the world of the top-leftmost tile to be placed at</param>
 		/// <param name="ignoreNull">If this structure should place null tiles or not</param>
 		/// <returns>If the structure successfully generated or not</returns>
-		internal static unsafe bool Generate(TagCompound tag, Point16 pos, bool ignoreNull = false)
+		public static unsafe bool Generate(TagCompound tag, Point16 pos, bool ignoreNull = false)
 		{
 			var data = (List<TileSaveData>)tag.GetList<TileSaveData>("TileData");
 

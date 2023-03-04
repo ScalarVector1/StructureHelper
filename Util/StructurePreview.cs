@@ -11,7 +11,7 @@ namespace StructureHelper.Util
 	/// <summary>
 	/// Container for a structure's preview image. 
 	/// </summary>
-	internal class StructurePreview : IDisposable
+	public class StructurePreview : IDisposable
 	{
 		private readonly TagCompound tag;
 

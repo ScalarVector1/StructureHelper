@@ -49,8 +49,6 @@ C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\
 C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\Mono.Cecil.Mdb.pdb
 C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\Mono.Cecil.Pdb.pdb
 C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\Mono.Cecil.Rocks.pdb
-C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\MonoMod.RuntimeDetour.xml
-C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\MonoMod.Utils.xml
 C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\ReLogic.pdb
 C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\ReLogic.xml
 C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\System.CodeDom.xml
@@ -165,3 +163,11 @@ C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\
 C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\obj\Release\net6.0\StructureHelper.csproj.AssemblyReference.cache
 C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\obj\Release\net6.0\refint\StructureHelper.dll
+C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\MonoMod.Backports.dll
+C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\MonoMod.Core.dll
+C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\MonoMod.ILHelpers.dll
+C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\MonoMod.Backports.pdb
+C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\MonoMod.Core.pdb
+C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\MonoMod.ILHelpers.pdb
+C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\MonoMod.RuntimeDetour.pdb
+C:\Users\Alex\Documents\My Games\Terraria\tModLoader\ModSources\StructureHelper\bin\Release\net6.0\MonoMod.Utils.pdb
