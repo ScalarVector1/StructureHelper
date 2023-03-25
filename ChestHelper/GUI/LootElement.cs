@@ -37,7 +37,7 @@ namespace StructureHelper.ChestHelper.GUI
             removeButton.Left.Set(-36, 1);
             removeButton.Width.Set(32, 0);
             removeButton.Height.Set(32, 0);
-            removeButton.OnClick += Remove;
+            removeButton.OnLeftClick += Remove;
             Append(removeButton);
 
             min = new NumberSetter(loot.min, "Minimum", 80);
@@ -58,7 +58,7 @@ namespace StructureHelper.ChestHelper.GUI
                 upButton.Width.Set(12, 0);
                 upButton.Height.Set(8, 0);
                 upButton.SetVisibility(1, 0.8f);
-                upButton.OnClick += MoveUp;
+                upButton.OnLeftClick += MoveUp;
                 Append(upButton);
 
                 downButton.Left.Set(8, 0);
@@ -66,7 +66,7 @@ namespace StructureHelper.ChestHelper.GUI
                 downButton.Width.Set(12, 0);
                 downButton.Height.Set(8, 0);
                 downButton.SetVisibility(1, 0.8f);
-                downButton.OnClick += MoveDown;
+                downButton.OnLeftClick += MoveDown;
                 Append(downButton);
             }
         }

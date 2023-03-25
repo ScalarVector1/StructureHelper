@@ -43,7 +43,7 @@ namespace StructureHelper.ChestHelper.GUI
             removeButton.Left.Set(-36, 1);
             removeButton.Width.Set(32, 0);
             removeButton.Height.Set(32, 0);
-            removeButton.OnClick += Remove;
+            removeButton.OnLeftClick += Remove;
             Append(removeButton);
 
             upButton.Left.Set(4, 0);
@@ -51,7 +51,7 @@ namespace StructureHelper.ChestHelper.GUI
             upButton.Width.Set(24, 0);
             upButton.Height.Set(18, 0);
             upButton.SetVisibility(1, 0.8f);
-            upButton.OnClick += MoveUp;
+            upButton.OnLeftClick += MoveUp;
             Append(upButton);
 
             downButton.Left.Set(4, 0);
@@ -59,7 +59,7 @@ namespace StructureHelper.ChestHelper.GUI
             downButton.Width.Set(24, 0);
             downButton.Height.Set(18, 0);
             downButton.SetVisibility(1, 0.8f);
-            downButton.OnClick += MoveDown;
+            downButton.OnLeftClick += MoveDown;
             Append(downButton);
 
             hideButton.Left.Set(-56, 1);
@@ -67,7 +67,7 @@ namespace StructureHelper.ChestHelper.GUI
             hideButton.Width.Set(18, 0);
             hideButton.Height.Set(12, 0);
             hideButton.SetVisibility(1, 0.5f);
-            hideButton.OnClick += Hide;
+            hideButton.OnLeftClick += Hide;
             Append(hideButton);
 
             foreach (Loot loot in rule.pool)
@@ -116,7 +116,7 @@ namespace StructureHelper.ChestHelper.GUI
             }
         }
 
-		public override void Click(UIMouseEvent evt)
+		public override void LeftClick(UIMouseEvent evt)
         {
             if (Main.mouseItem.IsAir || storedHeight > 0) return;
 

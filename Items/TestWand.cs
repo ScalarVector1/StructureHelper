@@ -14,13 +14,13 @@ namespace StructureHelper.Items
 
 		public override void Load()
 		{
-			On.Terraria.Main.DrawPlayers_AfterProjectiles += DrawPreview;
+			Terraria.On_Main.DrawPlayers_AfterProjectiles += DrawPreview;
 		}
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Structure Placer Wand");
-			Tooltip.SetDefault("left click to place the selected structure, right click to open the structure selector");
+			// DisplayName.SetDefault("Structure Placer Wand");
+			// Tooltip.SetDefault("left click to place the selected structure, right click to open the structure selector");
 		}
 
 		public override void SetDefaults()
@@ -61,7 +61,7 @@ namespace StructureHelper.Items
 			return true;
 		}
 
-		private void DrawPreview(On.Terraria.Main.orig_DrawPlayers_AfterProjectiles orig, Main self)
+		private void DrawPreview(Terraria.On_Main.orig_DrawPlayers_AfterProjectiles orig, Main self)
 		{
 			orig(self);
 

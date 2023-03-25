@@ -15,8 +15,8 @@ namespace StructureHelper.Items
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Structure Wand");
-			Tooltip.SetDefault("Select 2 points in the world, then right click to save a structure");
+			// DisplayName.SetDefault("Structure Wand");
+			// Tooltip.SetDefault("Select 2 points in the world, then right click to save a structure");
 		}
 
 		public override void SetDefaults()

@@ -59,15 +59,15 @@ namespace StructureHelper.GUI
 			Append(scrollBar);
 
 			SetDims(refreshButton, -200, 0.5f, -50, 0.1f, 32, 0, 32, 0);
-			refreshButton.OnClick += RefreshButton_OnClick;
+			refreshButton.OnLeftClick += RefreshButton_OnClick;
 			Append(refreshButton);
 
 			SetDims(ignoreButton, -150, 0.5f, -50, 0.1f, 32, 0, 32, 0);
-			ignoreButton.OnClick += IgnoreButton_OnClick;
+			ignoreButton.OnLeftClick += IgnoreButton_OnClick;
 			Append(ignoreButton);
 
 			SetDims(closeButton, 200 - 32, 0.5f, -50, 0.1f, 32, 0, 32, 0);
-			closeButton.OnClick += CloseButton_OnClick;
+			closeButton.OnLeftClick += CloseButton_OnClick;
 			Append(closeButton);
 		}
 
@@ -225,7 +225,7 @@ namespace StructureHelper.GUI
 			}
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void LeftClick(UIMouseEvent evt)
 		{
 			ManualGeneratorMenu.selected = this;
 			ManualGeneratorMenu.multiIndex = 0;
@@ -296,7 +296,7 @@ namespace StructureHelper.GUI
 			base.Draw(spriteBatch);
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void LeftClick(UIMouseEvent evt)
 		{
 			ManualGeneratorMenu.multiIndex = value;
 		}

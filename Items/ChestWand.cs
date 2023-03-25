@@ -12,8 +12,8 @@ namespace StructureHelper.Items
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Chest Wand");
-			Tooltip.SetDefault("Right click to open the chest rule menu\nLeft click a chest to set the current rules on it\nRight click a chest with rules to copy them");
+			// DisplayName.SetDefault("Chest Wand");
+			// Tooltip.SetDefault("Right click to open the chest rule menu\nLeft click a chest to set the current rules on it\nRight click a chest with rules to copy them");
 		}
 
 		public override void SetDefaults()

@@ -36,13 +36,13 @@ namespace StructureHelper.ChestHelper.GUI
             IncrementButton.Width.Set(12, 0);
             IncrementButton.Height.Set(8, 0);
             IncrementButton.Top.Set(7, 0);
-            IncrementButton.OnClick += (n, w) => Value++;
+            IncrementButton.OnLeftClick += (n, w) => Value++;
             Append(IncrementButton);
 
             DecrementButton.Width.Set(12, 0);
             DecrementButton.Height.Set(8, 0);
             DecrementButton.Top.Set(15, 0);
-            DecrementButton.OnClick += (n, w) => Value--;
+            DecrementButton.OnLeftClick += (n, w) => Value--;
             Append(DecrementButton);
         }
 

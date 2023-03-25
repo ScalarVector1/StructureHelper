@@ -37,23 +37,23 @@ namespace StructureHelper.ChestHelper.GUI
             Append(scrollBar);
 
             ManualGeneratorMenu.SetDims(NewGuaranteed, -200, 0.5f, -50, 0.1f, 32, 0, 32, 0);
-            NewGuaranteed.OnClick += (n, m) => ruleElements.Add(new GuaranteedRuleElement());
+            NewGuaranteed.OnLeftClick += (n, m) => ruleElements.Add(new GuaranteedRuleElement());
             Append(NewGuaranteed);
 
             ManualGeneratorMenu.SetDims(NewChance, -160, 0.5f, -50, 0.1f, 32, 0, 32, 0);
-            NewChance.OnClick += (n, m) => ruleElements.Add(new ChanceRuleElement());
+            NewChance.OnLeftClick += (n, m) => ruleElements.Add(new ChanceRuleElement());
             Append(NewChance);
 
             ManualGeneratorMenu.SetDims(NewPool, -120, 0.5f, -50, 0.1f, 32, 0, 32, 0);
-            NewPool.OnClick += (n, m) => ruleElements.Add(new PoolRuleElement());
+            NewPool.OnLeftClick += (n, m) => ruleElements.Add(new PoolRuleElement());
             Append(NewPool);
 
             ManualGeneratorMenu.SetDims(NewPoolChance, -80, 0.5f, -50, 0.1f, 32, 0, 32, 0);
-            NewPoolChance.OnClick += (n, m) => ruleElements.Add(new PoolChanceRuleElement());
+            NewPoolChance.OnLeftClick += (n, m) => ruleElements.Add(new PoolChanceRuleElement());
             Append(NewPoolChance);
 
             ManualGeneratorMenu.SetDims(closeButton, 200 - 32, 0.5f, -50, 0.1f, 32, 0, 32, 0);
-            closeButton.OnClick += (n, m) => Visible = false;
+            closeButton.OnLeftClick += (n, m) => Visible = false;
             Append(closeButton);
         }
 
