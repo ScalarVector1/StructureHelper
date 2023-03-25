@@ -11,7 +11,7 @@
           "tModLoader.CodeAssist": "0.1.5",
           "Basic.Reference.Assemblies.Net60": "1.0.0.0",
           "CsvHelper": "2.0.0.0",
-          "FNA": "22.9.1.0",
+          "FNA": "22.7.0.0",
           "Hjson": "1.0.0.0",
           "Humanizer": "2.2.0.0",
           "Ionic.Zip.Reduced": "1.9.1.8",
@@ -29,8 +29,11 @@
           "Mono.Cecil.Mdb": "0.11.4.0",
           "Mono.Cecil.Pdb": "0.11.4.0",
           "Mono.Cecil.Rocks": "0.11.4.0",
-          "MonoMod.RuntimeDetour": "22.5.31.2",
-          "MonoMod.Utils": "22.5.31.2",
+          "MonoMod.Backports": "22.11.9.0",
+          "MonoMod.Core": "22.11.9.0",
+          "MonoMod.ILHelpers": "22.11.9.0",
+          "MonoMod.RuntimeDetour": "22.11.9.0",
+          "MonoMod.Utils": "22.11.9.0",
           "MP3Sharp": "1.0.0.0",
           "Newtonsoft.Json": "12.0.0.0",
           "NVorbis": "0.10.0.3",
@@ -53,7 +56,7 @@
           "System.Security.Permissions": "6.0.0.0",
           "System.Windows.Extensions": "6.0.0.0",
           "TerrariaHooks": "0.0.0.0",
-          "tModLoader": "1.4.3.6",
+          "tModLoader": "1.4.4.9",
           "tModPorter": "1.0.0.0",
           "UtfUnknown": "2.0.0.0"
         },
@@ -78,11 +81,11 @@
           }
         }
       },
-      "FNA/22.9.1.0": {
+      "FNA/22.7.0.0": {
         "runtime": {
           "FNA.dll": {
-            "assemblyVersion": "22.9.1.0",
-            "fileVersion": "22.9.1.0"
+            "assemblyVersion": "22.7.0.0",
+            "fileVersion": "22.7.0.0"
           }
         }
       },
@@ -427,19 +430,43 @@
           }
         }
       },
-      "MonoMod.RuntimeDetour/22.5.31.2": {
+      "MonoMod.Backports/22.11.9.0": {
         "runtime": {
-          "MonoMod.RuntimeDetour.dll": {
-            "assemblyVersion": "22.5.31.2",
-            "fileVersion": "22.5.31.2"
+          "MonoMod.Backports.dll": {
+            "assemblyVersion": "22.11.9.0",
+            "fileVersion": "22.11.9.0"
           }
         }
       },
-      "MonoMod.Utils/22.5.31.2": {
+      "MonoMod.Core/22.11.9.0": {
+        "runtime": {
+          "MonoMod.Core.dll": {
+            "assemblyVersion": "22.11.9.0",
+            "fileVersion": "22.11.9.0"
+          }
+        }
+      },
+      "MonoMod.ILHelpers/22.11.9.0": {
+        "runtime": {
+          "MonoMod.ILHelpers.dll": {
+            "assemblyVersion": "22.11.9.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "MonoMod.RuntimeDetour/22.11.9.0": {
+        "runtime": {
+          "MonoMod.RuntimeDetour.dll": {
+            "assemblyVersion": "22.11.9.0",
+            "fileVersion": "22.11.9.0"
+          }
+        }
+      },
+      "MonoMod.Utils/22.11.9.0": {
         "runtime": {
           "MonoMod.Utils.dll": {
-            "assemblyVersion": "22.5.31.2",
-            "fileVersion": "22.5.31.2"
+            "assemblyVersion": "22.11.9.0",
+            "fileVersion": "22.11.9.0"
           }
         }
       },
@@ -619,11 +646,11 @@
           }
         }
       },
-      "tModLoader/1.4.3.6": {
+      "tModLoader/1.4.4.9": {
         "runtime": {
           "tModLoader.dll": {
-            "assemblyVersion": "1.4.3.6",
-            "fileVersion": "1.4.3.6"
+            "assemblyVersion": "1.4.4.9",
+            "fileVersion": "1.4.4.9"
           }
         }
       },
@@ -668,7 +695,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "FNA/22.9.1.0": {
+    "FNA/22.7.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
@@ -758,12 +785,27 @@
       "serviceable": false,
       "sha512": ""
     },
-    "MonoMod.RuntimeDetour/22.5.31.2": {
+    "MonoMod.Backports/22.11.9.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "MonoMod.Utils/22.5.31.2": {
+    "MonoMod.Core/22.11.9.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MonoMod.ILHelpers/22.11.9.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MonoMod.RuntimeDetour/22.11.9.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MonoMod.Utils/22.11.9.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
@@ -878,7 +920,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "tModLoader/1.4.3.6": {
+    "tModLoader/1.4.4.9": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

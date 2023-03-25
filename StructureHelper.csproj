@@ -9,11 +9,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
+    <None Remove="Localization\en-US.hjson" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="StructureHelper">
-      <HintPath>..\DragonLens\lib\StructureHelper.dll</HintPath>
-    </Reference>
+    <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
   </ItemGroup>
 </Project>

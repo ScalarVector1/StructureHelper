@@ -1,0 +1,56 @@
+
+Mods: {
+	StructureHelper: {
+		Items: {
+			ChestWand: {
+				DisplayName: Chest Wand
+				Tooltip:
+					'''
+					Right click to open the chest rule menu
+					Left click a chest to set the current rules on it
+					Right click a chest with rules to copy them
+					'''
+			}
+
+			MultistructureWand: {
+				DisplayName: Multistructure Wand
+				Tooltip: Select 2 points in the world, then right click to add a structure. Right click in your inventory when done to save.
+			}
+
+			StructureWand: {
+				DisplayName: Structure Wand
+				Tooltip: Select 2 points in the world, then right click to save a structure
+			}
+
+			TestWand: {
+				DisplayName: Structure Placer Wand
+				Tooltip: left click to place the selected structure, right click to open the structure selector
+			}
+
+			NullBlockItem: {
+				DisplayName: Null Block
+				Tooltip:
+					'''
+					Use these in a structure to indicate where the generator
+					 should leave whatever already exists in the world untouched
+					 ignores walls, use null walls for that :3
+					'''
+			}
+
+			NullTileAndWallPlacer: {
+				DisplayName: Null Tile Place-O-Matic
+				Tooltip: Places a null tile and null wall at the same time!
+			}
+
+			NullWallItem: {
+				DisplayName: Null Wall
+				Tooltip:
+					'''
+					Use these in a structure to indicate where the generator
+					 should leave walls that already exists in the world untouched
+					 for walls only, use null blocks for other things
+					'''
+			}
+		}
+	}
+}

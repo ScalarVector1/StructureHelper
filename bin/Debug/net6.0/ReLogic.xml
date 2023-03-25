@@ -5,9 +5,9 @@
     </assembly>
     <members>
         <member name="T:ReLogic.Content.AssetRepository">
-            <summary>
-            Async loading has been fully integrated into AssetRepository
-            Assets which are asynchronously loaded will:
+             <summary>
+             Async loading has been fully integrated into AssetRepository
+             Assets which are asynchronously loaded will:
             	- be deserialized on the thread pool
             	- return to the main thread if the asset can only be created there (for assets requiring GraphicsDevice)
             	- become loaded at a defined time:
@@ -15,11 +15,11 @@
             		- when content sources are changing or
             		- when requested by ImmediateLoad on the main thread
             
-            Assets which require main thread creation, but are requested via ImmediateLoad on a worker thread will:
+             Assets which require main thread creation, but are requested via ImmediateLoad on a worker thread will:
             	- be deserialized immediately on the worker thread
             	- transition to asynchronous loading for creation
             
-            </summary>
+             </summary>
         </member>
         <member name="M:ReLogic.Content.Sources.IContentSource.GetExtension(System.String)">
             <summary>
