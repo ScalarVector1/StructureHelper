@@ -236,6 +236,13 @@ namespace StructureHelper
 							*shortPtr = d.packedLiquidData;
 						}
 
+						fixed (void* ptr = &tile.Get<TileWallBrightnessInvisibilityData>())
+						{
+							byte* bytePtr = (byte*)ptr;
+
+							*bytePtr = d.brightnessInvisibilityData;
+						}
+
 						if (!d.Active)
 							tile.HasTile = false;
 
