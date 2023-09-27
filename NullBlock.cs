@@ -11,10 +11,13 @@ namespace StructureHelper
 			Main.tileSolid[Type] = true;
 			TileID.Sets.DrawsWalls[Type] = true;
 		}
+
+		public override bool CanDrop(int i, int j) { return false; }
 	}
 
 	class NullWall : ModWall
 	{
+		public override bool Drop(int i, int j, ref int type) { return false; }
 	}
 
 	class NullBlockItem : ModItem
