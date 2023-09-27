@@ -29,11 +29,12 @@
           "Mono.Cecil.Mdb": "0.11.4.0",
           "Mono.Cecil.Pdb": "0.11.4.0",
           "Mono.Cecil.Rocks": "0.11.4.0",
-          "MonoMod.Backports": "22.11.9.0",
-          "MonoMod.Core": "22.11.9.0",
-          "MonoMod.ILHelpers": "22.11.9.0",
-          "MonoMod.RuntimeDetour": "22.11.9.0",
-          "MonoMod.Utils": "22.11.9.0",
+          "MonoMod.Backports": "1.0.1.0",
+          "MonoMod.Core": "1.0.1.0",
+          "MonoMod.Iced": "1.17.0.0",
+          "MonoMod.ILHelpers": "1.0.0.0",
+          "MonoMod.RuntimeDetour": "25.0.2.0",
+          "MonoMod.Utils": "25.0.3.0",
           "MP3Sharp": "1.0.0.0",
           "Newtonsoft.Json": "12.0.0.0",
           "NVorbis": "0.10.0.3",
@@ -430,43 +431,51 @@
           }
         }
       },
-      "MonoMod.Backports/22.11.9.0": {
+      "MonoMod.Backports/1.0.1.0": {
         "runtime": {
           "MonoMod.Backports.dll": {
-            "assemblyVersion": "22.11.9.0",
-            "fileVersion": "22.11.9.0"
+            "assemblyVersion": "1.0.1.0",
+            "fileVersion": "1.0.1.0"
           }
         }
       },
-      "MonoMod.Core/22.11.9.0": {
+      "MonoMod.Core/1.0.1.0": {
         "runtime": {
           "MonoMod.Core.dll": {
-            "assemblyVersion": "22.11.9.0",
-            "fileVersion": "22.11.9.0"
+            "assemblyVersion": "1.0.1.0",
+            "fileVersion": "1.0.1.0"
           }
         }
       },
-      "MonoMod.ILHelpers/22.11.9.0": {
+      "MonoMod.Iced/1.17.0.0": {
+        "runtime": {
+          "MonoMod.Iced.dll": {
+            "assemblyVersion": "1.17.0.0",
+            "fileVersion": "1.17.0.0"
+          }
+        }
+      },
+      "MonoMod.ILHelpers/1.0.0.0": {
         "runtime": {
           "MonoMod.ILHelpers.dll": {
-            "assemblyVersion": "22.11.9.0",
+            "assemblyVersion": "1.0.0.0",
             "fileVersion": "0.0.0.0"
           }
         }
       },
-      "MonoMod.RuntimeDetour/22.11.9.0": {
+      "MonoMod.RuntimeDetour/25.0.2.0": {
         "runtime": {
           "MonoMod.RuntimeDetour.dll": {
-            "assemblyVersion": "22.11.9.0",
-            "fileVersion": "22.11.9.0"
+            "assemblyVersion": "25.0.2.0",
+            "fileVersion": "25.0.2.0"
           }
         }
       },
-      "MonoMod.Utils/22.11.9.0": {
+      "MonoMod.Utils/25.0.3.0": {
         "runtime": {
           "MonoMod.Utils.dll": {
-            "assemblyVersion": "22.11.9.0",
-            "fileVersion": "22.11.9.0"
+            "assemblyVersion": "25.0.3.0",
+            "fileVersion": "25.0.3.0"
           }
         }
       },
@@ -785,27 +794,32 @@
       "serviceable": false,
       "sha512": ""
     },
-    "MonoMod.Backports/22.11.9.0": {
+    "MonoMod.Backports/1.0.1.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "MonoMod.Core/22.11.9.0": {
+    "MonoMod.Core/1.0.1.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "MonoMod.ILHelpers/22.11.9.0": {
+    "MonoMod.Iced/1.17.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "MonoMod.RuntimeDetour/22.11.9.0": {
+    "MonoMod.ILHelpers/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "MonoMod.Utils/22.11.9.0": {
+    "MonoMod.RuntimeDetour/25.0.2.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MonoMod.Utils/25.0.3.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
