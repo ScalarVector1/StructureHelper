@@ -103,7 +103,7 @@ namespace StructureHelper
 		{
 			TagCompound tag = GetTag(path, mod, fullPath);
 
-			dims = new Point16(tag.GetInt("Width"), tag.GetInt("Height"));
+			dims = new Point16(tag.GetInt("Width") + 1, tag.GetInt("Height") + 1);
 			return true;
 		}
 
@@ -131,7 +131,7 @@ namespace StructureHelper
 
 			TagCompound targetStructure = structures[index];
 
-			dims = new Point16(targetStructure.GetInt("Width"), targetStructure.GetInt("Height"));
+			dims = new Point16(targetStructure.GetInt("Width") + 1, targetStructure.GetInt("Height") + 1);
 			return true;
 		}
 
