@@ -231,10 +231,12 @@ namespace StructureHelper.GUI
 			ManualGeneratorMenu.multiIndex = 0;
 
 			if (!Generator.StructureDataCache.ContainsKey(path))
+			{
 				Generator.LoadFile(path, StructureHelper.Instance, true);
 
-			ManualGeneratorMenu.preview?.Dispose();
-			ManualGeneratorMenu.preview = new StructurePreview(name, Generator.StructureDataCache[path]);
+				ManualGeneratorMenu.preview?.Dispose();
+				ManualGeneratorMenu.preview = new StructurePreview(name, Generator.StructureDataCache[path]);
+			}
 
 			if (Generator.StructureDataCache[path].ContainsKey("Structures"))
 			{

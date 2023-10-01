@@ -65,7 +65,7 @@ namespace StructureHelper.Items
 		{
 			orig(self);
 
-			if (ManualGeneratorMenu.selected != null && Main.LocalPlayer.HeldItem.type == Item.type)
+			if (ManualGeneratorMenu.selected != null && ManualGeneratorMenu.preview != null && Main.LocalPlayer.HeldItem.type == Item.type)
 			{
 				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
