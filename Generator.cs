@@ -194,7 +194,7 @@ namespace StructureHelper
 
 						if (parts[0] == "StructureHelper" && parts[1] == "NullBlock" && !ignoreNull)
 							isNullTile = true;
-						else if (parts.Length > 1 && ModLoader.GetMod(parts[0]) != null && ModLoader.GetMod(parts[0]).TryFind<ModTile>(parts[1], out ModTile modTileType))
+						else if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModTile>(parts[1], out ModTile modTileType))
 							type = modTileType.Type;
 						else
 							type = 0;
@@ -206,7 +206,7 @@ namespace StructureHelper
 
 						if (parts[0] == "StructureHelper" && parts[1] == "NullWall" && !ignoreNull)
 							isNullWall = true;
-						else if (parts.Length > 1 && ModLoader.GetMod(parts[0]) != null && ModLoader.GetMod(parts[0]).TryFind<ModWall>(parts[1], out ModWall modWallType))
+						else if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModWall>(parts[1], out ModWall modWallType))
 							wallType = modWallType.Type;
 						else
 							wallType = 0;
@@ -254,13 +254,18 @@ namespace StructureHelper
 									if (!int.TryParse(d.TEType, out int typ))
 									{
 										string[] parts = d.TEType.Split();
-										typ = ModLoader.GetMod(parts[0]).Find<ModTileEntity>(parts[1]).Type;
+										
+										if (ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModTileEntity>(parts[1], out ModTileEntity te))
+											typ = te.Type;
 									}
 
-									TileEntity.PlaceEntityNet(pos.X + x, pos.Y + y, typ);
+									if (typ != 0)
+									{
+										TileEntity.PlaceEntityNet(pos.X + x, pos.Y + y, typ);
 
-									if (d.TEData != null && typ > 2)
-										(TileEntity.ByPosition[new Point16(pos.X + x, pos.Y + y)] as ModTileEntity).LoadData(d.TEData);
+										if (d.TEData != null && typ > 2)
+											(TileEntity.ByPosition[new Point16(pos.X + x, pos.Y + y)] as ModTileEntity).LoadData(d.TEData);
+									}
 								}
 							}
 						}

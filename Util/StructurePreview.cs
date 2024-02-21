@@ -11,7 +11,7 @@ namespace StructureHelper.Util
 	/// <summary>
 	/// Container for a structure's preview image. 
 	/// </summary>
-	public class StructurePreview : IDisposable, ILoadable
+	public class StructurePreview : IDisposable
 	{
 		private readonly TagCompound tag;
 
@@ -35,50 +35,19 @@ namespace StructureHelper.Util
 		/// </summary>
 		public int Height => preview?.Height ?? 1;
 
-		/// <summary>
-		/// A queue of previews to render textures for when the next opportunity arises
-		/// </summary>
-		public static List<StructurePreview> queue = new();
-
 		public StructurePreview(string name, TagCompound structure)
 		{
 			this.name = name;
 			tag = structure;
 
-			queue.Add(this);
-		}
-
-		public void Load(Mod mod)
-		{
-			On_Main.CheckMonoliths += DrawQueuedPreview;
-		}
-
-		public void Unload()
-		{
-
-		}
-
-		/// <summary>
-		/// When the opportunity in the rendering cycle arises, render out all of the queued previews
-		/// </summary>
-		/// <param name="orig"></param>
-		private void DrawQueuedPreview(On_Main.orig_CheckMonoliths orig)
-		{
-			foreach (var queued in queue)
-			{
-				queued.preview = queued.GeneratePreview();
-			}
-
-			queue.Clear();
-
-			orig();
+			PreviewRenderQueue.queue.Add(this);
 		}
 
 		/// <summary>
 		/// Renders and saves the actual preview to a RenderTarget.
 		/// </summary>
 		/// <returns>The texture created</returns>
-		private Texture2D GeneratePreview()
+		internal Texture2D GeneratePreview()
 		{
 			int width = tag.GetInt("Width");
 			int height = tag.GetInt("Height");
@@ -106,7 +75,7 @@ namespace StructureHelper.Util
 					{
 						string[] parts = d.tile.Split();
 
-						if (parts.Length > 1 && ModLoader.GetMod(parts[0]) != null && ModLoader.GetMod(parts[0]).TryFind<ModTile>(parts[1], out ModTile modTileType))
+						if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModTile>(parts[1], out ModTile modTileType))
 							type = modTileType.Type;
 						else
 							type = 0;
@@ -116,7 +85,7 @@ namespace StructureHelper.Util
 					{
 						string[] parts = d.wall.Split();
 
-						if (parts.Length > 1 && ModLoader.GetMod(parts[0]) != null && ModLoader.GetMod(parts[0]).TryFind<ModWall>(parts[1], out ModWall modWallType))
+						if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModWall>(parts[1], out ModWall modWallType))
 							wallType = modWallType.Type;
 						else
 							wallType = 0;
@@ -146,6 +115,40 @@ namespace StructureHelper.Util
 		public void Dispose()
 		{
 			preview?.Dispose();
+		}
+	}
+
+	public class PreviewRenderQueue : ILoadable
+	{
+		/// <summary>
+		/// A queue of previews to render textures for when the next opportunity arises
+		/// </summary>
+		public static List<StructurePreview> queue = new();
+
+		public void Load(Mod mod)
+		{
+			On_Main.CheckMonoliths += DrawQueuedPreview;
+		}
+
+		public void Unload()
+		{
+
+		}
+
+		/// <summary>
+		/// When the opportunity in the rendering cycle arises, render out all of the queued previews
+		/// </summary>
+		/// <param name="orig"></param>
+		private void DrawQueuedPreview(On_Main.orig_CheckMonoliths orig)
+		{
+			foreach (var queued in queue)
+			{
+				queued.preview = queued.GeneratePreview();
+			}
+
+			queue.Clear();
+
+			orig();
 		}
 	}
 }
