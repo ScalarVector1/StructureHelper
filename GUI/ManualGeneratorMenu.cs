@@ -83,6 +83,7 @@ namespace StructureHelper.GUI
 		private void CloseButton_OnClick(UIMouseEvent evt, UIElement listeningElement)
 		{
 			TestWand.UIVisible = false;
+			Main.isMouseLeftConsumedByUI = true;
 		}
 
 		private void IgnoreButton_OnClick(UIMouseEvent evt, UIElement listeningElement)
@@ -212,9 +213,6 @@ namespace StructureHelper.GUI
 			if (!Generator.StructureDataCache.ContainsKey(path))
 			{
 				Generator.LoadFile(path, StructureHelper.Instance, true);
-
-				ManualGeneratorMenu.preview?.Dispose();
-				ManualGeneratorMenu.preview = new StructurePreview(name, Generator.StructureDataCache[path]);
 			}
 
 			if (Generator.StructureDataCache[path].ContainsKey("Structures"))
@@ -240,6 +238,9 @@ namespace StructureHelper.GUI
 			else
 			{
 				ManualGeneratorMenu.multiMode = false;
+
+				ManualGeneratorMenu.preview?.Dispose();
+				ManualGeneratorMenu.preview = new StructurePreview(name, Generator.StructureDataCache[path]);
 			}
 		}
 	}
