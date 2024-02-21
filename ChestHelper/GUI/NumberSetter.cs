@@ -1,71 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using StructureHelper.Content.GUI.FieldEditors;
 using StructureHelper.GUI;
-using Terraria;
 using Terraria.GameContent.UI.Elements;
-using Terraria.ModLoader;
 using Terraria.UI;
-using static Terraria.ModLoader.ModContent;
 
 namespace StructureHelper.ChestHelper.GUI
 {
-    class NumberSetter : UIElement
-    {
-        public int Value;
-        string Text;
-        string Suffix;
+	class NumberSetter : UIElement
+	{
+		string Text;
+		string Suffix;
 
-        UIImageButton IncrementButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Up"));
-        UIImageButton DecrementButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Down"));
+		TextField editor = new(InputType.integer);
 
-        public NumberSetter(int value, string text, int xOff, string suffix = "")
-        {
-            Value = value;
-            Text = text;
-            Suffix = suffix;
+		public int Value
+		{
+			get
+			{
+				if (int.TryParse(editor.currentValue, out int result))
+					return result;
 
-            Width.Set(32, 0);
-            Height.Set(32, 0);
-            Left.Set(-xOff, 1);
+				return 0;
+			}
 
-            IncrementButton.Width.Set(12, 0);
-            IncrementButton.Height.Set(8, 0);
-            IncrementButton.Top.Set(7, 0);
-            IncrementButton.OnLeftClick += (n, w) => Value++;
-            Append(IncrementButton);
+			set => editor.currentValue = value.ToString();
+		}
 
-            DecrementButton.Width.Set(12, 0);
-            DecrementButton.Height.Set(8, 0);
-            DecrementButton.Top.Set(15, 0);
-            DecrementButton.OnLeftClick += (n, w) => Value--;
-            Append(DecrementButton);
-        }
+		public NumberSetter(int value, string text, int xOff, string suffix = "")
+		{
+			Value = value;
+			Text = text;
+			Suffix = suffix;
 
-        public override void ScrollWheel(UIScrollWheelEvent evt)
-        {
-            Value += evt.ScrollWheelValue > 0 ? 1 : -1;
-        }
+			Width.Set(32, 0);
+			Height.Set(50, 0);
+			Left.Set(-xOff, 1);
 
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            Vector2 pos = GetDimensions().ToRectangle().TopLeft();
-            var target = new Rectangle((int)pos.X + 14, (int)pos.Y + 8, 20, 16);
+			editor.Left.Set(0, 0);
+			editor.Top.Set(16, 0);
+			editor.Width.Set(32, 0);
+			editor.Height.Set(22, 0);
+			Append(editor);
+		}
 
-            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, Color.Black * 0.5f);
-            Utils.DrawBorderString(spriteBatch, Value.ToString() + Suffix, target.Center(), Color.White, 0.7f, 0.5f, 0.4f);
+		public override void Draw(SpriteBatch spriteBatch)
+		{
+			if (IsMouseHovering)
+			{
+				Tooltip.SetName(Text);
+				Tooltip.SetTooltip("Click to type");
+			}
 
-            if (Value < 1)
-                Value = 1;
+			base.Draw(spriteBatch);
 
-            if (IsMouseHovering)
-                Main.hoverItemName = Text;
-
-            base.Draw(spriteBatch);
-        }
-    }
+			Utils.DrawBorderString(spriteBatch, Text, GetDimensions().Center() + Vector2.UnitY * -22, Color.White, 0.7f, 0.5f, 0f);
+			Utils.DrawBorderString(spriteBatch, Suffix, GetDimensions().Center() + new Vector2(16, 6), Color.White, 0.7f, 0.5f, 0.5f);
+		}
+	}
 }

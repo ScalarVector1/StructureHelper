@@ -40,7 +40,8 @@ namespace StructureHelper.Items
 		{
 			if (player.altFunctionUse == 2)
 			{
-				UIVisible = !UIVisible;
+				ManualGeneratorMenu.LoadStructures();
+				UIVisible = !UIVisible;			
 				return true;
 			}
 
@@ -72,9 +73,10 @@ namespace StructureHelper.Items
 				var pos = new Point16(Player.tileTargetX, Player.tileTargetY);
 				Vector2 pos2 = pos.ToVector2() * 16 - Main.screenPosition;
 
-				ManualGeneratorMenu.DrawBox(Main.spriteBatch, new Rectangle((int)pos2.X - 4, (int)pos2.Y - 4, ManualGeneratorMenu.preview.Width + 8, ManualGeneratorMenu.preview.Height + 8), Color.Red, true);
+				Helpers.GUIHelper.DrawBox(Main.spriteBatch, new Rectangle((int)pos2.X - 4, (int)pos2.Y - 4, ManualGeneratorMenu.preview.Width + 8, ManualGeneratorMenu.preview.Height + 8), Color.Red * 0.5f);
 
-				Main.spriteBatch.Draw(ManualGeneratorMenu.preview?.preview, pos2, Color.White * 0.5f);
+				if (ManualGeneratorMenu.preview?.preview != null)
+					Main.spriteBatch.Draw(ManualGeneratorMenu.preview?.preview, pos2, Color.White * 0.5f);
 
 				Main.spriteBatch.End();
 			}

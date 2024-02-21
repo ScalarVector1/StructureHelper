@@ -11,7 +11,7 @@ namespace StructureHelper.Util
 	/// <summary>
 	/// Container for a structure's preview image. 
 	/// </summary>
-	public class StructurePreview : IDisposable
+	public class StructurePreview : IDisposable, ILoadable
 	{
 		private readonly TagCompound tag;
 
@@ -28,19 +28,50 @@ namespace StructureHelper.Util
 		/// <summary>
 		/// Width of the preview texture, in pixels
 		/// </summary>
-		public int Width => preview.Width;
+		public int Width => preview?.Width ?? 1;
 
 		/// <summary>
 		/// Height of the preview texture, in pixels
 		/// </summary>
-		public int Height => preview.Height;
+		public int Height => preview?.Height ?? 1;
+
+		/// <summary>
+		/// A queue of previews to render textures for when the next opportunity arises
+		/// </summary>
+		public static List<StructurePreview> queue = new();
 
 		public StructurePreview(string name, TagCompound structure)
 		{
 			this.name = name;
 			tag = structure;
 
-			preview = GeneratePreview();
+			queue.Add(this);
+		}
+
+		public void Load(Mod mod)
+		{
+			On_Main.CheckMonoliths += DrawQueuedPreview;
+		}
+
+		public void Unload()
+		{
+
+		}
+
+		/// <summary>
+		/// When the opportunity in the rendering cycle arises, render out all of the queued previews
+		/// </summary>
+		/// <param name="orig"></param>
+		private void DrawQueuedPreview(On_Main.orig_CheckMonoliths orig)
+		{
+			foreach (var queued in queue)
+			{
+				queued.preview = queued.GeneratePreview();
+			}
+
+			queue.Clear();
+
+			orig();
 		}
 
 		/// <summary>
@@ -62,7 +93,6 @@ namespace StructureHelper.Util
 
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-			Main.spriteBatch.End();
 			Main.spriteBatch.Begin();
 
 			for (int x = 0; x <= width; x++)
@@ -107,7 +137,6 @@ namespace StructureHelper.Util
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin();
 
 			Main.graphics.GraphicsDevice.SetRenderTargets(null);
 			Main.graphics.GraphicsDevice.SetRenderTargets(oldTargets);

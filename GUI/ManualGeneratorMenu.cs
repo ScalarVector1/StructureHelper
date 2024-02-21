@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StructureHelper.Core.Loaders.UILoading;
 using StructureHelper.Items;
 using StructureHelper.Util;
 using System;
@@ -13,7 +14,7 @@ using Terraria.UI;
 
 namespace StructureHelper.GUI
 {
-	class ManualGeneratorMenu : UIState
+	class ManualGeneratorMenu : SmartUIState
 	{
 		public static StructureEntry selected;
 		public static bool ignoreNulls = false;
@@ -30,8 +31,16 @@ namespace StructureHelper.GUI
 		public static UIImageButton ignoreButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Null"));
 		public static UIImageButton closeButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
 
-		public static bool Visible => TestWand.UIVisible;
+		public override bool Visible => TestWand.UIVisible;
 
+		public override int InsertionIndex(List<GameInterfaceLayer> layers)
+		{
+			return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+		}
+
+		/// <summary>
+		/// Loads all structure files and generates elements to be clicked for them
+		/// </summary>
 		public static void LoadStructures()
 		{
 			structureElements.Clear();
@@ -88,7 +97,7 @@ namespace StructureHelper.GUI
 			Main.isMouseLeftConsumedByUI = true;
 		}
 
-		public override void Update(GameTime gameTime)
+		public override void SafeUpdate(GameTime gameTime)
 		{
 			Recalculate();
 
@@ -97,35 +106,33 @@ namespace StructureHelper.GUI
 
 			if (ignoreButton.IsMouseHovering)
 			{
-				Main.hoverItemName = $"Place with null tiles: {ignoreNulls}";
-				Main.LocalPlayer.mouseInterface = true;
+				Tooltip.SetName($"Place with null tiles: {ignoreNulls}");
+				Tooltip.SetTooltip("If the structure placed manually should have it's null tiles placed or not. Turn this off to get a realistic generation, or on if you want to edit the structure.");
 			}
 
 			if (refreshButton.IsMouseHovering)
 			{
-				Main.hoverItemName = "Reload structure folder";
-				Main.LocalPlayer.mouseInterface = true;
+				Tooltip.SetName("Reload");
+				Tooltip.SetTooltip("Reload structures from the folder, use this if you change the folders contents externally and want to see it reflected here.");
 			}
 
 			if (closeButton.IsMouseHovering)
 			{
-				Main.hoverItemName = "Close";
-				Main.LocalPlayer.mouseInterface = true;
+				Tooltip.SetName("Close");
+				Tooltip.SetTooltip("Close this menu");
 			}
-
-			base.Update(gameTime);
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			var color = new Color(49, 84, 141);
-			DrawBox(spriteBatch, ignoreButton.GetDimensions().ToRectangle(), ignoreButton.IsMouseHovering ? color : color * 0.8f);
-			DrawBox(spriteBatch, refreshButton.GetDimensions().ToRectangle(), refreshButton.IsMouseHovering ? color : color * 0.8f);
-			DrawBox(spriteBatch, closeButton.GetDimensions().ToRectangle(), closeButton.IsMouseHovering ? color : color * 0.8f);
+			Helpers.GUIHelper.DrawBox(spriteBatch, ignoreButton.GetDimensions().ToRectangle(), ignoreButton.IsMouseHovering ? color : color * 0.8f);
+			Helpers.GUIHelper.DrawBox(spriteBatch, refreshButton.GetDimensions().ToRectangle(), refreshButton.IsMouseHovering ? color : color * 0.8f);
+			Helpers.GUIHelper.DrawBox(spriteBatch, closeButton.GetDimensions().ToRectangle(), closeButton.IsMouseHovering ? color : color * 0.8f);
 
 			var rect = structureElements.GetDimensions().ToRectangle();
 			rect.Inflate(30, 10);
-			DrawBox(spriteBatch, rect, new Color(20, 40, 60) * 0.8f);
+			Helpers.GUIHelper.DrawBox(spriteBatch, rect, new Color(20, 40, 60) * 0.8f);
 
 			base.Draw(spriteBatch);
 
@@ -150,34 +157,6 @@ namespace StructureHelper.GUI
 			ele.Top.Set(y, yp);
 			ele.Width.Set(w, wp);
 			ele.Height.Set(h, hp);
-		}
-
-		public static void DrawBox(SpriteBatch sb, Rectangle target, Color color = default, bool outlineOnly = false)
-		{
-			Texture2D tex = ModContent.Request<Texture2D>("StructureHelper/GUI/Box").Value;
-
-			if (color == default)
-				color = new Color(49, 84, 141) * 0.8f;
-
-			var sourceCorner = new Rectangle(0, 0, 6, 6);
-			var sourceEdge = new Rectangle(6, 0, 4, 6);
-			var sourceCenter = new Rectangle(6, 6, 4, 4);
-
-			Rectangle inner = target;
-			inner.Inflate(-4, -4);
-
-			if (!outlineOnly)
-				sb.Draw(tex, inner, sourceCenter, color);
-
-			sb.Draw(tex, new Rectangle(target.X + 2, target.Y, target.Width - 4, 6), sourceEdge, color, 0, Vector2.Zero, 0, 0);
-			sb.Draw(tex, new Rectangle(target.X, target.Y - 2 + target.Height, target.Height - 4, 6), sourceEdge, color, -(float)Math.PI * 0.5f, Vector2.Zero, 0, 0);
-			sb.Draw(tex, new Rectangle(target.X - 2 + target.Width, target.Y + target.Height, target.Width - 4, 6), sourceEdge, color, (float)Math.PI, Vector2.Zero, 0, 0);
-			sb.Draw(tex, new Rectangle(target.X + target.Width, target.Y + 2, target.Height - 4, 6), sourceEdge, color, (float)Math.PI * 0.5f, Vector2.Zero, 0, 0);
-
-			sb.Draw(tex, new Rectangle(target.X, target.Y, 6, 6), sourceCorner, color, 0, Vector2.Zero, 0, 0);
-			sb.Draw(tex, new Rectangle(target.X + target.Width, target.Y, 6, 6), sourceCorner, color, (float)Math.PI * 0.5f, Vector2.Zero, 0, 0);
-			sb.Draw(tex, new Rectangle(target.X + target.Width, target.Y + target.Height, 6, 6), sourceCorner, color, (float)Math.PI, Vector2.Zero, 0, 0);
-			sb.Draw(tex, new Rectangle(target.X, target.Y + target.Height, 6, 6), sourceCorner, color, (float)Math.PI * 1.5f, Vector2.Zero, 0, 0);
 		}
 	}
 
@@ -213,7 +192,7 @@ namespace StructureHelper.GUI
 			if (Active)
 				color = Color.Yellow;
 
-			ManualGeneratorMenu.DrawBox(spriteBatch, mainBox, IsMouseHovering || Active ? new Color(49, 84, 141) : new Color(49, 84, 141) * 0.6f);
+			Helpers.GUIHelper.DrawBox(spriteBatch, mainBox, IsMouseHovering || Active ? new Color(49, 84, 141) : new Color(49, 84, 141) * 0.6f);
 			Utils.DrawBorderString(spriteBatch, name, mainBox.Center() + Vector2.UnitY * 4, color, 0.8f, 0.5f, 0.5f);
 
 			base.Draw(spriteBatch);
@@ -292,7 +271,7 @@ namespace StructureHelper.GUI
 			if (Active)
 				color = Color.Yellow;
 
-			ManualGeneratorMenu.DrawBox(spriteBatch, GetDimensions().ToRectangle(), IsMouseHovering || Active ? new Color(49, 84, 141) : new Color(49, 84, 141) * 0.6f);
+			Helpers.GUIHelper.DrawBox(spriteBatch, GetDimensions().ToRectangle(), IsMouseHovering || Active ? new Color(49, 84, 141) : new Color(49, 84, 141) * 0.6f);
 			Utils.DrawBorderString(spriteBatch, value.ToString(), pos + Vector2.UnitY * 4, color, 0.8f, 0.5f, 0.5f);
 
 			base.Draw(spriteBatch);

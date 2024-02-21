@@ -1,56 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StructureHelper.ChestHelper.GUI;
-using StructureHelper.GUI;
-using StructureHelper.Items;
-using System.Collections.Generic;
-using Terraria;
+﻿using StructureHelper.Items;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
-using Terraria.UI;
 
 namespace StructureHelper
 {
 	public class UIRenderer : ModSystem
 	{
-		internal static UserInterface GeneratorMenuUI;
-		internal static ManualGeneratorMenu GeneratorMenu;
-
-		internal static UserInterface ChestMenuUI;
-		internal static ChestCustomizerState ChestCustomizer;
-
-		public override void Load()
-		{
-			GeneratorMenuUI = new UserInterface();
-			GeneratorMenu = new ManualGeneratorMenu();
-			GeneratorMenuUI.SetState(GeneratorMenu);
-
-			ChestMenuUI = new UserInterface();
-			ChestCustomizer = new ChestCustomizerState();
-			ChestMenuUI.SetState(ChestCustomizer);
-		}
-
-		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
-		{
-			layers.Insert(layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text")), new LegacyGameInterfaceLayer("GUI Menus",
-				delegate
-				{
-					if (ManualGeneratorMenu.Visible)
-					{
-						GeneratorMenuUI.Update(Main._drawInterfaceGameTime);
-						GeneratorMenu.Draw(Main.spriteBatch);
-					}
-
-					if (ChestCustomizerState.Visible)
-					{
-						ChestMenuUI.Update(Main._drawInterfaceGameTime);
-						ChestCustomizer.Draw(Main.spriteBatch);
-					}
-
-					return true;
-				}, InterfaceScaleType.UI));
-		}
-
 		public override void PostDrawInterface(SpriteBatch spriteBatch)
 		{
 			if (Main.LocalPlayer.HeldItem.ModItem is StructureWand)

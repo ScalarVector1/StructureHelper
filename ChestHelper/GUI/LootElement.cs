@@ -1,147 +1,142 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StructureHelper.GUI;
-using Terraria;
+﻿using StructureHelper.GUI;
 using Terraria.GameContent.UI.Elements;
-using Terraria.ModLoader;
 using Terraria.UI;
-using static Terraria.ModLoader.ModContent;
 
 namespace StructureHelper.ChestHelper.GUI
 {
-    class LootElement : UIElement
-    {
-        Loot loot;
-        UIImageButton removeButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
+	class LootElement : UIElement
+	{
+		Loot loot;
+		UIImageButton removeButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
 
-        NumberSetter min;
-        NumberSetter max;
-        NumberSetter weight;
+		NumberSetter min;
+		NumberSetter max;
+		NumberSetter weight;
 
-        UIImageButton upButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Up"));
-        UIImageButton downButton = new UIImageButton(ModContent.Request<Texture2D>("StructureHelper/GUI/Down"));
+		UIImageButton upButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Up"));
+		UIImageButton downButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Down"));
 
-        public LootElement(Loot loot, bool hasWeight)
-        {
-            this.loot = loot;
+		public LootElement(Loot loot, bool hasWeight)
+		{
+			this.loot = loot;
 
-            Width.Set(350, 0);
-            Height.Set(36, 0);
-            Left.Set(50, 0);
+			Width.Set(350, 0);
+			Height.Set(50, 0);
+			Left.Set(50, 0);
 
-            removeButton.Left.Set(-36, 1);
-            removeButton.Width.Set(32, 0);
-            removeButton.Height.Set(32, 0);
-            removeButton.OnLeftClick += Remove;
-            Append(removeButton);
+			removeButton.Left.Set(-36, 1);
+			removeButton.Top.Set(6, 0);
+			removeButton.Width.Set(32, 0);
+			removeButton.Height.Set(32, 0);
+			removeButton.OnLeftClick += Remove;
+			Append(removeButton);
 
-            min = new NumberSetter(loot.min, "Minimum", 80);
-            Append(min);
+			min = new NumberSetter(loot.min, "Min", 115);
+			Append(min);
 
-            max = new NumberSetter(loot.max, "Maximum", 120);
-            Append(max);
+			max = new NumberSetter(loot.max, "Max", 70);
+			Append(max);
 
-            if (hasWeight)
-            {
-                weight = new NumberSetter(loot.weight, "Weight", 160);
-                Append(weight);
-            }
+			if (hasWeight)
+			{
+				weight = new NumberSetter(loot.weight, "Weight", 160);
+				Append(weight);
+			}
 			else
 			{
-                upButton.Left.Set(8, 0);
-                upButton.Top.Set(6, 0);
-                upButton.Width.Set(12, 0);
-                upButton.Height.Set(8, 0);
-                upButton.SetVisibility(1, 0.8f);
-                upButton.OnLeftClick += MoveUp;
-                Append(upButton);
+				upButton.Left.Set(8, 0);
+				upButton.Top.Set(10, 0);
+				upButton.Width.Set(12, 0);
+				upButton.Height.Set(8, 0);
+				upButton.SetVisibility(1, 0.8f);
+				upButton.OnLeftClick += MoveUp;
+				Append(upButton);
 
-                downButton.Left.Set(8, 0);
-                downButton.Top.Set(16, 0);
-                downButton.Width.Set(12, 0);
-                downButton.Height.Set(8, 0);
-                downButton.SetVisibility(1, 0.8f);
-                downButton.OnLeftClick += MoveDown;
-                Append(downButton);
-            }
-        }
+				downButton.Left.Set(8, 0);
+				downButton.Top.Set(26, 0);
+				downButton.Width.Set(12, 0);
+				downButton.Height.Set(8, 0);
+				downButton.SetVisibility(1, 0.8f);
+				downButton.OnLeftClick += MoveDown;
+				Append(downButton);
+			}
+		}
 
-        private void MoveDown(UIMouseEvent evt, UIElement listeningElement)
-        {
-            var list = Parent.Parent as UIList;
-            int i = list._items.IndexOf(this);
+		private void MoveDown(UIMouseEvent evt, UIElement listeningElement)
+		{
+			var list = Parent.Parent as UIList;
+			int i = list._items.IndexOf(this);
 
-            if (i < list.Count - 1)
-            {
-                var temp = list._items[i];
-                list._items[i] = list._items[i + 1];
-                list._items[i + 1] = temp;
-            }
-        }
+			if (i < list.Count - 1)
+			{
+				(list._items[i + 1], list._items[i]) = (list._items[i], list._items[i + 1]);
+			}
+		}
 
-        private void MoveUp(UIMouseEvent evt, UIElement listeningElement)
-        {
-            var list = Parent.Parent as UIList;
-            int i = list._items.IndexOf(this);
+		private void MoveUp(UIMouseEvent evt, UIElement listeningElement)
+		{
+			var list = Parent.Parent as UIList;
+			int i = list._items.IndexOf(this);
 
-            if (i >= 1)
-            {
-                var temp = list._items[i];
-                list._items[i] = list._items[i - 1];
-                list._items[i - 1] = temp;
-            }
-        }
+			if (i >= 1)
+			{
+				(list._items[i - 1], list._items[i]) = (list._items[i], list._items[i - 1]);
+			}
+		}
 
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            Vector2 pos = GetDimensions().ToRectangle().TopLeft();
-            var target = new Rectangle((int)pos.X, (int)pos.Y, (int)GetDimensions().Width, 32);
+		public override void Draw(SpriteBatch spriteBatch)
+		{
+			Vector2 pos = GetDimensions().ToRectangle().TopLeft();
+			var target = new Rectangle((int)pos.X, (int)pos.Y, (int)GetDimensions().Width, 46);
 
-            var color = Color.White;
+			Color color = Color.White;
 
-            if (Parent.Parent.Parent is ChestRuleElement)
-                color = (Parent.Parent.Parent as ChestRuleElement).color;
+			if (Parent.Parent.Parent is ChestRuleElement)
+			{
+				color = (Parent.Parent.Parent as ChestRuleElement).color;
+				color = Color.Lerp(color, Color.Black, 0.25f);
+			}
 
-            if (removeButton.IsMouseHovering)
-                Main.hoverItemName = "Remove item";
+			if (removeButton.IsMouseHovering)
+			{
+				Tooltip.SetName("Remove item");
+				Tooltip.SetTooltip("Remove this item from the rule");
+			}
 
-            ManualGeneratorMenu.DrawBox(spriteBatch, target, color);
+			Helpers.GUIHelper.DrawBox(spriteBatch, target, color);
 
-            int xOff = 0;
-            if (weight is null)
-                xOff += 16;
+			int xOff = 0;
+			if (weight is null)
+				xOff += 20;
 
-            spriteBatch.Draw(Helper.GetItemTexture(loot.givenItem), new Rectangle((int)pos.X + 8 + xOff, (int)pos.Y + 8, 16, 16), Color.White);
+			Main.inventoryScale = 36 / 52f * 46 / 36f;
+			ItemSlot.Draw(spriteBatch, ref loot.givenItem, 21, pos + Vector2.UnitX * xOff);
 
-            string name = loot.givenItem.Name.Length > 25 ? loot.givenItem.Name.Substring(0, 23) + "..." : loot.givenItem.Name;
-            Utils.DrawBorderString(spriteBatch, name, pos + new Vector2(28 + xOff, 10), Color.White, 0.7f);
+			string name = loot.givenItem.Name.Length > 20 ? loot.givenItem.Name[..18] + "..." : loot.givenItem.Name;
+			Utils.DrawBorderString(spriteBatch, name, pos + new Vector2(46 + xOff, 14), Color.White, 0.8f);
 
-            if (min.Value > max.Value)
-                min.Value = max.Value;
+			if (min.Value > max.Value)
+				min.Value = max.Value;
 
-            if (max.Value < min.Value)
-                max.Value = min.Value;
+			if (max.Value < min.Value)
+				max.Value = min.Value;
 
-            loot.min = min.Value;
-            loot.max = max.Value;
+			loot.min = min.Value;
+			loot.max = max.Value;
 
-            if (weight != null)
-                loot.weight = weight.Value;
+			if (weight != null)
+				loot.weight = weight.Value;
 
-            base.Draw(spriteBatch);
-        }
+			base.Draw(spriteBatch);
+		}
 
-        private void Remove(UIMouseEvent evt, UIElement listeningElement)
-        {
-            if (!(Parent.Parent.Parent is ChestRuleElement)) return;
+		private void Remove(UIMouseEvent evt, UIElement listeningElement)
+		{
+			if (!(Parent.Parent.Parent is ChestRuleElement))
+				return;
 
-            ChestRuleElement parent = Parent.Parent.Parent as ChestRuleElement;
-            parent.RemoveItem(loot, this);
-        }
-    }
+			var parent = Parent.Parent.Parent as ChestRuleElement;
+			parent.RemoveItem(loot, this);
+		}
+	}
 }

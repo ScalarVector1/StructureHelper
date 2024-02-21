@@ -49,7 +49,7 @@ namespace StructureHelper.ChestHelper.GUI
 
 	class PoolRuleElement : ChestRuleElement
 	{
-		NumberSetter countSetter = new NumberSetter(1, "Amount to Pick", 100);
+		NumberSetter countSetter = new NumberSetter(1, "Amount", 100);
 
 		public PoolRuleElement() : base(new ChestRulePool())
 		{
@@ -77,7 +77,7 @@ namespace StructureHelper.ChestHelper.GUI
 	class PoolChanceRuleElement : ChestRuleElement
 	{
 		NumberSetter chanceSetter = new NumberSetter(100, "Chance", 100, "%");
-		NumberSetter countSetter = new NumberSetter(1, "Amount to Pick", 140);
+		NumberSetter countSetter = new NumberSetter(1, "Amount", 150);
 
 		public PoolChanceRuleElement() : base(new ChestRulePoolChance())
 		{

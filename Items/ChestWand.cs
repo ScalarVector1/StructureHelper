@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using StructureHelper.ChestHelper;
 using StructureHelper.ChestHelper.GUI;
+using StructureHelper.Core.Loaders.UILoading;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -44,7 +45,7 @@ namespace StructureHelper.Items
 					{
 						var chestEntity = TileEntity.ByPosition[new Point16(Player.tileTargetX - xOff, Player.tileTargetY - yOff)] as ChestEntity;
 
-						UIRenderer.ChestCustomizer.ruleElements.Clear();
+						UILoader.GetUIState<ChestCustomizerState>().ruleElements.Clear();
 
 						for (int k = 0; k < chestEntity.rules.Count; k++)
 						{
@@ -64,12 +65,12 @@ namespace StructureHelper.Items
 							if (rule is ChestRulePoolChance)
 								elem = new PoolChanceRuleElement(rule);
 
-							UIRenderer.ChestCustomizer.ruleElements.Add(elem);
+							UILoader.GetUIState<ChestCustomizerState>().ruleElements.Add(elem);
 						}
 					}
 					else
 					{
-						UIRenderer.ChestCustomizer.ruleElements.Clear();
+						UILoader.GetUIState<ChestCustomizerState>().ruleElements.Clear();
 					}
 
 					Main.NewText($"Copied chest rules from chest at {new Point16(Player.tileTargetX - xOff, Player.tileTargetY - yOff)}");
@@ -79,7 +80,7 @@ namespace StructureHelper.Items
 					bool overwrite = TileEntity.ByPosition.ContainsKey(new Point16(Player.tileTargetX - xOff, Player.tileTargetY - yOff));
 
 					TileEntity.PlaceEntityNet(Player.tileTargetX - xOff, Player.tileTargetY - yOff, ModContent.TileEntityType<ChestEntity>());
-					bool cleared = !UIRenderer.ChestCustomizer.SetData(TileEntity.ByPosition[new Point16(Player.tileTargetX - xOff, Player.tileTargetY - yOff)] as ChestEntity);
+					bool cleared = !UILoader.GetUIState<ChestCustomizerState>().SetData(TileEntity.ByPosition[new Point16(Player.tileTargetX - xOff, Player.tileTargetY - yOff)] as ChestEntity);
 
 					if (overwrite)
 					{
@@ -96,7 +97,7 @@ namespace StructureHelper.Items
 			}
 
 			if (player.altFunctionUse == 2)
-				ChestCustomizerState.Visible = true;
+				UILoader.GetUIState<ChestCustomizerState>().Visible = true;
 
 			return true;
 		}
