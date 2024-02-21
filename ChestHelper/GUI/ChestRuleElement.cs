@@ -72,7 +72,7 @@ namespace StructureHelper.ChestHelper.GUI
 			{
 				hideButton.SetImage(ModContent.Request<Texture2D>("StructureHelper/GUI/EyeClosed"));
 				storedHeight = GetDimensions().Height;
-				Height.Set(36, 0);
+				Height.Set(50, 0);
 			}
 			else
 			{
