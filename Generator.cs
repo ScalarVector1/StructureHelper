@@ -10,12 +10,28 @@ using Terraria.ModLoader.IO;
 
 namespace StructureHelper
 {
+	/// <summary>
+	/// Flags that allow users to define special behavior for structure generation.
+	/// </summary>
 	[Flags]
 	public enum GenFlags
 	{
+		/// <summary>
+		/// No special generation
+		/// </summary>
 		None = 0b0,
+		/// <summary>
+		/// Null tiles will inherit the type of the tile behind them, but keep their slope if that tile is slopable
+		/// </summary>
 		NullsKeepGivenSlope = 0b1,
-		IgnoreTileEnttiyData = 0b10,
+		/// <summary>
+		/// Null tiles and walls will inherit the type of the tile/wall behind them, but will keep the paint they are given
+		/// </summary>
+		NullsKeepGivenPaint = 0b10,
+		/// <summary>
+		/// Tile entities will not have their saved data placed in the generated structures, instead falling back to acting as if they are newly created
+		/// </summary>
+		IgnoreTileEnttiyData = 0b100,
 	}
 
 	/// <summary>
@@ -31,8 +47,10 @@ namespace StructureHelper
 		/// <param name="path">The path to your structure file within your mod - this should not include your mod's folder, only the path beyond it.</param>
 		/// <param name="pos">The position in the world in which you want your structure to generate, in tile coordinates.</param>
 		/// <param name="mod">The instance of your mod to grab the file from.</param>
-		///<param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
-		///<param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll reference.</param>
+		/// <param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
+		/// <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll reference.</param>
+		/// <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="GenFlags"/> </param>
+		/// <returns>If the structure generated successfully or not</returns>
 		public static bool GenerateStructure(string path, Point16 pos, Mod mod, bool fullPath = false, bool ignoreNull = false, GenFlags flags = GenFlags.None)
 		{
 			TagCompound tag = GetTag(path, mod, fullPath);
@@ -52,8 +70,10 @@ namespace StructureHelper
 		/// <param name="path">The path to your multistructure file within your mod - this should not include your mod's folder, only the path beyond it.</param>
 		/// <param name="pos">The position in the world in which you want your structure to generate, in tile coordinates.</param>
 		/// <param name="mod">The instance of your mod to grab the file from.</param>
-		///<param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
-		///<param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll refference.</param>
+		/// <param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
+		/// <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll refference.</param>
+		/// <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="GenFlags"/> </param>
+		/// <returns>If the structure generated successfully or not</returns>
 		public static bool GenerateMultistructureRandom(string path, Point16 pos, Mod mod, bool fullPath = false, bool ignoreNull = false, GenFlags flags = GenFlags.None)
 		{
 			TagCompound tag = GetTag(path, mod, fullPath);
@@ -78,8 +98,10 @@ namespace StructureHelper
 		/// <param name="pos">The position in the world in which you want your structure to generate, in tile coordinates.</param>
 		/// <param name="mod">The instance of your mod to grab the file from.</param>
 		/// <param name="index">The index of the structure you want to generate out of the multistructure file, structure indicies are 0-based and match the order they were saved in.</param>
-		///<param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
-		///<param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll refference.</param>
+		/// <param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
+		/// <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll refference.</param>
+		/// <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="GenFlags"/> </param>
+		/// <returns>If the structure generated successfully or not</returns>
 		public static bool GenerateMultistructureSpecific(string path, Point16 pos, Mod mod, int index, bool fullPath = false, bool ignoreNull = false, GenFlags flags = GenFlags.None)
 		{
 			TagCompound tag = GetTag(path, mod, fullPath);
@@ -257,30 +279,26 @@ namespace StructureHelper
 
 						if (d.TEType != "") //place and load a tile entity
 						{
-							if (d.TEType != "")
+							if (d.TEType == "StructureHelper ChestEntity" && !ignoreNull)
 							{
-								if (d.TEType == "StructureHelper ChestEntity" && !ignoreNull)
+								GenerateChest(new Point16(pos.X + x, pos.Y + y), d.TEData);
+							}
+							else if ((flags & GenFlags.IgnoreTileEnttiyData) == 0)
+							{
+								if (!int.TryParse(d.TEType, out int typ))
 								{
-									GenerateChest(new Point16(pos.X + x, pos.Y + y), d.TEData);
+									string[] parts = d.TEType.Split();
+
+									if (ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModTileEntity>(parts[1], out ModTileEntity te))
+										typ = te.Type;
 								}
-								else
+
+								if (typ != 0)
 								{
+									TileEntity.PlaceEntityNet(pos.X + x, pos.Y + y, typ);
 
-									if (!int.TryParse(d.TEType, out int typ))
-									{
-										string[] parts = d.TEType.Split();
-										
-										if (ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModTileEntity>(parts[1], out ModTileEntity te))
-											typ = te.Type;
-									}
-
-									if (typ != 0)
-									{
-										TileEntity.PlaceEntityNet(pos.X + x, pos.Y + y, typ);
-
-										if (d.TEData != null && typ > 2)
-											(TileEntity.ByPosition[new Point16(pos.X + x, pos.Y + y)] as ModTileEntity).LoadData(d.TEData);
-									}
+									if (d.TEData != null && typ > 2)
+										(TileEntity.ByPosition[new Point16(pos.X + x, pos.Y + y)] as ModTileEntity).LoadData(d.TEData);
 								}
 							}
 						}
@@ -290,11 +308,22 @@ namespace StructureHelper
 						}
 					}
 
-					if (isNullTile && (flags & GenFlags.NullsKeepGivenSlope) == GenFlags.NullsKeepGivenSlope)
+					var wallwire = new TileWallWireStateData();
+					wallwire.SetAllBitsClearFrame(d.wallWireData);
+
+					if (isNullTile)
 					{
-						var wallwire = new TileWallWireStateData();
-						wallwire.SetAllBitsClearFrame(d.wallWireData);
-						tile.Slope = wallwire.Slope;
+						if ((flags & GenFlags.NullsKeepGivenSlope) == GenFlags.NullsKeepGivenSlope)
+							tile.Slope = wallwire.Slope;
+
+						if ((flags & GenFlags.NullsKeepGivenPaint) == GenFlags.NullsKeepGivenPaint)
+							tile.TileColor = wallwire.TileColor;
+					}
+
+					if (isNullWall)
+					{
+						if ((flags & GenFlags.NullsKeepGivenPaint) == GenFlags.NullsKeepGivenPaint)
+							tile.WallColor = wallwire.TileColor;
 					}
 
 					if (!isNullWall || ignoreNull)
