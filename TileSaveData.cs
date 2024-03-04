@@ -33,6 +33,10 @@ namespace StructureHelper
 		/// The other part of the packed vanilla data about a tile
 		/// </summary>
 		public short packedLiquidData;
+		/// <summary>
+		/// Data about certain coatings added by 1.4.4
+		/// </summary>
+		public byte brightInvisibleData;
 
 		/// <summary>
 		/// The fully qualiified name of a modded tile entity, if one should exist here
@@ -50,7 +54,7 @@ namespace StructureHelper
 		/// </summary>
 		public bool Active => TileDataPacking.GetBit(wallWireData, 0);
 
-		public TileSaveData(string tile, string wall, short frameX, short frameY, int wallWireData, short packedLiquidData, string teType = "", TagCompound teData = null)
+		public TileSaveData(string tile, string wall, short frameX, short frameY, int wallWireData, short packedLiquidData, byte brightInvisibleData, string teType = "", TagCompound teData = null)
 		{
 			this.tile = tile;
 			this.wall = wall;
@@ -58,6 +62,7 @@ namespace StructureHelper
 			this.frameY = frameY;
 			this.wallWireData = wallWireData;
 			this.packedLiquidData = packedLiquidData;
+			this.brightInvisibleData = brightInvisibleData;
 			TEType = teType;
 			TEData = teData;
 		}
@@ -76,7 +81,8 @@ namespace StructureHelper
 			tag.GetShort("FrameY"),
 
 			tag.GetInt("WallWireData"),
-			tag.GetShort("PackedLiquidData")
+			tag.GetShort("PackedLiquidData"),
+			tag.TryGet("BrightInvisibleData", out byte brightInvis) ? brightInvis : (byte)0
 			);
 
 			if (tag.ContainsKey("TEType"))
@@ -102,7 +108,8 @@ namespace StructureHelper
 				["FrameY"] = frameY,
 
 				["WallWireData"] = wallWireData,
-				["PackedLiquidData"] = packedLiquidData
+				["PackedLiquidData"] = packedLiquidData,
+				["BrightInvisibleData"] = brightInvisibleData
 			};
 
 			if (TEType != "")

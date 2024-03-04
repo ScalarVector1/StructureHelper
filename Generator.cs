@@ -10,6 +10,14 @@ using Terraria.ModLoader.IO;
 
 namespace StructureHelper
 {
+	[Flags]
+	public enum GenFlags
+	{
+		None = 0b0,
+		NullsKeepGivenSlope = 0b1,
+		IgnoreTileEnttiyData = 0b10,
+	}
+
 	/// <summary>
 	/// A static class providing utilities to generate structures.
 	/// </summary>
@@ -25,7 +33,7 @@ namespace StructureHelper
 		/// <param name="mod">The instance of your mod to grab the file from.</param>
 		///<param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
 		///<param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll reference.</param>
-		public static bool GenerateStructure(string path, Point16 pos, Mod mod, bool fullPath = false, bool ignoreNull = false)
+		public static bool GenerateStructure(string path, Point16 pos, Mod mod, bool fullPath = false, bool ignoreNull = false, GenFlags flags = GenFlags.None)
 		{
 			TagCompound tag = GetTag(path, mod, fullPath);
 
@@ -46,7 +54,7 @@ namespace StructureHelper
 		/// <param name="mod">The instance of your mod to grab the file from.</param>
 		///<param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
 		///<param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll refference.</param>
-		public static bool GenerateMultistructureRandom(string path, Point16 pos, Mod mod, bool fullPath = false, bool ignoreNull = false)
+		public static bool GenerateMultistructureRandom(string path, Point16 pos, Mod mod, bool fullPath = false, bool ignoreNull = false, GenFlags flags = GenFlags.None)
 		{
 			TagCompound tag = GetTag(path, mod, fullPath);
 
@@ -72,7 +80,7 @@ namespace StructureHelper
 		/// <param name="index">The index of the structure you want to generate out of the multistructure file, structure indicies are 0-based and match the order they were saved in.</param>
 		///<param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
 		///<param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll refference.</param>
-		public static bool GenerateMultistructureSpecific(string path, Point16 pos, Mod mod, int index, bool fullPath = false, bool ignoreNull = false)
+		public static bool GenerateMultistructureSpecific(string path, Point16 pos, Mod mod, int index, bool fullPath = false, bool ignoreNull = false, GenFlags flags = GenFlags.None)
 		{
 			TagCompound tag = GetTag(path, mod, fullPath);
 
@@ -162,7 +170,7 @@ namespace StructureHelper
 		/// <param name="pos">The position in the world of the top-leftmost tile to be placed at</param>
 		/// <param name="ignoreNull">If this structure should place null tiles or not</param>
 		/// <returns>If the structure successfully generated or not</returns>
-		public static unsafe bool Generate(TagCompound tag, Point16 pos, bool ignoreNull = false)
+		public static unsafe bool Generate(TagCompound tag, Point16 pos, bool ignoreNull = false, GenFlags flags = GenFlags.None)
 		{
 			var data = (List<TileSaveData>)tag.GetList<TileSaveData>("TileData");
 
@@ -237,6 +245,13 @@ namespace StructureHelper
 							*shortPtr = d.packedLiquidData;
 						}
 
+						fixed(void* ptr = &tile.Get<TileWallBrightnessInvisibilityData>())
+						{
+							byte* bytePtr = (byte*)ptr;
+
+							*bytePtr = d.brightInvisibleData;
+						}
+
 						if (!d.Active)
 							tile.HasTile = false;
 
@@ -273,6 +288,13 @@ namespace StructureHelper
 						{
 							Chest.CreateChest(pos.X + x, pos.Y + y);
 						}
+					}
+
+					if (isNullTile && (flags & GenFlags.NullsKeepGivenSlope) == GenFlags.NullsKeepGivenSlope)
+					{
+						var wallwire = new TileWallWireStateData();
+						wallwire.SetAllBitsClearFrame(d.wallWireData);
+						tile.Slope = wallwire.Slope;
 					}
 
 					if (!isNullWall || ignoreNull)

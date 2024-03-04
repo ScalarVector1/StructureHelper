@@ -136,6 +136,7 @@ namespace StructureHelper
 
 					int wallWireData;
 					short packedLiquidData;
+					byte brightInvisibleData;
 
 					fixed (void* ptr = &tile.Get<TileWallWireStateData>())
 					{
@@ -152,6 +153,13 @@ namespace StructureHelper
 						packedLiquidData = *shortPtr;
 					}
 
+					fixed (void* ptr = &tile.Get<TileWallBrightnessInvisibilityData>())
+					{
+						byte* bytePtr = (byte*)ptr;
+
+						brightInvisibleData = *bytePtr;
+					}
+
 					data.Add(
 						new TileSaveData(
 							tileName,
@@ -160,6 +168,7 @@ namespace StructureHelper
 							tile.TileFrameY,
 							wallWireData,
 							packedLiquidData,
+							brightInvisibleData,
 							teName,
 							entityTag
 							));

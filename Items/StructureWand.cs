@@ -9,9 +9,16 @@ namespace StructureHelper.Items
 	class StructureWand : ModItem
 	{
 		public bool secondPoint;
-		public Point16 topLeft;
-		public int width;
-		public int height;
+
+		public Point16 point1;
+		public Point16 point2;
+
+		public Point16 TopLeft => new Point16(point1.X < point2.X ? point1.X : point2.X, point1.Y < point2.Y ? point1.Y : point2.Y);
+		public Point16 BottomRight => new Point16(point1.X > point2.X ? point1.X : point2.X, point1.Y > point2.Y ? point1.Y : point2.Y);
+		public int Width => BottomRight.X - TopLeft.X;
+		public int Height => BottomRight.Y - TopLeft.Y;
+
+		public bool Ready => !secondPoint && point1 != default;
 
 		public override void SetStaticDefaults()
 		{
@@ -34,28 +41,22 @@ namespace StructureHelper.Items
 
 		public override bool? UseItem(Player player)
 		{
-			if (player.altFunctionUse == 2 && !secondPoint && topLeft != default)
+			if (player.altFunctionUse == 2 && !secondPoint && TopLeft != default)
 			{
-				Saver.SaveToFile(new Rectangle(topLeft.X, topLeft.Y, width, height));
+				Saver.SaveToFile(new Rectangle(TopLeft.X, TopLeft.Y, Width, Height));
 			}
 			else if (!secondPoint)
 			{
-				topLeft = (Main.MouseWorld / 16).ToPoint16();
-				width = 0;
-				height = 0;
+				point1 = (Main.MouseWorld / 16).ToPoint16();
+				point2 = default;
+
 				Main.NewText("Select Second Point");
 				secondPoint = true;
 			}
 			else
 			{
-				var bottomRight = (Main.MouseWorld / 16).ToPoint16();
+				point2 = (Main.MouseWorld / 16).ToPoint16();
 
-				//Swap the points if they're incorrectly oriented
-				if (bottomRight.X < topLeft.X || bottomRight.Y < topLeft.Y)
-					(bottomRight, topLeft) = (topLeft, bottomRight);
-
-				width = bottomRight.X - topLeft.X - 1;
-				height = bottomRight.Y - topLeft.Y - 1;
 				Main.NewText("Ready to save! Right click to save this structure...");
 				secondPoint = false;
 			}
