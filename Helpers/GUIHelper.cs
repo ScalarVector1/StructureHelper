@@ -52,7 +52,7 @@ namespace StructureHelper.Helpers
 		/// <param name="color">the color of the outline</param>
 		public static void DrawOutline(SpriteBatch spriteBatch, Rectangle target, Color color = default)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("DragonLens/Assets/Themes/BoxProviders/SimpleBoxes/Box").Value;
+			Texture2D tex = ModContent.Request<Texture2D>("StructureHelper/GUI/Box").Value;
 
 			if (color == default)
 				color = new Color(49, 84, 141) * 0.9f;
