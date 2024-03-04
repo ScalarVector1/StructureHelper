@@ -8,15 +8,9 @@ using Terraria.ModLoader.IO;
 
 namespace StructureHelper.Items
 {
-	class MultistructureWand : ModItem
+	class MultistructureWand : StructureWand
 	{
-		public bool secondPoint;
-		public Point16 topLeft;
-		public int width;
-		public int height;
 		internal List<TagCompound> structureCache = new();
-
-		public Rectangle Target => new(topLeft.X, topLeft.Y, width, height);
 
 		public override void SetStaticDefaults()
 		{
@@ -24,20 +18,7 @@ namespace StructureHelper.Items
 			Tooltip.SetDefault("Select 2 points in the world, then right click to add a structure. Right click in your inventory when done to save.");
 		}
 
-		public override void SetDefaults()
-		{
-			Item.useStyle = ItemUseStyleID.Swing;
-			Item.useTime = 20;
-			Item.useAnimation = 20;
-			Item.rare = ItemRarityID.Blue;
-		}
-
 		public override bool CanRightClick()
-		{
-			return true;
-		}
-
-		public override bool AltFunctionUse(Player player)
 		{
 			return true;
 		}
@@ -59,35 +40,10 @@ namespace StructureHelper.Items
 				Main.NewText("Not enough structures! If you want to save a single structure, use the normal structure wand instead!", Color.Red);
 		}
 
-		public override bool? UseItem(Player player)
+		public override void OnConfirmRectangle()
 		{
-			if (player.altFunctionUse == 2 && !secondPoint && topLeft != default)
-			{
-				structureCache.Add(Saver.SaveStructure(Target));
-			}
-			else if (!secondPoint)
-			{
-				topLeft = (Main.MouseWorld / 16).ToPoint16();
-				width = 0;
-				height = 0;
-				Main.NewText("Select Second Point");
-				secondPoint = true;
-			}
-			else
-			{
-				var bottomRight = (Main.MouseWorld / 16).ToPoint16();
-
-				//Swap the points if they're incorrectly oriented
-				if (bottomRight.X < topLeft.X || bottomRight.Y < topLeft.Y)
-					(bottomRight, topLeft) = (topLeft, bottomRight);
-
-				width = bottomRight.X - topLeft.X - 1;
-				height = bottomRight.Y - topLeft.Y - 1;
-				Main.NewText("Ready to add! Right click to add this structure, Right click in inventory to save all structures");
-				secondPoint = false;
-			}
-
-			return true;
+			structureCache.Add(Saver.SaveStructure(new Rectangle(TopLeft.X, TopLeft.Y, Width, Height)));
+			Main.NewText("Structures to save: " + structureCache.Count);
 		}
 	}
 }
