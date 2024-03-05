@@ -50,9 +50,9 @@ namespace StructureHelper.Items
 				var pos = new Point16(Player.tileTargetX, Player.tileTargetY);
 
 				if (ManualGeneratorMenu.multiMode)
-					Generator.GenerateMultistructureSpecific(ManualGeneratorMenu.selected.path, pos, StructureHelper.Instance, ManualGeneratorMenu.multiIndex, true, ManualGeneratorMenu.ignoreNulls);
+					Generator.GenerateMultistructureSpecific(ManualGeneratorMenu.selected.path, pos, StructureHelper.Instance, ManualGeneratorMenu.multiIndex, true, ManualGeneratorMenu.ignoreNulls, ManualGeneratorMenu.flags);
 				else
-					Generator.GenerateStructure(ManualGeneratorMenu.selected.path, pos, StructureHelper.Instance, true, ManualGeneratorMenu.ignoreNulls);
+					Generator.GenerateStructure(ManualGeneratorMenu.selected.path, pos, StructureHelper.Instance, true, ManualGeneratorMenu.ignoreNulls, ManualGeneratorMenu.flags);
 			}
 			else
 			{

@@ -31,6 +31,11 @@ namespace StructureHelper.GUI
 		public static UIImageButton ignoreButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Null"));
 		public static UIImageButton closeButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
 
+		public static GenFlags flags;
+		public static BoolEditor slopeNullToggle = new BoolEditor("NullsKeepGivenSlope", (val) => flags = val ? flags | GenFlags.NullsKeepGivenSlope : flags & ~GenFlags.NullsKeepGivenSlope, false, description: "If null tiles will keep their slope when generated");
+		public static BoolEditor paintNullToggle = new BoolEditor("NullsKeepGivenPaint", (val) => flags = val ? flags | GenFlags.NullsKeepGivenPaint : flags & ~GenFlags.NullsKeepGivenPaint, false, description: "If null tiles/walls will keep their paint when generated");
+		public static BoolEditor tileEntityToggle = new BoolEditor("IgnoreTileEntityData", (val) => flags = val ? flags | GenFlags.IgnoreTileEnttiyData : flags & ~GenFlags.IgnoreTileEnttiyData, false, description: "If custom tile entity data is ignored or not");
+
 		public override bool Visible => TestWand.UIVisible;
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
@@ -78,6 +83,15 @@ namespace StructureHelper.GUI
 			SetDims(closeButton, 200 - 32, 0.5f, -50, 0.1f, 32, 0, 32, 0);
 			closeButton.OnLeftClick += CloseButton_OnClick;
 			Append(closeButton);
+
+			SetDims(slopeNullToggle, -384, 0.5f, 0, 0.1f, 150, 0, 70, 0);
+			Append(slopeNullToggle);
+
+			SetDims(paintNullToggle, -384, 0.5f, 80, 0.1f, 150, 0, 70, 0);
+			Append(paintNullToggle);
+
+			SetDims(tileEntityToggle, -384, 0.5f, 160, 0.1f, 150, 0, 70, 0);
+			Append(tileEntityToggle);
 		}
 
 		private void CloseButton_OnClick(UIMouseEvent evt, UIElement listeningElement)
@@ -109,18 +123,21 @@ namespace StructureHelper.GUI
 			{
 				Tooltip.SetName($"Place with null tiles: {ignoreNulls}");
 				Tooltip.SetTooltip("If the structure placed manually should have it's null tiles placed or not. Turn this off to get a realistic generation, or on if you want to edit the structure.");
+				Main.LocalPlayer.mouseInterface = true;
 			}
 
 			if (refreshButton.IsMouseHovering)
 			{
 				Tooltip.SetName("Reload");
 				Tooltip.SetTooltip("Reload structures from the folder, use this if you change the folders contents externally and want to see it reflected here.");
+				Main.LocalPlayer.mouseInterface = true;
 			}
 
 			if (closeButton.IsMouseHovering)
 			{
 				Tooltip.SetName("Close");
 				Tooltip.SetTooltip("Close this menu");
+				Main.LocalPlayer.mouseInterface = true;
 			}
 		}
 

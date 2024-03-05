@@ -25,18 +25,5 @@ namespace StructureHelper
 				(input[n], input[k]) = (input[k], input[n]);
 			}
 		}
-
-		/// <summary>
-		/// Gets the texture of an in-game item
-		/// </summary>
-		/// <param name="item">The item to retrieve the texture of</param>
-		/// <returns>The texture of the passed item</returns>
-		public static Texture2D GetItemTexture(Item item)
-		{
-			if (item.type < ItemID.Count)
-				return Terraria.GameContent.TextureAssets.Item[item.type].Value;
-			else
-				return ModContent.Request<Texture2D>(item.ModItem.Texture).Value;
-		}
 	}
 }
