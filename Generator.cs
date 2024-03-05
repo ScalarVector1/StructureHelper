@@ -61,7 +61,7 @@ namespace StructureHelper
 			if (tag.ContainsKey("Structures"))
 				throw new Exception($"Attempted to generate a multistructure '{path}' as a structure. Use GenerateMultistructureRandom or GenerateMultistructureSpecific instead.");
 
-			return Generate(tag, pos, ignoreNull);
+			return Generate(tag, pos, ignoreNull, flags);
 		}
 
 		/// <summary>
@@ -88,7 +88,7 @@ namespace StructureHelper
 			int index = WorldGen.genRand.Next(structures.Count);
 			TagCompound targetStructure = structures[index];
 
-			return Generate(targetStructure, pos, ignoreNull);
+			return Generate(targetStructure, pos, ignoreNull, flags);
 		}
 
 		/// <summary>
@@ -119,7 +119,7 @@ namespace StructureHelper
 
 			TagCompound targetStructure = structures[index];
 
-			return Generate(targetStructure, pos, ignoreNull);
+			return Generate(targetStructure, pos, ignoreNull, flags);
 		}
 
 		/// <summary>
