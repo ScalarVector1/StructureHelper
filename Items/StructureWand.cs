@@ -70,6 +70,16 @@ namespace StructureHelper.Items
 
 		public override bool? UseItem(Player player)
 		{
+			for(int k = 0; k < 100; k++)
+			{
+				if (TileEntity.ByID.ContainsKey(k))
+				{
+					var TE = TileEntity.ByID[k];
+
+					Main.NewText("Entity " + k + ": " + TE.type);
+				}
+			}
+
 			if (player.altFunctionUse == 2 && Ready)
 			{
 				OnConfirmRectangle();

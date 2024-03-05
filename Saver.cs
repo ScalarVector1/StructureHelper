@@ -124,24 +124,17 @@ namespace StructureHelper
 
 					if (teTarget != null)
 					{
-						if (teTarget.type < 2)
+						var modTileEntity = teTarget as ModTileEntity;
+
+						if (modTileEntity != null)
 						{
-							teName = teTarget.type.ToString();
+							teName = modTileEntity.Mod.Name + " " + modTileEntity.Name;
 						}
 						else
 						{
-							var entityTarget = teTarget as ModTileEntity;
-
-							if (entityTarget != null)
-							{
-								teName = entityTarget.Mod.Name + " " + entityTarget.Name;
-								(teTarget as ModTileEntity).SaveData(entityTag);
-							}
-							else
-							{
-								teName = "";
-							}
+							teName = teTarget.type.ToString();
 						}
+						teTarget.SaveData(entityTag);
 					}
 					else
 					{
