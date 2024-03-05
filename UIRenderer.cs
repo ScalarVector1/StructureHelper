@@ -1,22 +1,29 @@
 ﻿using StructureHelper.Items;
+using System;
 using Terraria.DataStructures;
 
 namespace StructureHelper
 {
 	public class UIRenderer : ModSystem
 	{
-		public override void PostDrawInterface(SpriteBatch spriteBatch)
+		public override void Load()
 		{
+			On_Main.DrawInterface += DrawSelection;
+		}
+
+		private void DrawSelection(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime)
+		{
+			SpriteBatch spriteBatch = Main.spriteBatch;
+
 			if (Main.LocalPlayer.HeldItem.ModItem is StructureWand)
 			{
 				var wand = (Main.LocalPlayer.HeldItem.ModItem as StructureWand);
 
-				spriteBatch.End();
 				spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
 				Texture2D tex = ModContent.Request<Texture2D>("StructureHelper/corner").Value;
 				Texture2D tex2 = ModContent.Request<Texture2D>("StructureHelper/box").Value;
-				
+
 				Point16 topLeft = wand.TopLeft;
 				Point16 bottomRight = wand.BottomRight;
 
@@ -61,8 +68,9 @@ namespace StructureHelper
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 			}
+
+			orig(self, gameTime);
 		}
 	}
 }
