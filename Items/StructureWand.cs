@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using StructureHelper.GUI;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -64,7 +65,7 @@ namespace StructureHelper.Items
 		/// </summary>
 		public virtual void OnConfirmRectangle()
 		{
-			Saver.SaveToFile(new Rectangle(TopLeft.X, TopLeft.Y, Width, Height));
+			NameConfirmPopup.OpenConfirmation((name) => Saver.SaveToFile(new Rectangle(TopLeft.X, TopLeft.Y, Width, Height), name: name));
 		}
 
 		public override bool? UseItem(Player player)

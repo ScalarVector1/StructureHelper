@@ -1,5 +1,4 @@
-﻿using StructureHelper.Content.GUI.FieldEditors;
-using StructureHelper.GUI;
+﻿using StructureHelper.GUI;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 

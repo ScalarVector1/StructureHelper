@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StructureHelper.GUI;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
@@ -35,7 +36,7 @@ namespace StructureHelper.Items
 			Item.stack++;
 
 			if (structureCache.Count > 1)
-				Saver.SaveMultistructureToFile(ref structureCache);
+				NameConfirmPopup.OpenConfirmation((name) => Saver.SaveMultistructureToFile(ref structureCache, name: name));
 			else
 				Main.NewText("Not enough structures! If you want to save a single structure, use the normal structure wand instead!", Color.Red);
 		}

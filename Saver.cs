@@ -20,14 +20,21 @@ namespace StructureHelper
 		/// </summary>
 		/// <param name="target">The region of the world to save, in tile coordinates</param>
 		/// <param name="targetPath">The name of the file to save. Automatically defaults to a file named after the date in the SavedStructures folder</param>
-		public static void SaveToFile(Rectangle target, string targetPath = null)
+		public static void SaveToFile(Rectangle target, string targetPath = null, string name = "unnamed structure")
 		{
 			string path = ModLoader.ModPath.Replace("Mods", "SavedStructures");
 
 			if (!Directory.Exists(path))
 				Directory.CreateDirectory(path);
 
-			string thisPath = targetPath ?? Path.Combine(path, "SavedStructure_" + DateTime.Now.ToString("d-M-y----H-m-s-f"));
+			string thisPath = targetPath ?? Path.Combine(path, name);
+
+			int counter = 2;
+			while (File.Exists(thisPath))
+			{
+				thisPath = targetPath ?? Path.Combine(path, name) + $"({counter})";
+				counter++;
+			}
 
 			Main.NewText("Structure saved as " + thisPath, Color.Yellow);
 			FileStream stream = File.Create(thisPath);
@@ -42,14 +49,21 @@ namespace StructureHelper
 		/// </summary>
 		/// <param name="toSave">The tags to save</param>
 		/// <param name="targetPath">The name of the file to save. Automatically defaults to a file named after the date in the SavedStructures folder</param>
-		public static void SaveMultistructureToFile(ref List<TagCompound> toSave, string targetPath = null)
+		public static void SaveMultistructureToFile(ref List<TagCompound> toSave, string targetPath = null, string name = "unnamed multistructure")
 		{
 			string path = ModLoader.ModPath.Replace("Mods", "SavedStructures");
 
 			if (!Directory.Exists(path))
 				Directory.CreateDirectory(path);
 
-			string thisPath = targetPath ?? Path.Combine(path, "SavedMultiStructure_" + DateTime.Now.ToString("d-M-y----H-m-s-f"));
+			string thisPath = targetPath ?? Path.Combine(path, name);
+
+			int counter = 2;
+			while (File.Exists(thisPath))
+			{
+				thisPath = targetPath ?? Path.Combine(path, name) + $"({counter})";
+				counter++;
+			}
 
 			Main.NewText("Structure saved as " + thisPath, Color.Yellow);
 			FileStream stream = File.Create(thisPath);

@@ -7,7 +7,7 @@ using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.UI;
 
-namespace StructureHelper.Content.GUI.FieldEditors
+namespace StructureHelper.GUI
 {
 	public enum InputType
 	{
