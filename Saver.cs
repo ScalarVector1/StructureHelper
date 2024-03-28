@@ -22,6 +22,9 @@ namespace StructureHelper
 		/// <param name="targetPath">The name of the file to save. Automatically defaults to a file named after the date in the SavedStructures folder</param>
 		public static void SaveToFile(Rectangle target, string targetPath = null, string name = "unnamed structure")
 		{
+			if (name == "")
+				name = "unnamed structure";
+
 			string path = ModLoader.ModPath.Replace("Mods", "SavedStructures");
 
 			if (!Directory.Exists(path))

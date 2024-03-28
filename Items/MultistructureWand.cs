@@ -43,7 +43,7 @@ namespace StructureHelper.Items
 
 		public override void OnConfirmRectangle()
 		{
-			structureCache.Add(Saver.SaveStructure(new Rectangle(TopLeft.X, TopLeft.Y, Width, Height)));
+			structureCache.Add(Saver.SaveStructure(new Rectangle(TopLeft.X, TopLeft.Y, Width - 1, Height - 1)));
 			Main.NewText("Structures to save: " + structureCache.Count);
 		}
 	}

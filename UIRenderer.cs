@@ -27,12 +27,7 @@ namespace StructureHelper
 				Point16 topLeft = wand.TopLeft;
 				Point16 bottomRight = wand.BottomRight;
 
-				float tileScale = 16 * Main.GameViewMatrix.Zoom.Length() * 0.707106688737f;
-				Vector2 pos = (Main.MouseWorld / tileScale).ToPoint16().ToVector2() * tileScale - Main.screenPosition;
-				pos = Vector2.Transform(pos, Matrix.Invert(Main.GameViewMatrix.ZoomMatrix));
-				pos = Vector2.Transform(pos, Main.UIScaleMatrix);
-
-				spriteBatch.Draw(tex, pos, tex.Frame(), Color.White * 0.5f, 0, tex.Frame().Size() / 2, 1, 0, 0);
+				bool drawPreview = true;
 
 				if (wand.secondPoint)
 				{
@@ -49,7 +44,7 @@ namespace StructureHelper
 					spriteBatch.Draw(tex2, target, tex2.Frame(), Color.White * 0.15f);
 
 					spriteBatch.Draw(tex, wand.point1.ToVector2() * 16 - Main.screenPosition, tex.Frame(), Color.Cyan, 0, tex.Frame().Size() / 2, 1, 0, 0);
-					spriteBatch.Draw(tex, point2.ToVector2() * 16 - Main.screenPosition, tex.Frame(), Color.White * 0.5f, 0, tex.Frame().Size() / 2, 1, 0, 0);
+					//spriteBatch.Draw(tex, point2.ToVector2() * 16 - Main.screenPosition, tex.Frame(), Color.White * 0.5f, 0, tex.Frame().Size() / 2, 1, 0, 0);
 				}
 				else if (wand.Ready)
 				{
@@ -65,6 +60,15 @@ namespace StructureHelper
 
 					float scale2 = Vector2.Distance(Main.MouseWorld, wand.point2.ToVector2() * 16) < 32 ? 1.5f : 1f;
 					spriteBatch.Draw(tex, wand.point2.ToVector2() * 16 - Main.screenPosition, tex.Frame(), Color.Red * scale2, 0, tex.Frame().Size() / 2, scale2, 0, 0);
+
+					if (scale1 > 1 || scale2 > 1)
+						drawPreview = false;
+				}
+
+				if (drawPreview)
+				{
+					var pos = (Main.MouseWorld / 16).ToPoint16();
+					spriteBatch.Draw(tex, pos.ToVector2() * 16 - Main.screenPosition, tex.Frame(), Color.White * 0.5f, 0, tex.Frame().Size() / 2, 1, 0, 0);
 				}
 
 				spriteBatch.End();
