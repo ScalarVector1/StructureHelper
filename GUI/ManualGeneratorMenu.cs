@@ -10,6 +10,7 @@ using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 
 namespace StructureHelper.GUI
@@ -24,7 +25,7 @@ namespace StructureHelper.GUI
 		public static bool multiMode = false;
 		public static int multiIndex;
 
-		public static UIList structureElements = new();
+		public static UIGrid structureElements = new();
 		public static UIScrollbar scrollBar = new();
 
 		public static UIImageButton refreshButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Refresh"));
@@ -236,19 +237,24 @@ namespace StructureHelper.GUI
 			{
 				ManualGeneratorMenu.multiMode = true;
 
-				int count = Generator.StructureDataCache[path].Get<List<TagCompound>>("Structures").Count;
-				Height.Set(36 + 36 * count, 0);
+				var structures = Generator.StructureDataCache[path].Get<List<TagCompound>>("Structures");
 
-				var list = new UIList();
+				ManualGeneratorMenu.preview?.Dispose();
+				ManualGeneratorMenu.preview = new StructurePreview("", structures[0]);
+
+				int count = structures.Count;
+				Height.Set(36 + 96 * (int)Math.Ceiling(count / 4f), 0);
+
+				var list = new UIGrid();
 
 				for (int k = 0; k < count; k++)
 				{
-					list.Add(new MultiSelectionEntry(k));
+					list.Add(new MultiSelectionEntry(k, structures[k]));
 				}
 
-				list.Width.Set(300, 0);
-				list.Height.Set(36 * count, 0);
-				list.Left.Set(50, 0);
+				list.Width.Set(400, 0);
+				list.Height.Set(96 * (int)Math.Ceiling(count / 4f), 0);
+				list.Left.Set(0, 0);
 				list.Top.Set(36, 0);
 				Append(list);
 			}
@@ -260,19 +266,32 @@ namespace StructureHelper.GUI
 				ManualGeneratorMenu.preview = new StructurePreview(name, Generator.StructureDataCache[path]);
 			}
 		}
+
+		public override int CompareTo(object obj)
+		{
+			if (obj is StructureEntry other)
+				return name.CompareTo(other.name);
+
+			return base.CompareTo(obj);
+		}
 	}
 
 	class MultiSelectionEntry : UIElement
 	{
 		public int value;
+		private TagCompound structure;
+		private StructurePreview preview;
 
 		bool Active => ManualGeneratorMenu.multiIndex == value;
 
-		public MultiSelectionEntry(int index)
+		public MultiSelectionEntry(int index, TagCompound structure)
 		{
 			value = index;
-			Width.Set(50, 0);
-			Height.Set(32, 0);
+			Width.Set(96, 0);
+			Height.Set(96, 0);
+
+			this.structure = structure;
+			preview = new("", structure);
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
@@ -280,7 +299,8 @@ namespace StructureHelper.GUI
 			if (IsMouseHovering)
 				Main.LocalPlayer.mouseInterface = true;
 
-			Vector2 pos = GetDimensions().ToRectangle().Center();
+			var dims = GetDimensions().ToRectangle();
+			Vector2 pos = dims.TopLeft() + new Vector2(12, 12);
 			Color color = Color.Gray;
 
 			if (IsMouseHovering)
@@ -290,6 +310,20 @@ namespace StructureHelper.GUI
 				color = Color.Yellow;
 
 			Helpers.GUIHelper.DrawBox(spriteBatch, GetDimensions().ToRectangle(), IsMouseHovering || Active ? new Color(49, 84, 141) : new Color(49, 84, 141) * 0.6f);
+
+			dims.Inflate(-8, -8);
+
+			if (preview != null)
+			{
+				Texture2D tex = preview.preview;
+				float scale = 1f;
+
+				if (tex.Width > dims.Width || tex.Height > dims.Height)
+					scale = tex.Width > tex.Height ? dims.Width / (float)tex.Width : dims.Height / (float)tex.Height;
+
+				spriteBatch.Draw(tex, GetDimensions().Center(), null, color, 0, tex.Size() / 2f, scale, 0, 0);
+			}
+
 			Utils.DrawBorderString(spriteBatch, value.ToString(), pos + Vector2.UnitY * 4, color, 0.8f, 0.5f, 0.5f);
 
 			base.Draw(spriteBatch);
@@ -298,6 +332,17 @@ namespace StructureHelper.GUI
 		public override void LeftClick(UIMouseEvent evt)
 		{
 			ManualGeneratorMenu.multiIndex = value;
+
+			ManualGeneratorMenu.preview?.Dispose();
+			ManualGeneratorMenu.preview = new StructurePreview("", structure);
+		}
+
+		public override int CompareTo(object obj)
+		{
+			if (obj is MultiSelectionEntry other)
+				return value.CompareTo(other.value);
+
+			return base.CompareTo(obj);
 		}
 	}
 }

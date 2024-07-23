@@ -1,4 +1,4 @@
 displayName = Structure Helper
 author = ScalarVector
-version = 2.5.2
+version = 2.5.3
 homepage = https://forums.terraria.org/index.php?threads/scalars-structurizer-a-worldgen-helper-library.87189/

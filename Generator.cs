@@ -333,6 +333,9 @@ namespace StructureHelper
 				}
 			}
 
+			if (Main.netMode != NetmodeID.SinglePlayer)
+				NetMessage.SendTileSquare(-1, pos.X, pos.Y, width, height);
+
 			return true;
 		}
 
