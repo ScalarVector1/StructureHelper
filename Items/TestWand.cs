@@ -1,9 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StructureHelper.GUI;
-using Terraria;
+﻿using StructureHelper.GUI;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StructureHelper.Items
 {
@@ -41,7 +38,7 @@ namespace StructureHelper.Items
 			if (player.altFunctionUse == 2)
 			{
 				ManualGeneratorMenu.LoadStructures();
-				UIVisible = !UIVisible;			
+				UIVisible = !UIVisible;
 				return true;
 			}
 

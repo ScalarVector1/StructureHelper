@@ -1,15 +1,14 @@
 ﻿using StructureHelper.GUI;
-using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
 namespace StructureHelper.ChestHelper.GUI
 {
 	class NumberSetter : UIElement
 	{
-		string Text;
-		string Suffix;
+		readonly string Text;
+		readonly string Suffix;
 
-		TextField editor = new(InputType.integer);
+		readonly TextField editor = new(InputType.integer);
 
 		public int Value
 		{

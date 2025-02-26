@@ -1,5 +1,4 @@
-﻿using Terraria;
-using Terraria.ModLoader.IO;
+﻿using Terraria.ModLoader.IO;
 
 namespace StructureHelper.ChestHelper
 {

@@ -1,11 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using StructureHelper.ChestHelper;
+﻿using StructureHelper.ChestHelper;
 using StructureHelper.ChestHelper.GUI;
 using StructureHelper.Core.Loaders.UILoading;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StructureHelper.Items
 {

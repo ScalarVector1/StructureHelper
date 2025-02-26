@@ -3,10 +3,8 @@ using StructureHelper.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace StructureHelper
@@ -40,7 +38,7 @@ namespace StructureHelper
 	/// </summary>
 	public static class Generator
 	{
-		internal static Dictionary<string, TagCompound> StructureDataCache = new();
+		internal static Dictionary<string, TagCompound> StructureDataCache = [];
 
 		/// <summary>
 		/// This method generates a structure from a structure file within your mod.
@@ -119,9 +117,7 @@ namespace StructureHelper
 			var structures = (List<TagCompound>)tag.GetList<TagCompound>("Structures");
 
 			if (index >= structures.Count || index < 0)
-			{
 				throw new ArgumentOutOfRangeException(ErrorHelper.GenerateErrorMessage($"Attempted to generate structure {index} in mutistructure containing {structures.Count - 1} structures.", mod));
-			}
 
 			TagCompound targetStructure = structures[index];
 
@@ -143,9 +139,7 @@ namespace StructureHelper
 			int height = tag.GetInt("Height");
 
 			if (pos.X < 0 || pos.X + width >= Main.maxTilesX || pos.Y < 0 || pos.Y + height >= Main.maxTilesY)
-			{
 				return false;
-			}
 
 			return true;
 		}
@@ -182,9 +176,7 @@ namespace StructureHelper
 			var structures = (List<TagCompound>)tag.GetList<TagCompound>("Structures");
 
 			if (index >= structures.Count || index < 0)
-			{
 				throw new ArgumentOutOfRangeException(ErrorHelper.GenerateErrorMessage($"Attempted to get dimensions of structure {index} in mutistructure containing {structures.Count - 1} structures.", mod));
-			}
 
 			TagCompound targetStructure = structures[index];
 
@@ -247,7 +239,7 @@ namespace StructureHelper
 			int width = tag.GetInt("Width");
 			int height = tag.GetInt("Height");
 
-			for (int y = 0; y <= height; y++)			
+			for (int y = 0; y <= height; y++)
 			{
 				for (int x = 0; x <= width; x++)
 				{
@@ -309,7 +301,7 @@ namespace StructureHelper
 							*shortPtr = d.packedLiquidData;
 						}
 
-						fixed(void* ptr = &tile.Get<TileWallBrightnessInvisibilityData>())
+						fixed (void* ptr = &tile.Get<TileWallBrightnessInvisibilityData>())
 						{
 							byte* bytePtr = (byte*)ptr;
 
@@ -340,7 +332,7 @@ namespace StructureHelper
 									TileEntity.PlaceEntityNet(pos.X + x, pos.Y + y, typ);
 
 									if (d.TEData != null && typ != 2) // We specifically exclude logic sensors (type 2) because these store their absolute pos
-										(TileEntity.ByPosition[new Point16(pos.X + x, pos.Y + y)]).LoadData(d.TEData);
+										TileEntity.ByPosition[new Point16(pos.X + x, pos.Y + y)].LoadData(d.TEData);
 								}
 							}
 						}

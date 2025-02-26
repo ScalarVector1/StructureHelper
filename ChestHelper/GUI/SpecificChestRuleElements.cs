@@ -1,9 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace StructureHelper.ChestHelper.GUI
 {
@@ -22,7 +17,7 @@ namespace StructureHelper.ChestHelper.GUI
 
 	class ChanceRuleElement : ChestRuleElement
 	{
-		NumberSetter chanceSetter = new NumberSetter(100, "Chance", 100, "%");
+		readonly NumberSetter chanceSetter = new(100, "Chance", 100, "%");
 
 		public ChanceRuleElement() : base(new ChestRuleChance())
 		{
@@ -49,7 +44,7 @@ namespace StructureHelper.ChestHelper.GUI
 
 	class PoolRuleElement : ChestRuleElement
 	{
-		NumberSetter countSetter = new NumberSetter(1, "Amount", 100);
+		readonly NumberSetter countSetter = new(1, "Amount", 100);
 
 		public PoolRuleElement() : base(new ChestRulePool())
 		{
@@ -76,8 +71,8 @@ namespace StructureHelper.ChestHelper.GUI
 
 	class PoolChanceRuleElement : ChestRuleElement
 	{
-		NumberSetter chanceSetter = new NumberSetter(100, "Chance", 100, "%");
-		NumberSetter countSetter = new NumberSetter(1, "Amount", 150);
+		readonly NumberSetter chanceSetter = new(100, "Chance", 100, "%");
+		readonly NumberSetter countSetter = new(1, "Amount", 150);
 
 		public PoolChanceRuleElement() : base(new ChestRulePoolChance())
 		{

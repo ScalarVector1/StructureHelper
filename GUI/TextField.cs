@@ -1,7 +1,7 @@
-﻿using StructureHelper.Core.Loaders.UILoading;
-using StructureHelper.Helpers;
-using ReLogic.Localization.IME;
+﻿using ReLogic.Localization.IME;
 using ReLogic.OS;
+using StructureHelper.Core.Loaders.UILoading;
+using StructureHelper.Helpers;
 using System.Text.RegularExpressions;
 using Terraria.GameContent;
 using Terraria.GameInput;

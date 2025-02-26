@@ -1,9 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Terraria;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace StructureHelper.Util
@@ -123,7 +119,7 @@ namespace StructureHelper.Util
 		/// <summary>
 		/// A queue of previews to render textures for when the next opportunity arises
 		/// </summary>
-		public static List<StructurePreview> queue = new();
+		public static List<StructurePreview> queue = [];
 
 		public void Load(Mod mod)
 		{
@@ -141,7 +137,7 @@ namespace StructureHelper.Util
 		/// <param name="orig"></param>
 		private void DrawQueuedPreview(On_Main.orig_CheckMonoliths orig)
 		{
-			foreach (var queued in queue)
+			foreach (StructurePreview queued in queue)
 			{
 				queued.preview = queued.GeneratePreview();
 			}
@@ -152,4 +148,3 @@ namespace StructureHelper.Util
 		}
 	}
 }
-

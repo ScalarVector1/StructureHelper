@@ -1,17 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using StructureHelper.GUI;
+﻿using StructureHelper.GUI;
 using System.Collections.Generic;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace StructureHelper.Items
 {
 	class MultistructureWand : StructureWand
 	{
-		internal List<TagCompound> structureCache = new();
+		internal List<TagCompound> structureCache = [];
 
 		public override void SetStaticDefaults()
 		{
@@ -27,7 +22,7 @@ namespace StructureHelper.Items
 		public override ModItem Clone(Item newEntity)
 		{
 			var clone = base.Clone(newEntity) as MultistructureWand;
-			clone.structureCache = new List<TagCompound>();
+			clone.structureCache = [];
 			return clone;
 		}
 

@@ -8,7 +8,7 @@ namespace StructureHelper.ChestHelper.GUI
 {
 	class ChestCustomizerState : SmartUIState
 	{
-		internal UIList ruleElements = new();
+		internal UIList ruleElements = [];
 		internal UIScrollbar scrollBar = new();
 
 		readonly UIImageButton NewGuaranteed = new(ModContent.Request<Texture2D>("StructureHelper/GUI/PlusR"));

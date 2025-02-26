@@ -1,14 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StructureHelper.Core.Loaders.UILoading;
+﻿using StructureHelper.Core.Loaders.UILoading;
 using StructureHelper.Items;
 using StructureHelper.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Terraria;
 using Terraria.GameContent.UI.Elements;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
@@ -33,9 +29,9 @@ namespace StructureHelper.GUI
 		public static UIImageButton closeButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
 
 		public static GenFlags flags;
-		public static BoolEditor slopeNullToggle = new BoolEditor("NullsKeepGivenSlope", (val) => flags = val ? flags | GenFlags.NullsKeepGivenSlope : flags & ~GenFlags.NullsKeepGivenSlope, false, description: "If null tiles will keep their slope when generated");
-		public static BoolEditor paintNullToggle = new BoolEditor("NullsKeepGivenPaint", (val) => flags = val ? flags | GenFlags.NullsKeepGivenPaint : flags & ~GenFlags.NullsKeepGivenPaint, false, description: "If null tiles/walls will keep their paint when generated");
-		public static BoolEditor tileEntityToggle = new BoolEditor("IgnoreTileEntityData", (val) => flags = val ? flags | GenFlags.IgnoreTileEnttiyData : flags & ~GenFlags.IgnoreTileEnttiyData, false, description: "If custom tile entity data is ignored or not");
+		public static BoolEditor slopeNullToggle = new("NullsKeepGivenSlope", (val) => flags = val ? flags | GenFlags.NullsKeepGivenSlope : flags & ~GenFlags.NullsKeepGivenSlope, false, description: "If null tiles will keep their slope when generated");
+		public static BoolEditor paintNullToggle = new("NullsKeepGivenPaint", (val) => flags = val ? flags | GenFlags.NullsKeepGivenPaint : flags & ~GenFlags.NullsKeepGivenPaint, false, description: "If null tiles/walls will keep their paint when generated");
+		public static BoolEditor tileEntityToggle = new("IgnoreTileEntityData", (val) => flags = val ? flags | GenFlags.IgnoreTileEnttiyData : flags & ~GenFlags.IgnoreTileEnttiyData, false, description: "If custom tile entity data is ignored or not");
 
 		public override bool Visible => TestWand.UIVisible;
 
@@ -237,7 +233,7 @@ namespace StructureHelper.GUI
 			{
 				ManualGeneratorMenu.multiMode = true;
 
-				var structures = Generator.StructureDataCache[path].Get<List<TagCompound>>("Structures");
+				List<TagCompound> structures = Generator.StructureDataCache[path].Get<List<TagCompound>>("Structures");
 
 				ManualGeneratorMenu.preview?.Dispose();
 				ManualGeneratorMenu.preview = new StructurePreview("", structures[0]);
@@ -279,8 +275,8 @@ namespace StructureHelper.GUI
 	class MultiSelectionEntry : UIElement
 	{
 		public int value;
-		private TagCompound structure;
-		private StructurePreview preview;
+		private readonly TagCompound structure;
+		private readonly StructurePreview preview;
 
 		bool Active => ManualGeneratorMenu.multiIndex == value;
 

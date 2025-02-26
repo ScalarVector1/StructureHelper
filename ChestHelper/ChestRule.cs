@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace StructureHelper.ChestHelper
 {
 	class ChestRule
 	{
-		public List<Loot> pool = new();
+		public List<Loot> pool = [];
 
 		public virtual bool UsesWeight => false;
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace StructureHelper.ChestHelper

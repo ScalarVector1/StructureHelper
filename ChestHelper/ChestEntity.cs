@@ -1,17 +1,14 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace StructureHelper.ChestHelper
 {
 	class ChestEntity : ModTileEntity
 	{
-		public List<ChestRule> rules = new();
+		public List<ChestRule> rules = [];
 
 		public void SaveChestRulesFile()
 		{

@@ -6,15 +6,15 @@ namespace StructureHelper.ChestHelper.GUI
 {
 	class LootElement : UIElement
 	{
-		Loot loot;
-		UIImageButton removeButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
+		readonly Loot loot;
+		readonly UIImageButton removeButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
 
-		NumberSetter min;
-		NumberSetter max;
-		NumberSetter weight;
+		readonly NumberSetter min;
+		readonly NumberSetter max;
+		readonly NumberSetter weight;
 
-		UIImageButton upButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Up"));
-		UIImageButton downButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Down"));
+		readonly UIImageButton upButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Up"));
+		readonly UIImageButton downButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Down"));
 
 		public LootElement(Loot loot, bool hasWeight)
 		{

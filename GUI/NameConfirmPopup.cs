@@ -1,9 +1,6 @@
 ﻿using StructureHelper.Core.Loaders.UILoading;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
@@ -59,7 +56,7 @@ namespace StructureHelper.GUI
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			var color = new Color(49, 84, 141);
-			Rectangle back = new Rectangle(Main.screenWidth / 2 - 150, Main.screenHeight / 2 - 100, 300, 150);
+			var back = new Rectangle(Main.screenWidth / 2 - 150, Main.screenHeight / 2 - 100, 300, 150);
 
 			if (back.Contains(Main.MouseScreen.ToPoint()))
 				Main.LocalPlayer.mouseInterface = true;

@@ -1,5 +1,4 @@
 ﻿using StructureHelper.Items;
-using System;
 using Terraria.DataStructures;
 
 namespace StructureHelper
@@ -17,7 +16,7 @@ namespace StructureHelper
 
 			if (Main.LocalPlayer.HeldItem.ModItem is StructureWand)
 			{
-				var wand = (Main.LocalPlayer.HeldItem.ModItem as StructureWand);
+				var wand = Main.LocalPlayer.HeldItem.ModItem as StructureWand;
 
 				spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
@@ -31,7 +30,7 @@ namespace StructureHelper
 
 				if (wand.secondPoint)
 				{
-					var point1 = wand.point1;
+					Point16 point1 = wand.point1;
 					var point2 = (Main.MouseWorld / 16).ToPoint16();
 
 					topLeft = new Point16(point1.X < point2.X ? point1.X : point2.X, point1.Y < point2.Y ? point1.Y : point2.Y);

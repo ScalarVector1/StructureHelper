@@ -10,12 +10,12 @@ namespace StructureHelper.ChestHelper.GUI
 		internal Color color = Color.White;
 		internal float storedHeight = 0;
 
-		internal UIList lootElements = new();
-		UIImageButton removeButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
+		internal UIList lootElements = [];
+		readonly UIImageButton removeButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
 
-		UIImageButton upButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/UpLarge"));
-		UIImageButton downButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/DownLarge"));
-		UIImageButton hideButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Eye"));
+		readonly UIImageButton upButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/UpLarge"));
+		readonly UIImageButton downButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/DownLarge"));
+		readonly UIImageButton hideButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Eye"));
 
 		public ChestRuleElement(ChestRule rule)
 		{

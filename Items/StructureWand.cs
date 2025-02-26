@@ -1,9 +1,6 @@
-using Microsoft.Xna.Framework;
 using StructureHelper.GUI;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StructureHelper.Items
 {
@@ -17,8 +14,8 @@ namespace StructureHelper.Items
 		public bool movePoint1;
 		public bool movePoint2;
 
-		public Point16 TopLeft => new Point16(point1.X < point2.X ? point1.X : point2.X, point1.Y < point2.Y ? point1.Y : point2.Y);
-		public Point16 BottomRight => new Point16(point1.X > point2.X ? point1.X : point2.X, point1.Y > point2.Y ? point1.Y : point2.Y);
+		public Point16 TopLeft => new(point1.X < point2.X ? point1.X : point2.X, point1.Y < point2.Y ? point1.Y : point2.Y);
+		public Point16 BottomRight => new(point1.X > point2.X ? point1.X : point2.X, point1.Y > point2.Y ? point1.Y : point2.Y);
 		public int Width => BottomRight.X - TopLeft.X;
 		public int Height => BottomRight.Y - TopLeft.Y;
 

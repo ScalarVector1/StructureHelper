@@ -1,5 +1,4 @@
 ﻿using System;
-using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace StructureHelper
@@ -47,7 +46,7 @@ namespace StructureHelper
 		/// </summary>
 		public TagCompound TEData;
 
-		public static Func<TagCompound, TileSaveData> DESERIALIZER = s => DeserializeData(s);
+		public static Func<TagCompound, TileSaveData> DESERIALIZER = DeserializeData;
 
 		/// <summary>
 		/// If the tile here is air or not. (Note that TileID 0 is dirt, this is all that differentiates air and dirt.)
