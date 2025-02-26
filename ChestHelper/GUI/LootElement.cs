@@ -115,9 +115,6 @@ namespace StructureHelper.ChestHelper.GUI
 			string name = loot.givenItem.Name.Length > 20 ? loot.givenItem.Name[..18] + "..." : loot.givenItem.Name;
 			Utils.DrawBorderString(spriteBatch, name, pos + new Vector2(46 + xOff, 14), Color.White, 0.8f);
 
-			if (min.Value > max.Value)
-				min.Value = max.Value;
-
 			if (max.Value < min.Value)
 				max.Value = min.Value;
 

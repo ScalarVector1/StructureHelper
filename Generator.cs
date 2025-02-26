@@ -1,4 +1,5 @@
 ﻿using StructureHelper.ChestHelper;
+using StructureHelper.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -56,10 +57,13 @@ namespace StructureHelper
 			TagCompound tag = GetTag(path, mod, fullPath);
 
 			if (!tag.ContainsKey("Version") || tag.GetString("Version")[0] <= 1)
-				throw new Exception("Legacy structures from 1.3 versions of this mod are not supported.");
+				throw new ArgumentException(ErrorHelper.GenerateErrorMessage("Legacy structures from 1.3 versions of this mod are not supported.", mod));
 
 			if (tag.ContainsKey("Structures"))
-				throw new Exception($"Attempted to generate a multistructure '{path}' as a structure. Use GenerateMultistructureRandom or GenerateMultistructureSpecific instead.");
+				throw new ArgumentException(ErrorHelper.GenerateErrorMessage($"Attempted to generate a multistructure '{path}' as a structure. Use GenerateMultistructureRandom or GenerateMultistructureSpecific instead.", mod));
+
+			if (!IsInBounds(tag, pos))
+				throw new ArgumentException(ErrorHelper.GenerateErrorMessage($"Attempted to generate a structure out of bounds! {pos} is not a valid position for the structure at {path}. Mods are responsible for bounds-checking their own structures. You can fetch dimension data using GetDimensions or GetMultistructureDimensions.", mod));
 
 			return Generate(tag, pos, ignoreNull, flags);
 		}
@@ -79,14 +83,17 @@ namespace StructureHelper
 			TagCompound tag = GetTag(path, mod, fullPath);
 
 			if (!tag.ContainsKey("Version") || tag.GetString("Version")[0] <= 1)
-				throw new Exception("Legacy structures from 1.3 versions of this mod are not supported.");
+				throw new ArgumentException(ErrorHelper.GenerateErrorMessage("Legacy structures from 1.3 versions of this mod are not supported.", mod));
 
 			if (!tag.ContainsKey("Structures"))
-				throw new Exception($"Attempted to generate a structure '{path}' as a multistructure. use GenerateStructure instead.");
+				throw new ArgumentException(ErrorHelper.GenerateErrorMessage($"Attempted to generate a structure '{path}' as a multistructure. use GenerateStructure instead.", mod));
 
 			var structures = (List<TagCompound>)tag.GetList<TagCompound>("Structures");
 			int index = WorldGen.genRand.Next(structures.Count);
 			TagCompound targetStructure = structures[index];
+
+			if (!IsInBounds(targetStructure, pos))
+				throw new ArgumentException(ErrorHelper.GenerateErrorMessage($"Attempted to generate a structure out of bounds! {pos} is not a valid position for the structure at {path}. Mods are responsible for bounds-checking their own structures. You can fetch dimension data using GetDimensions or GetMultistructureDimensions.", mod));
 
 			return Generate(targetStructure, pos, ignoreNull, flags);
 		}
@@ -107,19 +114,40 @@ namespace StructureHelper
 			TagCompound tag = GetTag(path, mod, fullPath);
 
 			if (!tag.ContainsKey("Version") || tag.GetString("Version")[0] <= 1)
-				throw new Exception("Legacy structures from 1.3 versions of this mod are not supported.");
+				throw new ArgumentException(ErrorHelper.GenerateErrorMessage("Legacy structures from 1.3 versions of this mod are not supported.", mod));
 
 			var structures = (List<TagCompound>)tag.GetList<TagCompound>("Structures");
 
 			if (index >= structures.Count || index < 0)
 			{
-				StructureHelper.Instance.Logger.Warn($"Attempted to generate structure {index} in mutistructure containing {structures.Count - 1} structures.");
-				return false;
+				throw new ArgumentOutOfRangeException(ErrorHelper.GenerateErrorMessage($"Attempted to generate structure {index} in mutistructure containing {structures.Count - 1} structures.", mod));
 			}
 
 			TagCompound targetStructure = structures[index];
 
+			if (!IsInBounds(targetStructure, pos))
+				throw new ArgumentException(ErrorHelper.GenerateErrorMessage($"Attempted to generate a structure out of bounds! {pos} is not a valid position for the structure at {path}. Mods are responsible for bounds-checking their own structures. You can fetch dimension data using GetDimensions or GetMultistructureDimensions.", mod));
+
 			return Generate(targetStructure, pos, ignoreNull, flags);
+		}
+
+		/// <summary>
+		/// Helper to check bounds on a generation call
+		/// </summary>
+		/// <param name="tag">The tag to check</param>
+		/// <param name="pos">The position to check from</param>
+		/// <returns>If the structure is in bounds or not</returns>
+		private static bool IsInBounds(TagCompound tag, Point16 pos)
+		{
+			int width = tag.GetInt("Width");
+			int height = tag.GetInt("Height");
+
+			if (pos.X < 0 || pos.X + width >= Main.maxTilesX || pos.Y < 0 || pos.Y + height >= Main.maxTilesY)
+			{
+				return false;
+			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -155,9 +183,7 @@ namespace StructureHelper
 
 			if (index >= structures.Count || index < 0)
 			{
-				dims = new Point16(0, 0);
-				StructureHelper.Instance.Logger.Warn($"Attempted to get dimensions of structure {index} in mutistructure containing {structures.Count - 1} structures.");
-				return false;
+				throw new ArgumentOutOfRangeException(ErrorHelper.GenerateErrorMessage($"Attempted to get dimensions of structure {index} in mutistructure containing {structures.Count - 1} structures.", mod));
 			}
 
 			TagCompound targetStructure = structures[index];
@@ -186,6 +212,22 @@ namespace StructureHelper
 		}
 
 		/// <summary>
+		/// Gets the quantity of structures in a multistructure file if possible. Returns null if the structure is invalid or not a multistructure.
+		/// </summary>
+		/// <param name="path">The path to the structure file you wish to check.</param>
+		/// <param name="mod">The instance of your mod to grab the file from.</param>
+		/// <returns>The amount of structures in a multistructure, or null if invalid.</returns>
+		public static int? GetStructureCount(string path, Mod mod)
+		{
+			TagCompound tag = GetTag(path, mod);
+
+			if (IsMultistructure(path, mod) == true)
+				return tag.GetList<TagCompound>("Structures").Count;
+
+			return null;
+		}
+
+		/// <summary>
 		/// Parses and generates the actual tiles from a structure file
 		/// </summary>
 		/// <param name="tag">The structure data TagCompound to generate from</param>
@@ -205,9 +247,9 @@ namespace StructureHelper
 			int width = tag.GetInt("Width");
 			int height = tag.GetInt("Height");
 
-			for (int x = 0; x <= width; x++)
+			for (int y = 0; y <= height; y++)			
 			{
-				for (int y = 0; y <= height; y++)
+				for (int x = 0; x <= width; x++)
 				{
 					int index = y + x * (height + 1);
 					TileSaveData d = data[index];
@@ -378,10 +420,7 @@ namespace StructureHelper
 			}
 
 			if (tag is null)
-			{
-				StructureHelper.Instance.Logger.Warn("Structure was unable to be found. Are you passing the correct path?");
-				return false;
-			}
+				throw new FileNotFoundException(ErrorHelper.GenerateErrorMessage($"A structure at the path {path} could not be found.", mod));
 
 			StructureDataCache.Add(path, tag);
 			return true;
