@@ -9,7 +9,7 @@ namespace StructureHelper
 	/// <summary>
 	/// A static class providing utilities for saving structures.
 	/// </summary>
-	public static class Saver
+	public static class LegacySaver
 	{
 		/// <summary>
 		/// Saves a given region of the world as a structure file

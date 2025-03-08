@@ -35,19 +35,38 @@ namespace StructureHelper.Models
 		public int GetRawSize();
 
 		/// <summary>
-		/// Copies an entire row of data from this data entry into the world.
+		/// Returns the size in bytes of one column of this data
 		/// </summary>
-		/// <param name="target">The pointer to the leftmost tiles ITileData of this type to copy into</param>
-		/// <param name="rowIdx">The row of data to place at that location</param>
-		public void EmplaceRow(void* target, int rowIdx);
+		/// <returns></returns>
+		public int GetColumnSize();
+
+		/// <summary>
+		/// Returns the size in bytes of a single entry of this data
+		/// </summary>
+		/// <returns></returns>
+		public int GetSingleSize();
+
+		/// <summary>
+		/// Imports a column of data from the world into this structure
+		/// </summary>
+		/// <param name="source">The topmost point of the column</param>
+		/// <param name="columnIdx">The index of the column to read into</param>
+		public void ImportColumn(void* source, int columnIdx);
+
+		/// <summary>
+		/// Copies an entire column of data from this data entry into the world.
+		/// </summary>
+		/// <param name="target">The pointer to the topmost tiles ITileData of this type to copy into</param>
+		/// <param name="columnIdx">The column of data to place at that location</param>
+		public void ExportColumn(void* target, int columnIdx);
 
 		/// <summary>
 		/// Copies a single entry of data into the world.
 		/// </summary>
 		/// <param name="target">The pointer to the tiles ITileData of this type to copy into</param>
-		/// <param name="rowIdx">The Y position to copy from</param>
 		/// <param name="columnIdx">The X position to copy from</param>
-		public void EmplaceSingle(void* target, int rowIdx, int columnIdx);
+		/// <param name="rowIdx">The Y position to copy from</param>
+		public void ExportSingle(void* target, int columnIdx, int rowIdx);
 	}
 
 	public unsafe class TileDataEntry<T> : ITileDataEntry, IDisposable where T : unmanaged, ITileData
@@ -58,7 +77,7 @@ namespace StructureHelper.Models
 		private GCHandle rawDataHandle;
 
 		public int length;
-		public int rowLength;
+		public int colLength;
 
 		public TileDataEntry(int length, int rowLength)
 		{
@@ -67,7 +86,7 @@ namespace StructureHelper.Models
 			rawDataPtr = (T*)rawDataHandle.AddrOfPinnedObject().ToPointer();
 
 			this.length = length;
-			this.rowLength = rowLength;
+			this.colLength = rowLength;
 		}
 
 		public void* GetRawPtr()
@@ -78,7 +97,7 @@ namespace StructureHelper.Models
 		public void SetData(byte[] data)
 		{
 			if (data.Length != sizeof(T) * length)
-				throw new ArgumentException($"Data size is inappropriate, Expected enough for {length} {nameof(T)} ({sizeof(T) * length} bytes), but got {data.Length}");
+				throw new ArgumentException($"Data size is inappropriate, Expected enough for {length} {typeof(T).Name} ({sizeof(T) * length} bytes), but got {data.Length}");
 
 			fixed (byte* dataPtr = data)
 			{
@@ -103,18 +122,36 @@ namespace StructureHelper.Models
 			return sizeof(T) * length;
 		}
 
-		public void EmplaceRow(void* target, int rowIdx)
+		public int GetColumnSize()
 		{
-			long rowSize = sizeof(T) * rowLength;
-
-			T* source = rawDataPtr + rowIdx * rowLength;
-			Buffer.MemoryCopy(source, target, rowSize, rowSize);
+			return sizeof(T) * colLength;
 		}
 
-		public void EmplaceSingle(void* target, int rowIdx, int columnIdx)
+		public int GetSingleSize()
 		{
-			T* source = rawDataPtr + rowIdx * rowLength + columnIdx;
-			Buffer.MemoryCopy(source, target, sizeof(T), sizeof(T));
+			return sizeof(T);
+		}
+
+		public void ImportColumn(void* source, int colIdx)
+		{
+			long colSize = GetColumnSize();
+
+			T* target = rawDataPtr + colIdx * colLength;
+			Buffer.MemoryCopy(source, target, colSize, colSize);
+		}
+
+		public void ExportColumn(void* target, int colIdx)
+		{
+			long colSize = GetColumnSize();
+
+			T* source = rawDataPtr + colIdx * colLength;
+			Buffer.MemoryCopy(source, target, colSize, colSize);
+		}
+
+		public void ExportSingle(void* target, int colIdx, int rowIdx)
+		{
+			T* source = rawDataPtr + (colIdx * colLength + rowIdx);
+			Buffer.MemoryCopy(source, target, GetSingleSize(), GetSingleSize());
 		}
 
 		public void Dispose()

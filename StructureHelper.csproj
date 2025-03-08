@@ -9,6 +9,4 @@
   <ItemGroup>
     <None Remove="Localization\en-US.hjson" />
   </ItemGroup>
-  <ItemGroup>
-  </ItemGroup>
 </Project>

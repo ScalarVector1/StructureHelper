@@ -1,4 +1,6 @@
-﻿using Terraria.Localization;
+﻿using System;
+using System.Reflection;
+using Terraria.Localization;
 
 namespace StructureHelper
 {

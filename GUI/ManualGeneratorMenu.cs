@@ -223,6 +223,9 @@ namespace StructureHelper.GUI
 		{
 			ManualGeneratorMenu.selected = this;
 			ManualGeneratorMenu.multiIndex = 0;
+			ManualGeneratorMenu.multiMode = false;
+
+			return;
 
 			if (!Generator.StructureDataCache.ContainsKey(path))
 			{

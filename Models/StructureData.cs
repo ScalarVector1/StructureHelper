@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader.Core;
 using Terraria.ModLoader.IO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace StructureHelper.Models
 {
@@ -45,14 +48,14 @@ namespace StructureHelper.Models
 		/// There is a table of fully qualified names in the structure file that is used to populate
 		/// this when it is loaded.
 		/// </summary>
-		public Dictionary<int, ushort> moddedTileTable = [];
+		public Dictionary<ushort, ushort> moddedTileTable = [];
 
 		/// <summary>
 		/// Represents the mapping between the stored wall type and the actual ID of the modded walls.
 		/// There is a table of fully qualified names in the structure file that is used to populate
 		/// this when it is loaded.
 		/// </summary>
-		public Dictionary<int, ushort> moddedWallTable = [];
+		public Dictionary<ushort, ushort> moddedWallTable = [];
 
 		/// <summary>
 		/// The actual tile data entries. Each entry represents an ITileData sequence. Vanilla by default
@@ -98,7 +101,7 @@ namespace StructureHelper.Models
 		/// <returns>The current numeric ID of that tile, or 0 (dirt) if it does not exist</returns>
 		public static ushort TileIDFromString(string entry)
 		{
-			string[] parts = entry.Split();
+			string[] parts = entry.Split("/", 2);
 
 			if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind(parts[1], out ModTile modTileType))
 				return modTileType.Type;
@@ -113,7 +116,7 @@ namespace StructureHelper.Models
 		/// <returns>The current numeric ID of that wall, or 0 (empty) if it does not exist</returns>
 		public static ushort WallIDFromString(string entry)
 		{
-			string[] parts = entry.Split();
+			string[] parts = entry.Split("/", 2);
 
 			if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind(parts[1], out ModWall modWallType))
 				return modWallType.Type;
@@ -128,14 +131,14 @@ namespace StructureHelper.Models
 		/// <returns>The Type representing the ITileData, or null it not found</returns>
 		public static Type ITileDataFromString(string entry)
 		{
-			string[] parts = entry.Split();
+			string[] parts = entry.Split("/", 2);
 
 			if (parts.Length != 2)
 				return null;
 
 			if (parts[0] == "Terraria")
 			{
-				return parts[0] switch
+				return parts[1] switch
 				{
 					nameof(TileTypeData) => typeof(TileTypeData),
 					nameof(WallTypeData) => typeof(WallTypeData),
@@ -159,7 +162,7 @@ namespace StructureHelper.Models
 		/// </summary>
 		/// <param name="reader">A reader for the raw binary data, such as from a file</param>
 		/// <returns>A StructureData constructed from the raw bytes, or null if the data is invalid or corrupted</returns>
-		public static StructureData Deserialize(BinaryReader reader)
+		public static StructureData FromStream(BinaryReader reader)
 		{
 			string headerText = reader.ReadString();
 
@@ -179,7 +182,7 @@ namespace StructureHelper.Models
 			int tileTableLength = reader.ReadInt32();
 			for (int k = 0; k < tileTableLength; k++)
 			{
-				int localId = reader.ReadInt32();
+				ushort localId = reader.ReadUInt16();
 				string tileKey = reader.ReadString();
 				data.moddedTileTable[localId] = TileIDFromString(tileKey);
 			}
@@ -188,7 +191,7 @@ namespace StructureHelper.Models
 			int wallTableLength = reader.ReadInt32();
 			for (int k = 0; k < wallTableLength; k++)
 			{
-				int localId = reader.ReadInt32();
+				ushort localId = reader.ReadUInt16();
 				string wallKey = reader.ReadString();
 				data.moddedWallTable[localId] = WallIDFromString(wallKey);
 			}
@@ -207,13 +210,13 @@ namespace StructureHelper.Models
 
 				if (dataType is null)
 				{
-					reader.BaseStream.Position = reader.BaseStream.Seek(blockLength, SeekOrigin.Current);
+					reader.BaseStream.Position += blockLength;
 					continue;
 				}
 				else
 				{
 					Type thisEntryType = typeof(TileDataEntry<>).MakeGenericType(dataType);
-					data.dataEntries[blockName] = (ITileDataEntry)Activator.CreateInstance(thisEntryType, [data.width * data.height, data.width]);
+					data.dataEntries[blockName] = (ITileDataEntry)Activator.CreateInstance(thisEntryType, [data.width * data.height, data.height]);
 					data.dataEntries[blockName].SetData(reader.ReadBytes(blockLength));
 				}
 			}
@@ -222,7 +225,7 @@ namespace StructureHelper.Models
 			if (data.containsNbt)
 			{
 				data.nbtData = [];
-				TagCompound tag = TagIO.FromStream(reader.BaseStream);
+				TagCompound tag = TagIO.FromStream(reader.BaseStream, false);
 				IList<TagCompound> nbtEntries = tag.GetList<TagCompound>("nbtEntries");
 
 				for (int k = 0; k < nbtEntries.Count; k++)
@@ -234,6 +237,90 @@ namespace StructureHelper.Models
 			}
 
 			data.PreProcessModdedTypes();
+			return data;
+		}
+
+		public void ImportDataColumn<T>(int x, int y, int colIdx, Mod mod) where T : unmanaged, ITileData
+		{
+			string key = $"{mod?.Name ?? "Terraria"}/{typeof(T).Name}";
+
+			if (!dataEntries.ContainsKey(key))
+				dataEntries.Add(key, new TileDataEntry<T>(width * height, height));
+
+			fixed (void* ptr = &Main.tile[x, y].Get<T>())
+			{
+				dataEntries[key].ImportColumn(ptr, colIdx);
+			}
+		}
+
+		public void ExportDataColumn<T>(int x, int y, int colIdx, Mod mod) where T : unmanaged, ITileData
+		{
+			string key = $"{mod?.Name ?? "Terraria"}/{typeof(T).Name}";
+
+			/*for(int k = 0; k < width; k++)
+			{
+				int thisX = x + k;
+				fixed (void* ptr = &Main.tile[thisX, y].Get<T>())
+					dataEntries[key].ExportSingle(ptr, rowIdx, k);
+			}
+			return;*/
+			fixed (void* ptr = &Main.tile[x, y].Get<T>())
+			{
+				dataEntries[key].ExportColumn(ptr, colIdx);
+			}
+		}
+
+		/// <summary>
+		/// Constructs a structure data from a region in the world
+		/// </summary>
+		/// <param name="x">The leftmost point of the region</param>
+		/// <param name="y">The topmost point of the region</param>
+		/// <param name="w">The width of the region</param>
+		/// <param name="h">The height of the region</param>
+		/// <returns>A StructureData representing the specified world region</returns>
+		public static StructureData FromWorld(int x, int y, int w, int h)
+		{
+			var data = new StructureData();
+			data.width = w;
+			data.height = h;
+			data.version = StructureHelper.Instance.Version;
+			// Has NBT will be determined after scanning for NBT data
+
+			for(int scanX = 0; scanX < w; scanX++)
+			{
+				data.ImportDataColumn<TileTypeData>(x + scanX, y, scanX, null);
+				data.ImportDataColumn<WallTypeData>(x + scanX, y, scanX, null);
+				data.ImportDataColumn<LiquidData>(x + scanX, y, scanX, null);
+				data.ImportDataColumn<TileWallBrightnessInvisibilityData>(x + scanX, y, scanX, null);
+				data.ImportDataColumn<TileWallWireStateData>(x + scanX, y, scanX, null);
+
+				for (int scanY = 0; scanY < h; scanY++)
+				{
+					var point = new Point16(x + scanX, y + scanY);
+					var tile = Main.tile[point];
+					ushort tileType = tile.TileType;
+					ushort wallType = tile.WallType;
+
+
+					if (tileType > TileID.Count)
+						data.moddedTileTable[tileType] = tileType;
+
+					if (wallType > WallID.Count)
+						data.moddedWallTable[wallType] = wallType;
+
+
+					if (TileEntity.ByPosition.TryGetValue(point, out TileEntity entity))
+					{
+						data.nbtData ??= new();
+						data.containsNbt = true;
+
+						TagCompound tag = new();
+						entity.SaveData(tag);
+						data.nbtData.Add(new(point.X, point.Y, tag));
+					}
+				}
+			}
+
 			return data;
 		}
 
@@ -254,7 +341,7 @@ namespace StructureHelper.Models
 			writer.Write(moddedTileTable.Count);
 			for (int k = 0; k < moddedTileTable.Count; k++)
 			{
-				KeyValuePair<int, ushort> pair = moddedTileTable.ElementAt(k);
+				KeyValuePair<ushort, ushort> pair = moddedTileTable.ElementAt(k);
 				writer.Write(pair.Key);
 				writer.Write(ModContent.GetModTile(pair.Value).FullName);
 			}
@@ -263,7 +350,7 @@ namespace StructureHelper.Models
 			writer.Write(moddedWallTable.Count);
 			for (int k = 0; k < moddedWallTable.Count; k++)
 			{
-				KeyValuePair<int, ushort> pair = moddedWallTable.ElementAt(k);
+				KeyValuePair<ushort, ushort> pair = moddedWallTable.ElementAt(k);
 				writer.Write(pair.Key);
 				writer.Write(ModContent.GetModWall(pair.Value).FullName);
 			}

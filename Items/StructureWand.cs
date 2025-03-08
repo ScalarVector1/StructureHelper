@@ -1,4 +1,6 @@
 using StructureHelper.GUI;
+using StructureHelper.Models;
+using StructureHelper.Saving;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -62,7 +64,14 @@ namespace StructureHelper.Items
 		/// </summary>
 		public virtual void OnConfirmRectangle()
 		{
-			NameConfirmPopup.OpenConfirmation((name) => LegacySaver.SaveToFile(new Rectangle(TopLeft.X, TopLeft.Y, Width - 1, Height - 1), name: name));
+			NameConfirmPopup.OpenConfirmation((name) =>
+			{
+				Saver.SaveToFile(StructureData.FromWorld(TopLeft.X, TopLeft.Y, Width, Height), null, name);
+				LegacySaver.SaveToFile(new Rectangle(TopLeft.X, TopLeft.Y, Width - 1, Height - 1), name: name+"OLD");
+			});
+			
+			
+			//NameConfirmPopup.OpenConfirmation((name) => LegacySaver.SaveToFile(new Rectangle(TopLeft.X, TopLeft.Y, Width - 1, Height - 1), name: name));
 		}
 
 		public override bool? UseItem(Player player)

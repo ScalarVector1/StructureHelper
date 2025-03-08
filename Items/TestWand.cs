@@ -49,7 +49,7 @@ namespace StructureHelper.Items
 				if (ManualGeneratorMenu.multiMode)
 					Generator.GenerateMultistructureSpecific(ManualGeneratorMenu.selected.path, pos, StructureHelper.Instance, ManualGeneratorMenu.multiIndex, true, ManualGeneratorMenu.ignoreNulls, ManualGeneratorMenu.flags);
 				else
-					Generator.GenerateStructure(ManualGeneratorMenu.selected.path, pos, StructureHelper.Instance, true, ManualGeneratorMenu.ignoreNulls, ManualGeneratorMenu.flags);
+					Generating.Generator.GenerateStructure(ManualGeneratorMenu.selected.path, pos, StructureHelper.Instance, true, ManualGeneratorMenu.ignoreNulls, ManualGeneratorMenu.flags);
 			}
 			else
 			{
@@ -62,6 +62,7 @@ namespace StructureHelper.Items
 		private void DrawPreview(Terraria.On_Main.orig_DrawPlayers_AfterProjectiles orig, Main self)
 		{
 			orig(self);
+			return;
 
 			if (ManualGeneratorMenu.selected != null && ManualGeneratorMenu.preview != null && Main.LocalPlayer.HeldItem.type == Item.type)
 			{

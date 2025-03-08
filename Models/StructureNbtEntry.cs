@@ -28,6 +28,18 @@ namespace StructureHelper.Models
 		/// </summary>
 		public TagCompound data;
 
+		public StructureNBTEntry()
+		{
+
+		}
+
+		public StructureNBTEntry(int x, int y, TagCompound data)
+		{
+			this.x = x;
+			this.y = y;
+			this.data = data;
+		}
+
 		public TagCompound Serialize()
 		{
 			TagCompound tag = new()
