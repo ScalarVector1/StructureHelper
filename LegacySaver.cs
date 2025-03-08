@@ -95,7 +95,7 @@ namespace StructureHelper
 				{ "Height", target.Height }
 			};
 
-			var data = new List<TileSaveData>();
+			var data = new List<LegacyTileSaveData>();
 			for (int x = target.X; x <= target.X + target.Width; x++)
 			{
 				for (int y = target.Y; y <= target.Y + target.Height; y++)
@@ -168,7 +168,7 @@ namespace StructureHelper
 					}
 
 					data.Add(
-						new TileSaveData(
+						new LegacyTileSaveData(
 							tileName,
 							wallName,
 							tile.TileFrameX,

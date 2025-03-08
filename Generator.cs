@@ -228,7 +228,7 @@ namespace StructureHelper
 		/// <returns>If the structure successfully generated or not</returns>
 		public static unsafe bool Generate(TagCompound tag, Point16 pos, bool ignoreNull = false, GenFlags flags = GenFlags.None)
 		{
-			var data = (List<TileSaveData>)tag.GetList<TileSaveData>("TileData");
+			var data = (List<LegacyTileSaveData>)tag.GetList<LegacyTileSaveData>("TileData");
 
 			if (data is null)
 			{
@@ -244,7 +244,7 @@ namespace StructureHelper
 				for (int x = 0; x <= width; x++)
 				{
 					int index = y + x * (height + 1);
-					TileSaveData d = data[index];
+					LegacyTileSaveData d = data[index];
 					Tile tile = Framing.GetTileSafely(pos.X + x, pos.Y + y);
 
 					bool isNullTile = false;

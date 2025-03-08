@@ -62,7 +62,7 @@ namespace StructureHelper.Items
 		/// </summary>
 		public virtual void OnConfirmRectangle()
 		{
-			NameConfirmPopup.OpenConfirmation((name) => Saver.SaveToFile(new Rectangle(TopLeft.X, TopLeft.Y, Width - 1, Height - 1), name: name));
+			NameConfirmPopup.OpenConfirmation((name) => LegacySaver.SaveToFile(new Rectangle(TopLeft.X, TopLeft.Y, Width - 1, Height - 1), name: name));
 		}
 
 		public override bool? UseItem(Player player)

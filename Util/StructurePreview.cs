@@ -48,7 +48,7 @@ namespace StructureHelper.Util
 			int width = tag.GetInt("Width");
 			int height = tag.GetInt("Height");
 
-			var data = (List<TileSaveData>)tag.GetList<TileSaveData>("TileData");
+			var data = (List<LegacyTileSaveData>)tag.GetList<LegacyTileSaveData>("TileData");
 
 			RenderTargetBinding[] oldTargets = Main.graphics.GraphicsDevice.GetRenderTargets();
 
@@ -65,7 +65,7 @@ namespace StructureHelper.Util
 				for (int y = 0; y <= height; y++)
 				{
 					int index = y + x * (height + 1);
-					TileSaveData d = data[index];
+					LegacyTileSaveData d = data[index];
 
 					if (!int.TryParse(d.tile, out int type))
 					{

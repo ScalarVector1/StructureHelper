@@ -31,14 +31,14 @@ namespace StructureHelper.Items
 			Item.stack++;
 
 			if (structureCache.Count > 1)
-				NameConfirmPopup.OpenConfirmation((name) => Saver.SaveMultistructureToFile(ref structureCache, name: name));
+				NameConfirmPopup.OpenConfirmation((name) => LegacySaver.SaveMultistructureToFile(ref structureCache, name: name));
 			else
 				Main.NewText("Not enough structures! If you want to save a single structure, use the normal structure wand instead!", Color.Red);
 		}
 
 		public override void OnConfirmRectangle()
 		{
-			structureCache.Add(Saver.SaveStructure(new Rectangle(TopLeft.X, TopLeft.Y, Width - 1, Height - 1)));
+			structureCache.Add(LegacySaver.SaveStructure(new Rectangle(TopLeft.X, TopLeft.Y, Width - 1, Height - 1)));
 			Main.NewText("Structures to save: " + structureCache.Count);
 		}
 	}
