@@ -137,7 +137,9 @@ namespace StructureHelper.Models
 		{
 			string[] parts = entry.Split("/", 2);
 
-			if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind(parts[1], out ModTile modTileType))
+			if (entry == "StructureHelper/Content/Tiles/NullBlock")
+				return StructureHelper.NULL_IDENTIFIER;
+			else if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind(parts[1], out ModTile modTileType))
 				return modTileType.Type;
 			else
 				return 0;
@@ -152,7 +154,9 @@ namespace StructureHelper.Models
 		{
 			string[] parts = entry.Split("/", 2);
 
-			if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind(parts[1], out ModWall modWallType))
+			if (entry == "StructureHelper/Content/Tiles/NullWall")
+				return StructureHelper.NULL_IDENTIFIER;
+			else if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind(parts[1], out ModWall modWallType))
 				return modWallType.Type;
 			else
 				return 0;
@@ -472,7 +476,11 @@ namespace StructureHelper.Models
 			{
 				KeyValuePair<ushort, ushort> pair = moddedTileTable.ElementAt(k);
 				writer.Write(pair.Key);
-				writer.Write(ModContent.GetModTile(pair.Value).FullName);
+
+				if (pair.Value == StructureHelper.NULL_IDENTIFIER)
+					writer.Write("StructureHelper/Content/Tiles/NullBlock");
+				else
+					writer.Write(ModContent.GetModTile(pair.Value).FullName);
 			}
 
 			// Write wall table
@@ -481,7 +489,11 @@ namespace StructureHelper.Models
 			{
 				KeyValuePair<ushort, ushort> pair = moddedWallTable.ElementAt(k);
 				writer.Write(pair.Key);
-				writer.Write(ModContent.GetModWall(pair.Value).FullName);
+
+				if (pair.Value == StructureHelper.NULL_IDENTIFIER)
+					writer.Write("StructureHelper/Content/Tiles/NullWall");
+				else
+					writer.Write(ModContent.GetModWall(pair.Value).FullName);
 			}
 
 			// Write slow column table

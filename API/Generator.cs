@@ -181,12 +181,18 @@ namespace StructureHelper.API
 				{
 					WorldGen.TileFrame(pos.X + x, pos.Y);
 					WorldGen.TileFrame(pos.X + x, pos.Y + data.height);
+
+					WorldGen.SquareWallFrame(pos.X + x, pos.Y);
+					WorldGen.SquareWallFrame(pos.X + x, pos.Y + data.height);
 				}
 
 				for (int y = 0; y < data.height; y++)
 				{
 					WorldGen.TileFrame(pos.X, pos.Y + y);
 					WorldGen.TileFrame(pos.X + data.width, pos.Y + y);
+
+					WorldGen.SquareWallFrame(pos.X, pos.Y + y);
+					WorldGen.SquareWallFrame(pos.X + data.width, pos.Y + y);
 				}
 
 				if (Main.netMode != NetmodeID.SinglePlayer)

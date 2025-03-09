@@ -23,6 +23,8 @@ namespace StructureHelper.Content.Items
 
 		public bool Ready => !secondPoint && point1 != default;
 
+		public override string Texture => "StructureHelper/Assets/Items/" + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Structure Wand");

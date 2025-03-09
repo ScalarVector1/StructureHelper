@@ -27,6 +27,8 @@ namespace StructureHelper.Content.Tiles
 
 	class NullBlock : ModTile
 	{
+		public override string Texture => "StructureHelper/Assets/Tiles/" + Name;
+
 		public override void SetStaticDefaults()
 		{
 			Main.tileSolid[Type] = true;
@@ -40,11 +42,15 @@ namespace StructureHelper.Content.Tiles
 
 	class NullWall : ModWall
 	{
+		public override string Texture => "StructureHelper/Assets/Tiles/" + Name;
+
 		public override bool Drop(int i, int j, ref int type) { return false; }
 	}
 
 	class NullBlockItem : ModItem
 	{
+		public override string Texture => "StructureHelper/Assets/Tiles/" + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Null Block");
@@ -68,6 +74,8 @@ namespace StructureHelper.Content.Tiles
 
 	class NullWallItem : ModItem
 	{
+		public override string Texture => "StructureHelper/Assets/Tiles/" + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Null Wall");
@@ -91,6 +99,8 @@ namespace StructureHelper.Content.Tiles
 
 	class NullTileAndWallPlacer : ModItem
 	{
+		public override string Texture => "StructureHelper/Assets/Tiles/" + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Null Tile Place-O-Matic");

@@ -8,6 +8,8 @@ namespace StructureHelper.Content.Items
 {
 	class ChestWand : ModItem
 	{
+		public override string Texture => "StructureHelper/Assets/Items/" + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Chest Wand");

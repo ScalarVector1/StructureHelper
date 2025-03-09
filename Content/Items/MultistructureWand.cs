@@ -1,5 +1,6 @@
 ﻿using StructureHelper.API.Legacy;
 using StructureHelper.Content.GUI;
+using StructureHelper.Models;
 using System.Collections.Generic;
 using Terraria.ModLoader.IO;
 
@@ -7,7 +8,9 @@ namespace StructureHelper.Content.Items
 {
 	class MultistructureWand : StructureWand
 	{
-		internal List<TagCompound> structureCache = [];
+		internal List<StructureData> capturedData = [];
+
+		public override string Texture => "StructureHelper/Assets/Items/" + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -23,7 +26,7 @@ namespace StructureHelper.Content.Items
 		public override ModItem Clone(Item newEntity)
 		{
 			var clone = base.Clone(newEntity) as MultistructureWand;
-			clone.structureCache = [];
+			clone.capturedData = [];
 			return clone;
 		}
 
@@ -31,16 +34,16 @@ namespace StructureHelper.Content.Items
 		{
 			Item.stack++;
 
-			if (structureCache.Count > 1)
-				NameConfirmPopup.OpenConfirmation((name) => LegacySaver.SaveMultistructureToFile(ref structureCache, name: name));
+			if (capturedData.Count > 1)
+				NameConfirmPopup.OpenConfirmation((name) => API.Saver.SaveMultistructureToFile(MultiStructureData.FromStructureList(capturedData), name: name));
 			else
 				Main.NewText("Not enough structures! If you want to save a single structure, use the normal structure wand instead!", Color.Red);
 		}
 
 		public override void OnConfirmRectangle()
 		{
-			structureCache.Add(LegacySaver.SaveStructure(new Rectangle(TopLeft.X, TopLeft.Y, Width - 1, Height - 1)));
-			Main.NewText("Structures to save: " + structureCache.Count);
+			capturedData.Add(API.Saver.SaveToStructureData(TopLeft.X, TopLeft.Y, Width, Height));
+			Main.NewText("Structure captured! Total structures to save: " + capturedData.Count);
 		}
 	}
 }

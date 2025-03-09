@@ -9,6 +9,8 @@ namespace StructureHelper.Content.Items
 		public static bool ignoreNulls = false;
 		public static bool UIVisible;
 
+		public override string Texture => "StructureHelper/Assets/Items/" + Name;
+
 		public override void Load()
 		{
 			On_Main.DrawPlayers_AfterProjectiles += DrawPreview;
@@ -47,9 +49,9 @@ namespace StructureHelper.Content.Items
 				var pos = new Point16(Player.tileTargetX, Player.tileTargetY);
 
 				if (ManualGeneratorMenu.multiMode)
-					API.Legacy.LegacyGenerator.GenerateMultistructureSpecific(ManualGeneratorMenu.selected.path, pos, StructureHelper.Instance, ManualGeneratorMenu.multiIndex, true, ManualGeneratorMenu.ignoreNulls, ManualGeneratorMenu.flags);
+					API.MultiStructureGenerator.GenerateMultistructureSpecific(ManualGeneratorMenu.selected.path, ManualGeneratorMenu.multiIndex, pos, StructureHelper.Instance, true, ManualGeneratorMenu.ignoreNulls, ManualGeneratorMenu.flags);
 				else
-					Generating.Generator.GenerateStructure(ManualGeneratorMenu.selected.path, pos, StructureHelper.Instance, true, ManualGeneratorMenu.ignoreNulls, ManualGeneratorMenu.flags);
+					API.Generator.GenerateStructure(ManualGeneratorMenu.selected.path, pos, StructureHelper.Instance, true, ManualGeneratorMenu.ignoreNulls, ManualGeneratorMenu.flags);
 			}
 			else
 			{
