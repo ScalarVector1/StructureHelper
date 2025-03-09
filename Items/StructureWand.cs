@@ -67,7 +67,6 @@ namespace StructureHelper.Items
 			NameConfirmPopup.OpenConfirmation((name) =>
 			{
 				Saver.SaveToFile(StructureData.FromWorld(TopLeft.X, TopLeft.Y, Width, Height), null, name);
-				LegacySaver.SaveToFile(new Rectangle(TopLeft.X, TopLeft.Y, Width - 1, Height - 1), name: name+"OLD");
 			});
 			
 			

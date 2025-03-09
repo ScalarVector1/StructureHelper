@@ -1,12 +1,15 @@
-﻿using System;
+﻿using StructureHelper.Helpers;
+using StructureHelper.Models.NbtEntries;
+using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 using Terraria.ModLoader.IO;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace StructureHelper.Models
 {
@@ -58,6 +61,13 @@ namespace StructureHelper.Models
 		public Dictionary<ushort, ushort> moddedWallTable = [];
 
 		/// <summary>
+		/// Represents columns which contain null tiles or walls. These are slow as we have to copy data
+		/// piecemeal to allow those effects to take place instead of copying the entire column as a
+		/// memory span
+		/// </summary>
+		public Dictionary<int, bool> slowColumns = [];
+
+		/// <summary>
 		/// The actual tile data entries. Each entry represents an ITileData sequence. Vanilla by default
 		/// has 5 of these, and mods may add more.
 		/// </summary>
@@ -75,6 +85,10 @@ namespace StructureHelper.Models
 		/// </summary>
 		public void PreProcessModdedTypes()
 		{
+			// Tracks types for repopulating with valid mapping later
+			HashSet<ushort> tileTypesToRepopulate = new();
+			HashSet<ushort> wallTypesToRepopulate = new();
+
 			ITileDataEntry tileTypes = dataEntries["Terraria/TileTypeData"];
 			ITileDataEntry wallTypes = dataEntries["Terraria/WallTypeData"];
 
@@ -87,10 +101,30 @@ namespace StructureHelper.Models
 				ushort walltyp = wallPtr[k].Type;
 
 				if (moddedTileTable.ContainsKey(typ))
+				{
 					dataPtr[k].Type = moddedTileTable[typ];
+					tileTypesToRepopulate.Add(moddedTileTable[typ]);
+				}
 
 				if (moddedWallTable.ContainsKey(walltyp))
+				{
 					wallPtr[k].Type = moddedWallTable[walltyp];
+					wallTypesToRepopulate.Add(moddedWallTable[walltyp]);
+				}
+			}
+
+			// We repopulate the table with the updated types so that this data can be re-serialized
+			// and remain valid if anyone ever needs to do that
+			moddedTileTable.Clear();
+			for(int k = 0; k < tileTypesToRepopulate.Count; k++)
+			{
+				moddedTileTable.Add(tileTypesToRepopulate.ElementAt(k), tileTypesToRepopulate.ElementAt(k));
+			}
+
+			moddedWallTable.Clear();
+			for(int k = 0; k < wallTypesToRepopulate.Count; k++)
+			{
+				moddedWallTable.Add(wallTypesToRepopulate.ElementAt(k), wallTypesToRepopulate.ElementAt(k));
 			}
 		}
 
@@ -167,7 +201,7 @@ namespace StructureHelper.Models
 			string headerText = reader.ReadString();
 
 			if (headerText != HEADER_TEXT)
-				throw new InvalidDataException("Attempted to deserialize binary data that is not a structure file!");
+				throw new InvalidDataException(ErrorHelper.GenerateErrorMessage("Attempted to deserialize binary data that is not a 3.0 structure file! Did you pass the path to a .stsruct file? If so, did you change the file extension without actually porting your structure file from 2.0?", null));
 
 			var data = new StructureData
 			{
@@ -194,6 +228,12 @@ namespace StructureHelper.Models
 				ushort localId = reader.ReadUInt16();
 				string wallKey = reader.ReadString();
 				data.moddedWallTable[localId] = WallIDFromString(wallKey);
+			}
+
+			// Read slow column table
+			for(int k = 0; k < data.width; k++)
+			{
+				data.slowColumns.Add(k, reader.ReadBoolean());
 			}
 
 			// Read the data blocks
@@ -224,23 +264,23 @@ namespace StructureHelper.Models
 			// Read NBT if applicable
 			if (data.containsNbt)
 			{
-				data.nbtData = [];
-				TagCompound tag = TagIO.FromStream(reader.BaseStream, false);
-				IList<TagCompound> nbtEntries = tag.GetList<TagCompound>("nbtEntries");
-
-				for (int k = 0; k < nbtEntries.Count; k++)
-				{
-					StructureNBTEntry entry = new();
-					entry.Deserialze(nbtEntries[k]);
-					data.nbtData.Add(entry);
-				}
+				TagCompound tag = TagIO.Read(reader);
+				data.nbtData = (List<StructureNBTEntry>)tag.GetList<StructureNBTEntry>("nbtEntries");
 			}
 
 			data.PreProcessModdedTypes();
 			return data;
 		}
 
-		public void ImportDataColumn<T>(int x, int y, int colIdx, Mod mod) where T : unmanaged, ITileData
+		/// <summary>
+		/// Internal function used to copy a column of tile data into this StructureData
+		/// </summary>
+		/// <typeparam name="T">The type of the ITileData to copy in</typeparam>
+		/// <param name="x">The X position of the column</param>
+		/// <param name="y">The topmost point of the column</param>
+		/// <param name="colIdx">The column in the data map to insert the data into</param>
+		/// <param name="mod">The mod the ITileData type is from, or null if vanilla</param>
+		internal void ImportDataColumn<T>(int x, int y, int colIdx, Mod mod) where T : unmanaged, ITileData
 		{
 			string key = $"{mod?.Name ?? "Terraria"}/{typeof(T).Name}";
 
@@ -253,21 +293,69 @@ namespace StructureHelper.Models
 			}
 		}
 
-		public void ExportDataColumn<T>(int x, int y, int colIdx, Mod mod) where T : unmanaged, ITileData
+		/// <summary>
+		/// Internal function used to copy a column of tile data into the world from this StructureData
+		/// </summary>
+		/// <typeparam name="T">The type of the ITileData to copy out</typeparam>
+		/// <param name="x">The X position of the column</param>
+		/// <param name="y">The topmost point of the column</param>
+		/// <param name="colIdx">The column in the data map to insert the data into</param>
+		/// <param name="mod">The mod the ITileData type is from, or null if vanilla</param>
+		internal void ExportDataColumn<T>(int x, int y, int colIdx, Mod mod) where T : unmanaged, ITileData
 		{
 			string key = $"{mod?.Name ?? "Terraria"}/{typeof(T).Name}";
 
-			/*for(int k = 0; k < width; k++)
-			{
-				int thisX = x + k;
-				fixed (void* ptr = &Main.tile[thisX, y].Get<T>())
-					dataEntries[key].ExportSingle(ptr, rowIdx, k);
-			}
-			return;*/
 			fixed (void* ptr = &Main.tile[x, y].Get<T>())
 			{
 				dataEntries[key].ExportColumn(ptr, colIdx);
 			}
+		}
+
+		/// <summary>
+		/// Internal function used to copy a column of tile data into the world from this StructureData
+		/// that may have null blocks or walls in it
+		/// </summary>
+		/// <typeparam name="T">The type of the ITileData to copy out</typeparam>
+		/// <param name="x">The X position of the column</param>
+		/// <param name="y">The topmost point of the column</param>
+		/// <param name="colIdx">The column in the data map to insert the data into</param>
+		/// <param name="mod">The mod the ITileData type is from, or null if vanilla</param>
+		internal void ExportDataColumnSlow<T>(int x, int y, int colIdx, Mod mod) where T : unmanaged, ITileData
+		{
+			string key = $"{mod?.Name ?? "Terraria"}/{typeof(T).Name}";
+
+			if (key != "Terraria/WallTypeData")
+			{
+				ITileDataEntry typeData = dataEntries["Terraria/TileTypeData"];
+
+				for (int rowIdx = 0; rowIdx < height; rowIdx++)
+				{
+					bool isNull = (*(TileTypeData*)typeData.GetSingleEntry(colIdx, rowIdx)).Type == StructureHelper.NullTileID;
+
+					if (!isNull)
+					{
+						fixed (void* ptr = &Main.tile[x, y + rowIdx].Get<T>())
+							dataEntries[key].ExportSingle(ptr, colIdx, rowIdx);
+					}
+				}
+			}
+			else
+			{
+				ITileDataEntry typeData = dataEntries["Terraria/WallTypeData"];
+
+				for (int rowIdx = 0; rowIdx < height; rowIdx++)
+				{
+					bool isNull = (*(WallTypeData*)typeData.GetSingleEntry(colIdx, rowIdx)).Type == StructureHelper.NullWallID;
+
+					if (!isNull)
+					{
+						fixed (void* ptr = &Main.tile[x, y + rowIdx].Get<T>())
+							dataEntries[key].ExportSingle(ptr, colIdx, rowIdx);
+					}
+				}
+			}
+
+			return;
 		}
 
 		/// <summary>
@@ -280,13 +368,15 @@ namespace StructureHelper.Models
 		/// <returns>A StructureData representing the specified world region</returns>
 		public static StructureData FromWorld(int x, int y, int w, int h)
 		{
-			var data = new StructureData();
-			data.width = w;
-			data.height = h;
-			data.version = StructureHelper.Instance.Version;
+			var data = new StructureData
+			{
+				width = w,
+				height = h,
+				version = StructureHelper.Instance.Version
+			};
 			// Has NBT will be determined after scanning for NBT data
 
-			for(int scanX = 0; scanX < w; scanX++)
+			for (int scanX = 0; scanX < w; scanX++)
 			{
 				data.ImportDataColumn<TileTypeData>(x + scanX, y, scanX, null);
 				data.ImportDataColumn<WallTypeData>(x + scanX, y, scanX, null);
@@ -294,13 +384,14 @@ namespace StructureHelper.Models
 				data.ImportDataColumn<TileWallBrightnessInvisibilityData>(x + scanX, y, scanX, null);
 				data.ImportDataColumn<TileWallWireStateData>(x + scanX, y, scanX, null);
 
+				data.slowColumns.Add(scanX, false);
+
 				for (int scanY = 0; scanY < h; scanY++)
 				{
 					var point = new Point16(x + scanX, y + scanY);
-					var tile = Main.tile[point];
+					Tile tile = Main.tile[point];
 					ushort tileType = tile.TileType;
 					ushort wallType = tile.WallType;
-
 
 					if (tileType > TileID.Count)
 						data.moddedTileTable[tileType] = tileType;
@@ -308,15 +399,42 @@ namespace StructureHelper.Models
 					if (wallType > WallID.Count)
 						data.moddedWallTable[wallType] = wallType;
 
+					if (tileType == StructureHelper.NullTileID || wallType == StructureHelper.NullWallID)
+						data.slowColumns[scanX] = true;
 
+					// Save tile enttiy as NBT data
 					if (TileEntity.ByPosition.TryGetValue(point, out TileEntity entity))
 					{
-						data.nbtData ??= new();
-						data.containsNbt = true;
+						var modTileEntity = entity as ModTileEntity;
+						string teName;
 
-						TagCompound tag = new();
-						entity.SaveData(tag);
-						data.nbtData.Add(new(point.X, point.Y, tag));
+						if (modTileEntity != null)
+							teName = modTileEntity.FullName;
+						else
+							teName = entity.type.ToString();
+						
+						if (!string.IsNullOrEmpty(teName))
+						{
+							data.nbtData ??= [];
+							data.containsNbt = true;
+
+							TagCompound tag = [];
+							entity.SaveData(tag);
+							data.nbtData.Add(new TileEntityNBTEntry(scanX, scanY, teName, tag));
+						}
+					}
+
+					// Save sign as NBT data
+					if (Main.tileSign[tile.TileType] && tile.TileFrameX == 0 && tile.TileFrameY == 0)
+					{
+						int signIdx = Sign.ReadSign(point.X, point.Y, false);
+						if (signIdx != -1)
+						{
+							data.nbtData ??= [];
+							data.containsNbt = true;
+
+							data.nbtData.Add(new SignNBTEntry(scanX, scanY, Main.sign[signIdx].text));
+						}
 					}
 				}
 			}
@@ -355,6 +473,12 @@ namespace StructureHelper.Models
 				writer.Write(ModContent.GetModWall(pair.Value).FullName);
 			}
 
+			// Write slow column table
+			for(int k = 0; k < width; k++)
+			{
+				writer.Write(slowColumns[k]);
+			}
+
 			// Write data blocks
 			writer.Write(dataEntries.Count);
 			for (int k = 0; k < dataEntries.Count; k++)
@@ -368,14 +492,7 @@ namespace StructureHelper.Models
 			// Write NBT if applicable
 			if (containsNbt && nbtData != null && nbtData.Count > 0)
 			{
-				List<TagCompound> tags = [];
-
-				for (int k = 0; k < nbtData.Count; k++)
-				{
-					tags.Add(nbtData[k].Serialize());
-				}
-
-				TagIO.WriteTag("nbtEntries", tags, writer);
+				TagIO.Write(new() {["nbtEntries"] = nbtData}, writer);
 			}
 		}
 	}

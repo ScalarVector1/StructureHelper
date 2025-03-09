@@ -10,6 +10,12 @@ namespace StructureHelper.Models
 	public unsafe interface ITileDataEntry
 	{
 		/// <summary>
+		/// Returns the pointer to the backing data of this TileDataEntry
+		/// </summary>
+		/// <returns></returns>
+		public void* GetRawPtr();
+
+		/// <summary>
 		/// Sets the data for this TileDataEntry from a byte array, such as one read from a binary file
 		/// </summary>
 		/// <param name="data">The raw data to populate this entry with</param>
@@ -17,16 +23,19 @@ namespace StructureHelper.Models
 		public void SetData(byte[] data);
 
 		/// <summary>
-		/// Returns the pointer to the backing data of this TileDataEntry
-		/// </summary>
-		/// <returns></returns>
-		public void* GetRawPtr();
-
-		/// <summary>
 		/// Gets the raw data of this tile data entry as a byte array.
 		/// </summary>
 		/// <returns>The raw data as a byte array</returns>
 		public byte[] GetData();
+
+		/// <summary>
+		/// Gets a single entry at this location in the data. Returns as a void pointer,
+		/// you will have to derefference this yourself.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		public void* GetSingleEntry(int x, int y);
 
 		/// <summary>
 		/// Returns the raw size of this tile data entry, in bytes.
@@ -115,6 +124,11 @@ namespace StructureHelper.Models
 			}
 
 			return data;
+		}
+
+		public void* GetSingleEntry(int x, int y)
+		{
+			return rawDataPtr + (x * colLength + y);
 		}
 
 		public int GetRawSize()
