@@ -3,6 +3,7 @@ global using Microsoft.Xna.Framework.Graphics;
 global using Terraria;
 global using Terraria.ModLoader;
 using StructureHelper.Content.Tiles;
+using System.Reflection.Metadata;
 
 namespace StructureHelper
 {
@@ -10,6 +11,8 @@ namespace StructureHelper
 	{
 		public static ushort NullTileID;
 		public static ushort NullWallID;
+
+		public const ushort NULL_IDENTIFIER = ushort.MaxValue;
 
 		public StructureHelper() { Instance = this; }
 

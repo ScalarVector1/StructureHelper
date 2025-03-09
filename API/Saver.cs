@@ -68,5 +68,41 @@ namespace StructureHelper.API
 			using var writer = new BinaryWriter(compressionStream);
 			data.Serialize(writer);
 		}
+
+		/// <summary>
+		/// Saves a given MultiStructureData to a file, the location is by the target path, and with the given name.
+		/// </summary>
+		/// <param name="data">The MultiStructureData to save</param>
+		/// <param name="targetPath">The path to the directory save the file into</param>
+		/// <param name="name">The name of the file, NOT including the extension</param>
+		public static void SaveMultistructureToFile(MultiStructureData data, string targetPath = null, string name = "unnamed multistructure")
+		{
+			if (string.IsNullOrEmpty(name))
+				name = "unnamed structure";
+
+			string path = ModLoader.ModPath.Replace("Mods", "SavedStructures");
+
+			if (!Directory.Exists(path))
+				Directory.CreateDirectory(path);
+
+			string thisPath = targetPath ?? Path.Combine(path, name);
+
+			int counter = 2;
+			while (File.Exists(thisPath))
+			{
+				thisPath = targetPath ?? Path.Combine(path, name) + $"({counter})";
+				counter++;
+			}
+
+			thisPath += ".shmstruct";
+
+			Main.NewText("MultiStructure saved as " + thisPath, Color.Yellow);
+
+
+			using FileStream fileStream = File.Create(thisPath);
+			using var compressionStream = new GZipStream(fileStream, CompressionLevel.Optimal);
+			using var writer = new BinaryWriter(compressionStream);
+			data.Serialize(writer);
+		}
 	}
 }

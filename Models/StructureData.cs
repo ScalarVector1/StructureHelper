@@ -195,13 +195,14 @@ namespace StructureHelper.Models
 		/// Constructs a StructureData from raw binary data
 		/// </summary>
 		/// <param name="reader">A reader for the raw binary data, such as from a file</param>
-		/// <returns>A StructureData constructed from the raw bytes, or null if the data is invalid or corrupted</returns>
+		/// <returns>A StructureData constructed from the raw bytes</returns>
+		/// <exception cref="InvalidDataException">If the stream does not represent a structure</exception>
 		public static StructureData FromStream(BinaryReader reader)
 		{
 			string headerText = reader.ReadString();
 
 			if (headerText != HEADER_TEXT)
-				throw new InvalidDataException(ErrorHelper.GenerateErrorMessage("Attempted to deserialize binary data that is not a 3.0 structure file! Did you pass the path to a .stsruct file? If so, did you change the file extension without actually porting your structure file from 2.0?", null));
+				throw new InvalidDataException(ErrorHelper.GenerateErrorMessage("Attempted to deserialize binary data that is not a 3.0 structure file! Did you pass the path to a .shstruct file? If so, did you change the file extension without actually porting your structure file from 2.0?", null));
 
 			var data = new StructureData
 			{
@@ -330,7 +331,7 @@ namespace StructureHelper.Models
 
 				for (int rowIdx = 0; rowIdx < height; rowIdx++)
 				{
-					bool isNull = (*(TileTypeData*)typeData.GetSingleEntry(colIdx, rowIdx)).Type == StructureHelper.NullTileID;
+					bool isNull = (*(TileTypeData*)typeData.GetSingleEntry(colIdx, rowIdx)).Type == StructureHelper.NULL_IDENTIFIER;
 
 					if (!isNull)
 					{
@@ -345,7 +346,7 @@ namespace StructureHelper.Models
 
 				for (int rowIdx = 0; rowIdx < height; rowIdx++)
 				{
-					bool isNull = (*(WallTypeData*)typeData.GetSingleEntry(colIdx, rowIdx)).Type == StructureHelper.NullWallID;
+					bool isNull = (*(WallTypeData*)typeData.GetSingleEntry(colIdx, rowIdx)).Type == StructureHelper.NULL_IDENTIFIER;
 
 					if (!isNull)
 					{
@@ -439,13 +440,23 @@ namespace StructureHelper.Models
 				}
 			}
 
+			// We specifically change the markers for nulls to be ushort.MaxValue so they can be detected regardless
+			// of if StructureHelper is loaded when generating
+			if (StructureHelper.NullTileID != default)
+			{
+				if (data.moddedTileTable.ContainsKey(StructureHelper.NullTileID))
+					data.moddedTileTable[StructureHelper.NullTileID] = StructureHelper.NULL_IDENTIFIER;
+
+				if (data.moddedWallTable.ContainsKey(StructureHelper.NullWallID))
+					data.moddedWallTable[StructureHelper.NullWallID] = StructureHelper.NULL_IDENTIFIER;
+			}
+
 			return data;
 		}
 
 		/// <summary>
 		/// Serialize this StructureData into a binary writer, such as to write to a file
 		/// </summary>
-		/// <returns>A byte array that can later be deserialized into an identical StructureData</returns>
 		public void Serialize(BinaryWriter writer)
 		{
 			// Write the header

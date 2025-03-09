@@ -7,7 +7,7 @@ using System.IO.Compression;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace StructureHelper.Generating
+namespace StructureHelper.API
 {
 	/// <summary>
 	/// In this class you will find various utilities related to generating structures and getting important
@@ -39,7 +39,7 @@ namespace StructureHelper.Generating
 		/// <param name="path">The path to search for the structure file</param>
 		/// <param name="mod">The mod to search for the structure file in</param>
 		/// <param name="pos">The position to check from, this would be the top-left of the structure.</param>
-		/// <returns></returns>
+		/// <returns>If the structure is in bounds or not</returns>
 		public static bool IsInBound(string path, Mod mod, Point16 pos, bool fullPath = false)
 		{
 			StructureData data = GetStructureData(path, mod, fullPath);
@@ -142,6 +142,24 @@ namespace StructureHelper.Generating
 					data.ExportDataColumnSlow<LiquidData>(pos.X + k, pos.Y, k, null);
 					data.ExportDataColumnSlow<TileWallBrightnessInvisibilityData>(pos.X + k, pos.Y, k, null);
 					data.ExportDataColumnSlow<TileWallWireStateData>(pos.X + k, pos.Y, k, null);
+				}
+			}
+
+			// replace nulls from the placeholder null value to the current null ID
+			if (ignoreNull)
+			{
+				for(int x = 0; x < data.width; x++)
+				{
+					for(int y = 0; y < data.height; y++)
+					{
+						Tile tile = Main.tile[pos.X + x, pos.Y + y];
+
+						if (tile.TileType == StructureHelper.NULL_IDENTIFIER)
+							tile.TileType = StructureHelper.NullTileID;
+
+						if (tile.WallType == StructureHelper.NULL_IDENTIFIER)
+							tile.WallType = StructureHelper.NullWallID;
+					}
 				}
 			}
 
