@@ -25,9 +25,9 @@ namespace StructureHelper.Content.GUI
 		public static UIGrid structureElements = new();
 		public static UIScrollbar scrollBar = new();
 
-		public static UIImageButton refreshButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Refresh"));
-		public static UIImageButton ignoreButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Null"));
-		public static UIImageButton closeButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
+		public static UIImageButton refreshButton = new(Assets.GUI.Refresh);
+		public static UIImageButton ignoreButton = new(Assets.GUI.Null);
+		public static UIImageButton closeButton = new(Assets.GUI.Cross);
 
 		public static GenFlags flags;
 		public static BoolEditor slopeNullToggle = new("NullsKeepGivenSlope", (val) => flags = val ? flags | GenFlags.NullsKeepGivenSlope : flags & ~GenFlags.NullsKeepGivenSlope, false, description: "If null tiles will keep their slope when generated");
@@ -154,7 +154,7 @@ namespace StructureHelper.Content.GUI
 
 			if (!ignoreNulls)
 			{
-				Texture2D tex = ModContent.Request<Texture2D>("StructureHelper/GUI/Cross").Value;
+				Texture2D tex = Assets.GUI.Cross.Value;
 				spriteBatch.Draw(tex, ignoreButton.GetDimensions().ToRectangle(), ignoreButton.IsMouseHovering ? Color.White : Color.White * 0.5f);
 			}
 		}

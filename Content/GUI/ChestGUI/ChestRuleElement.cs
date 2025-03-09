@@ -11,11 +11,11 @@ namespace StructureHelper.Content.GUI.ChestGUI
 		internal float storedHeight = 0;
 
 		internal UIList lootElements = [];
-		readonly UIImageButton removeButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
+		readonly UIImageButton removeButton = new(Assets.GUI.Cross);
 
-		readonly UIImageButton upButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/UpLarge"));
-		readonly UIImageButton downButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/DownLarge"));
-		readonly UIImageButton hideButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Eye"));
+		readonly UIImageButton upButton = new(Assets.GUI.UpLarge);
+		readonly UIImageButton downButton = new(Assets.GUI.DownLarge);
+		readonly UIImageButton hideButton = new(Assets.GUI.Eye);
 
 		public ChestRuleElement(ChestRule rule)
 		{
@@ -70,13 +70,13 @@ namespace StructureHelper.Content.GUI.ChestGUI
 		{
 			if (storedHeight == 0)
 			{
-				hideButton.SetImage(ModContent.Request<Texture2D>("StructureHelper/GUI/EyeClosed"));
+				hideButton.SetImage(Assets.GUI.EyeClosed);
 				storedHeight = GetDimensions().Height;
 				Height.Set(50, 0);
 			}
 			else
 			{
-				hideButton.SetImage(ModContent.Request<Texture2D>("StructureHelper/GUI/Eye"));
+				hideButton.SetImage(Assets.GUI.Eye);
 				Height.Set(storedHeight, 0);
 				storedHeight = 0;
 			}

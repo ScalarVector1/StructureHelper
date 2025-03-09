@@ -7,14 +7,14 @@ namespace StructureHelper.Content.GUI.ChestGUI
 	class LootElement : UIElement
 	{
 		readonly Loot loot;
-		readonly UIImageButton removeButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
+		readonly UIImageButton removeButton = new(Assets.GUI.Cross);
 
 		readonly NumberSetter min;
 		readonly NumberSetter max;
 		readonly NumberSetter weight;
 
-		readonly UIImageButton upButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Up"));
-		readonly UIImageButton downButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Down"));
+		readonly UIImageButton upButton = new(Assets.GUI.Up);
+		readonly UIImageButton downButton = new(Assets.GUI.Down);
 
 		public LootElement(Loot loot, bool hasWeight)
 		{

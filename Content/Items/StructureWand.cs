@@ -1,10 +1,10 @@
-using StructureHelper.GUI;
+using StructureHelper.API;
+using StructureHelper.Content.GUI;
 using StructureHelper.Models;
-using StructureHelper.Saving;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace StructureHelper.Items
+namespace StructureHelper.Content.Items
 {
 	class StructureWand : ModItem
 	{
@@ -68,8 +68,8 @@ namespace StructureHelper.Items
 			{
 				Saver.SaveToFile(StructureData.FromWorld(TopLeft.X, TopLeft.Y, Width, Height), null, name);
 			});
-			
-			
+
+
 			//NameConfirmPopup.OpenConfirmation((name) => LegacySaver.SaveToFile(new Rectangle(TopLeft.X, TopLeft.Y, Width - 1, Height - 1), name: name));
 		}
 

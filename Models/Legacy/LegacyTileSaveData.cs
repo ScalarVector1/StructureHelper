@@ -1,7 +1,7 @@
 ﻿using System;
 using Terraria.ModLoader.IO;
 
-namespace StructureHelper
+namespace StructureHelper.Models.Legacy
 {
 	/// <summary>
 	/// A struct representing tile data to be saved/loaded from structure files.

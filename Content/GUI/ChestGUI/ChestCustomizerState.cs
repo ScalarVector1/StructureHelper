@@ -11,12 +11,12 @@ namespace StructureHelper.Content.GUI.ChestGUI
 		internal UIList ruleElements = [];
 		internal UIScrollbar scrollBar = new();
 
-		readonly UIImageButton NewGuaranteed = new(ModContent.Request<Texture2D>("StructureHelper/GUI/PlusR"));
-		readonly UIImageButton NewChance = new(ModContent.Request<Texture2D>("StructureHelper/GUI/PlusG"));
-		readonly UIImageButton NewPool = new(ModContent.Request<Texture2D>("StructureHelper/GUI/PlusP"));
-		readonly UIImageButton NewPoolChance = new(ModContent.Request<Texture2D>("StructureHelper/GUI/PlusB"));
+		readonly UIImageButton NewGuaranteed = new(Assets.GUI.PlusR);
+		readonly UIImageButton NewChance = new(Assets.GUI.PlusG);
+		readonly UIImageButton NewPool = new(Assets.GUI.PlusP);
+		readonly UIImageButton NewPoolChance = new(Assets.GUI.PlusB);
 
-		public static UIImageButton closeButton = new(ModContent.Request<Texture2D>("StructureHelper/GUI/Cross"));
+		public static UIImageButton closeButton = new(Assets.GUI.Cross);
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
 		{

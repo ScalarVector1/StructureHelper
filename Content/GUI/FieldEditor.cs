@@ -81,7 +81,7 @@ namespace StructureHelper.Content.GUI
 		{
 			GUIHelper.DrawBox(spriteBatch, GetDimensions().ToRectangle());
 
-			Texture2D back = ModContent.Request<Texture2D>("StructureHelper/GUI/Gradient").Value;
+			Texture2D back = Assets.GUI.Gradient.Value;
 			var backTarget = GetDimensions().ToRectangle();
 			backTarget.Height = 24;
 			backTarget.Offset(new Point(4, 4));

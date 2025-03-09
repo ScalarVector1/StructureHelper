@@ -1,5 +1,5 @@
 ﻿using StructureHelper.ChestHelper;
-using StructureHelper.ChestHelper.GUI;
+using StructureHelper.Content.GUI.ChestGUI;
 using StructureHelper.Core.Loaders.UILoading;
 using Terraria.DataStructures;
 using Terraria.ID;

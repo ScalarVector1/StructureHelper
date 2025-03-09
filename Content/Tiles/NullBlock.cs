@@ -1,6 +1,6 @@
 ﻿using Terraria.ID;
 
-namespace StructureHelper
+namespace StructureHelper.Content.Tiles
 {
 	class NullBlockFraming : ModSystem
 	{
@@ -19,9 +19,7 @@ namespace StructureHelper
 			isNeighborNull |= Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<NullBlock>();
 
 			if (isNeighborNull)
-			{
 				return false;
-			}
 
 			return orig(i, j, slope, noEffects);
 		}

@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using StructureHelper.Models.Legacy;
+using System.Collections.Generic;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
-namespace StructureHelper
+namespace StructureHelper.API.Legacy
 {
 	/// <summary>
 	/// A static class providing utilities for saving structures.
@@ -126,9 +127,7 @@ namespace StructureHelper
 						var modTileEntity = teTarget as ModTileEntity;
 
 						if (modTileEntity != null)
-						{
 							teName = modTileEntity.Mod.Name + " " + modTileEntity.Name;
-						}
 						else
 						{
 							teName = teTarget.type.ToString();

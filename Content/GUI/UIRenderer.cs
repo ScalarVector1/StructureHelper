@@ -1,7 +1,7 @@
 ﻿using StructureHelper.Content.Items;
 using Terraria.DataStructures;
 
-namespace StructureHelper
+namespace StructureHelper.Content.GUI
 {
 	public class UIRenderer : ModSystem
 	{
@@ -14,14 +14,14 @@ namespace StructureHelper
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			if (Main.LocalPlayer.HeldItem.ModItem is StructureWand)
+			if (Main.LocalPlayer?.HeldItem?.ModItem is StructureWand)
 			{
 				var wand = Main.LocalPlayer.HeldItem.ModItem as StructureWand;
 
 				spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-				Texture2D tex = ModContent.Request<Texture2D>("StructureHelper/corner").Value;
-				Texture2D tex2 = ModContent.Request<Texture2D>("StructureHelper/box").Value;
+				Texture2D tex = Assets.corner.Value;
+				Texture2D tex2 = Assets.box.Value;
 
 				Point16 topLeft = wand.TopLeft;
 				Point16 bottomRight = wand.BottomRight;

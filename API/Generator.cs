@@ -9,6 +9,10 @@ using Terraria.ID;
 
 namespace StructureHelper.Generating
 {
+	/// <summary>
+	/// In this class you will find various utilities related to generating structures and getting important
+	/// information from them such as their dimensions.
+	/// </summary>
 	public class Generator
 	{
 		private static readonly Dictionary<string, StructureData> StructureCache = [];
