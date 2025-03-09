@@ -2,7 +2,7 @@
 using System;
 using Terraria.UI;
 
-namespace StructureHelper.GUI
+namespace StructureHelper.Content.GUI
 {
 	internal class BoolEditor : FieldEditor<bool>
 	{

@@ -1,8 +1,8 @@
-﻿using StructureHelper.GUI;
+﻿using StructureHelper.ChestHelper;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
-namespace StructureHelper.ChestHelper.GUI
+namespace StructureHelper.Content.GUI.ChestGUI
 {
 	class ChestRuleElement : UIElement
 	{

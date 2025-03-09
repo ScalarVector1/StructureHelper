@@ -4,7 +4,7 @@ using StructureHelper.Core.Loaders.UILoading;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace StructureHelper.Items
+namespace StructureHelper.Content.Items
 {
 	class ChestWand : ModItem
 	{

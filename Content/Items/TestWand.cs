@@ -1,8 +1,8 @@
-﻿using StructureHelper.GUI;
+﻿using StructureHelper.Content.GUI;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace StructureHelper.Items
+namespace StructureHelper.Content.Items
 {
 	class TestWand : ModItem
 	{
@@ -11,7 +11,7 @@ namespace StructureHelper.Items
 
 		public override void Load()
 		{
-			Terraria.On_Main.DrawPlayers_AfterProjectiles += DrawPreview;
+			On_Main.DrawPlayers_AfterProjectiles += DrawPreview;
 		}
 
 		public override void SetStaticDefaults()
@@ -47,7 +47,7 @@ namespace StructureHelper.Items
 				var pos = new Point16(Player.tileTargetX, Player.tileTargetY);
 
 				if (ManualGeneratorMenu.multiMode)
-					Generator.GenerateMultistructureSpecific(ManualGeneratorMenu.selected.path, pos, StructureHelper.Instance, ManualGeneratorMenu.multiIndex, true, ManualGeneratorMenu.ignoreNulls, ManualGeneratorMenu.flags);
+					API.Legacy.LegacyGenerator.GenerateMultistructureSpecific(ManualGeneratorMenu.selected.path, pos, StructureHelper.Instance, ManualGeneratorMenu.multiIndex, true, ManualGeneratorMenu.ignoreNulls, ManualGeneratorMenu.flags);
 				else
 					Generating.Generator.GenerateStructure(ManualGeneratorMenu.selected.path, pos, StructureHelper.Instance, true, ManualGeneratorMenu.ignoreNulls, ManualGeneratorMenu.flags);
 			}
@@ -59,7 +59,7 @@ namespace StructureHelper.Items
 			return true;
 		}
 
-		private void DrawPreview(Terraria.On_Main.orig_DrawPlayers_AfterProjectiles orig, Main self)
+		private void DrawPreview(On_Main.orig_DrawPlayers_AfterProjectiles orig, Main self)
 		{
 			orig(self);
 			return;

@@ -1,4 +1,4 @@
-﻿using StructureHelper.Items;
+﻿using StructureHelper.Content.Items;
 using Terraria.DataStructures;
 
 namespace StructureHelper

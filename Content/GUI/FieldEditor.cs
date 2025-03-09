@@ -2,7 +2,7 @@
 using StructureHelper.Helpers;
 using System;
 
-namespace StructureHelper.GUI
+namespace StructureHelper.Content.GUI
 {
 	/// <summary>
 	/// A UI element for changing the value of 'something'. 

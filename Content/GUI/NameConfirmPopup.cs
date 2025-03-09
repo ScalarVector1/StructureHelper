@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
-namespace StructureHelper.GUI
+namespace StructureHelper.Content.GUI
 {
 	internal class NameConfirmPopup : SmartUIState
 	{

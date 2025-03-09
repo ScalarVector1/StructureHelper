@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StructureHelper.Models.Legacy;
+using System;
 using System.Collections.Generic;
 using Terraria.ModLoader.IO;
 

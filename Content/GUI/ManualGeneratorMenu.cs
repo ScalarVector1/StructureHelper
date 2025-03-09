@@ -1,6 +1,7 @@
-﻿using StructureHelper.Core.Loaders.UILoading;
-using StructureHelper.Items;
+﻿using StructureHelper.Content.Items;
+using StructureHelper.Core.Loaders.UILoading;
 using StructureHelper.Util;
+using StructureHelper.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +10,7 @@ using Terraria.ModLoader.IO;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 
-namespace StructureHelper.GUI
+namespace StructureHelper.Content.GUI
 {
 	class ManualGeneratorMenu : SmartUIState
 	{
@@ -227,16 +228,14 @@ namespace StructureHelper.GUI
 
 			return;
 
-			if (!Generator.StructureDataCache.ContainsKey(path))
-			{
-				Generator.LoadFile(path, StructureHelper.Instance, true);
-			}
+			/*if (!LegacyGenerator.StructureDataCache.ContainsKey(path))
+				LegacyGenerator.LoadFile(path, StructureHelper.Instance, true);
 
-			if (Generator.StructureDataCache[path].ContainsKey("Structures"))
+			if (LegacyGenerator.StructureDataCache[path].ContainsKey("Structures"))
 			{
 				ManualGeneratorMenu.multiMode = true;
 
-				List<TagCompound> structures = Generator.StructureDataCache[path].Get<List<TagCompound>>("Structures");
+				List<TagCompound> structures = LegacyGenerator.StructureDataCache[path].Get<List<TagCompound>>("Structures");
 
 				ManualGeneratorMenu.preview?.Dispose();
 				ManualGeneratorMenu.preview = new StructurePreview("", structures[0]);
@@ -262,8 +261,8 @@ namespace StructureHelper.GUI
 				ManualGeneratorMenu.multiMode = false;
 
 				ManualGeneratorMenu.preview?.Dispose();
-				ManualGeneratorMenu.preview = new StructurePreview(name, Generator.StructureDataCache[path]);
-			}
+				ManualGeneratorMenu.preview = new StructurePreview(name, LegacyGenerator.StructureDataCache[path]);
+			}*/
 		}
 
 		public override int CompareTo(object obj)

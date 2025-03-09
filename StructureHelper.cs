@@ -22,7 +22,7 @@ namespace StructureHelper
 
 		public override void Unload()
 		{
-			Generator.StructureDataCache.Clear();
+			API.Legacy.LegacyGenerator.StructureDataCache.Clear();
 		}
 	}
 }

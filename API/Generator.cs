@@ -9,7 +9,7 @@ using Terraria.ID;
 
 namespace StructureHelper.Generating
 {
-	internal class Generator
+	public class Generator
 	{
 		private static readonly Dictionary<string, StructureData> StructureCache = [];
 

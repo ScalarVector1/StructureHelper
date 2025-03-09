@@ -1,5 +1,7 @@
 ﻿using StructureHelper.ChestHelper;
 using StructureHelper.Helpers;
+using StructureHelper.Models;
+using StructureHelper.Models.Legacy;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,36 +12,10 @@ using Terraria.ModLoader.IO;
 namespace StructureHelper
 {
 	/// <summary>
-	/// Flags that allow users to define special behavior for structure generation.
-	/// </summary>
-	[Flags]
-	public enum GenFlags
-	{
-		/// <summary>
-		/// No special generation
-		/// </summary>
-		None = 0b0,
-		/// <summary>
-		/// Null tiles will inherit the type of the tile behind them, but keep their slope if that tile is slopable
-		/// </summary>
-		NullsKeepGivenSlope = 0b1,
-		/// <summary>
-		/// Null tiles and walls will inherit the type of the tile/wall behind them, but will keep the paint they are given
-		/// </summary>
-		NullsKeepGivenPaint = 0b10,
-		/// <summary>
-		/// Tile entities will not have their saved data placed in the generated structures, instead falling back to acting as if they are newly created
-		/// </summary>
-		IgnoreTileEnttiyData = 0b100,
-	}
-
-	/// <summary>
-	/// A static class providing utilities to generate structures.
+	/// The legacy API left as is to prevent runtime breakage.
 	/// </summary>
 	public static class Generator
 	{
-		internal static Dictionary<string, TagCompound> StructureDataCache = [];
-
 		/// <summary>
 		/// This method generates a structure from a structure file within your mod.
 		/// </summary>
@@ -50,20 +26,10 @@ namespace StructureHelper
 		/// <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll reference.</param>
 		/// <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="GenFlags"/> </param>
 		/// <returns>If the structure generated successfully or not</returns>
+		[Obsolete("Legacy generation API is deprecated. Please port your structures to the 3.0 format and use StructureHelper.API.Generator. If you truly need legacy API access, use StructureHelper.API.Legacy.LegacyGenerator.", true)]
 		public static bool GenerateStructure(string path, Point16 pos, Mod mod, bool fullPath = false, bool ignoreNull = false, GenFlags flags = GenFlags.None)
 		{
-			TagCompound tag = GetTag(path, mod, fullPath);
-
-			if (!tag.ContainsKey("Version") || tag.GetString("Version")[0] <= 1)
-				throw new ArgumentException(ErrorHelper.GenerateErrorMessage("Legacy structures from 1.3 versions of this mod are not supported.", mod));
-
-			if (tag.ContainsKey("Structures"))
-				throw new ArgumentException(ErrorHelper.GenerateErrorMessage($"Attempted to generate a multistructure '{path}' as a structure. Use GenerateMultistructureRandom or GenerateMultistructureSpecific instead.", mod));
-
-			if (!IsInBounds(tag, pos))
-				throw new ArgumentException(ErrorHelper.GenerateErrorMessage($"Attempted to generate a structure out of bounds! {pos} is not a valid position for the structure at {path}. Mods are responsible for bounds-checking their own structures. You can fetch dimension data using GetDimensions or GetMultistructureDimensions.", mod));
-
-			return Generate(tag, pos, ignoreNull, flags);
+			return API.Legacy.LegacyGenerator.GenerateStructure(path, pos, mod, fullPath, ignoreNull, flags);
 		}
 
 		/// <summary>
@@ -76,24 +42,10 @@ namespace StructureHelper
 		/// <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll refference.</param>
 		/// <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="GenFlags"/> </param>
 		/// <returns>If the structure generated successfully or not</returns>
+		[Obsolete("Legacy generation API is deprecated. Please port your structures to the 3.0 format and use StructureHelper.API.Generator. If you truly need legacy API access, use StructureHelper.API.Legacy.LegacyGenerator.", true)]
 		public static bool GenerateMultistructureRandom(string path, Point16 pos, Mod mod, bool fullPath = false, bool ignoreNull = false, GenFlags flags = GenFlags.None)
 		{
-			TagCompound tag = GetTag(path, mod, fullPath);
-
-			if (!tag.ContainsKey("Version") || tag.GetString("Version")[0] <= 1)
-				throw new ArgumentException(ErrorHelper.GenerateErrorMessage("Legacy structures from 1.3 versions of this mod are not supported.", mod));
-
-			if (!tag.ContainsKey("Structures"))
-				throw new ArgumentException(ErrorHelper.GenerateErrorMessage($"Attempted to generate a structure '{path}' as a multistructure. use GenerateStructure instead.", mod));
-
-			var structures = (List<TagCompound>)tag.GetList<TagCompound>("Structures");
-			int index = WorldGen.genRand.Next(structures.Count);
-			TagCompound targetStructure = structures[index];
-
-			if (!IsInBounds(targetStructure, pos))
-				throw new ArgumentException(ErrorHelper.GenerateErrorMessage($"Attempted to generate a structure out of bounds! {pos} is not a valid position for the structure at {path}. Mods are responsible for bounds-checking their own structures. You can fetch dimension data using GetDimensions or GetMultistructureDimensions.", mod));
-
-			return Generate(targetStructure, pos, ignoreNull, flags);
+			return API.Legacy.LegacyGenerator.GenerateMultistructureRandom(path, pos, mod, fullPath, ignoreNull, flags);
 		}
 
 		/// <summary>
@@ -107,41 +59,10 @@ namespace StructureHelper
 		/// <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll refference.</param>
 		/// <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="GenFlags"/> </param>
 		/// <returns>If the structure generated successfully or not</returns>
+		[Obsolete("Legacy generation API is deprecated. Please port your structures to the 3.0 format and use StructureHelper.API.Generator. If you truly need legacy API access, use StructureHelper.API.Legacy.LegacyGenerator.", true)]
 		public static bool GenerateMultistructureSpecific(string path, Point16 pos, Mod mod, int index, bool fullPath = false, bool ignoreNull = false, GenFlags flags = GenFlags.None)
 		{
-			TagCompound tag = GetTag(path, mod, fullPath);
-
-			if (!tag.ContainsKey("Version") || tag.GetString("Version")[0] <= 1)
-				throw new ArgumentException(ErrorHelper.GenerateErrorMessage("Legacy structures from 1.3 versions of this mod are not supported.", mod));
-
-			var structures = (List<TagCompound>)tag.GetList<TagCompound>("Structures");
-
-			if (index >= structures.Count || index < 0)
-				throw new ArgumentOutOfRangeException(ErrorHelper.GenerateErrorMessage($"Attempted to generate structure {index} in mutistructure containing {structures.Count - 1} structures.", mod));
-
-			TagCompound targetStructure = structures[index];
-
-			if (!IsInBounds(targetStructure, pos))
-				throw new ArgumentException(ErrorHelper.GenerateErrorMessage($"Attempted to generate a structure out of bounds! {pos} is not a valid position for the structure at {path}. Mods are responsible for bounds-checking their own structures. You can fetch dimension data using GetDimensions or GetMultistructureDimensions.", mod));
-
-			return Generate(targetStructure, pos, ignoreNull, flags);
-		}
-
-		/// <summary>
-		/// Helper to check bounds on a generation call
-		/// </summary>
-		/// <param name="tag">The tag to check</param>
-		/// <param name="pos">The position to check from</param>
-		/// <returns>If the structure is in bounds or not</returns>
-		private static bool IsInBounds(TagCompound tag, Point16 pos)
-		{
-			int width = tag.GetInt("Width");
-			int height = tag.GetInt("Height");
-
-			if (pos.X < 0 || pos.X + width >= Main.maxTilesX || pos.Y < 0 || pos.Y + height >= Main.maxTilesY)
-				return false;
-
-			return true;
+			return API.Legacy.LegacyGenerator.GenerateMultistructureSpecific(path, pos, mod, index, fullPath, ignoreNull, flags);
 		}
 
 		/// <summary>
@@ -152,12 +73,10 @@ namespace StructureHelper
 		/// <param name="dims">The Point16 variable which you want to be set to the dimensions of the structure.</param>
 		/// <param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
 		/// <returns></returns>
+		[Obsolete("Legacy generation API is deprecated. Please port your structures to the 3.0 format and use StructureHelper.API.Generator. If you truly need legacy API access, use StructureHelper.API.Legacy.LegacyGenerator.", true)]
 		public static bool GetDimensions(string path, Mod mod, ref Point16 dims, bool fullPath = false)
 		{
-			TagCompound tag = GetTag(path, mod, fullPath);
-
-			dims = new Point16(tag.GetInt("Width") + 1, tag.GetInt("Height") + 1);
-			return true;
+			return API.Legacy.LegacyGenerator.GetDimensions(path, mod, ref dims, fullPath);
 		}
 
 		/// <summary>
@@ -169,19 +88,10 @@ namespace StructureHelper
 		/// <param name="dims">The Point16 variable which you want to be set to the dimensions of the structure.</param>
 		/// <param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
 		/// <returns></returns>
+		[Obsolete("Legacy generation API is deprecated. Please port your structures to the 3.0 format and use StructureHelper.API.Generator. If you truly need legacy API access, use StructureHelper.API.Legacy.LegacyGenerator.", true)]
 		public static bool GetMultistructureDimensions(string path, Mod mod, int index, ref Point16 dims, bool fullPath = false)
 		{
-			TagCompound tag = GetTag(path, mod, fullPath);
-
-			var structures = (List<TagCompound>)tag.GetList<TagCompound>("Structures");
-
-			if (index >= structures.Count || index < 0)
-				throw new ArgumentOutOfRangeException(ErrorHelper.GenerateErrorMessage($"Attempted to get dimensions of structure {index} in mutistructure containing {structures.Count - 1} structures.", mod));
-
-			TagCompound targetStructure = structures[index];
-
-			dims = new Point16(targetStructure.GetInt("Width") + 1, targetStructure.GetInt("Height") + 1);
-			return true;
+			return API.Legacy.LegacyGenerator.GetMultistructureDimensions(path, mod, index, ref dims, fullPath);
 		}
 
 		/// <summary>
@@ -190,17 +100,10 @@ namespace StructureHelper
 		/// <param name="path">The path to the structure file you wish to check.</param>
 		/// <param name="mod">The instance of your mod to grab the file from.</param>
 		/// <returns>True if the file is a multistructure, False if the file is a structure, null if it is invalid.</returns>
+		[Obsolete("Legacy generation API is deprecated. Please port your structures to the 3.0 format and use StructureHelper.API.Generator. If you truly need legacy API access, use StructureHelper.API.Legacy.LegacyGenerator.", true)]
 		public static bool? IsMultistructure(string path, Mod mod)
 		{
-			TagCompound tag = GetTag(path, mod);
-
-			if (tag is null)
-				return null;
-
-			if (tag.ContainsKey("Structures"))
-				return true;
-			else
-				return false;
+			return API.Legacy.LegacyGenerator.IsMultistructure(path, mod);
 		}
 
 		/// <summary>
@@ -209,14 +112,10 @@ namespace StructureHelper
 		/// <param name="path">The path to the structure file you wish to check.</param>
 		/// <param name="mod">The instance of your mod to grab the file from.</param>
 		/// <returns>The amount of structures in a multistructure, or null if invalid.</returns>
+		[Obsolete("Legacy generation API is deprecated. Please port your structures to the 3.0 format and use StructureHelper.API.Generator. If you truly need legacy API access, use StructureHelper.API.Legacy.LegacyGenerator.", true)]
 		public static int? GetStructureCount(string path, Mod mod)
 		{
-			TagCompound tag = GetTag(path, mod);
-
-			if (IsMultistructure(path, mod) == true)
-				return tag.GetList<TagCompound>("Structures").Count;
-
-			return null;
+			return API.Legacy.LegacyGenerator.GetStructureCount(path, mod);
 		}
 
 		/// <summary>
@@ -226,222 +125,10 @@ namespace StructureHelper
 		/// <param name="pos">The position in the world of the top-leftmost tile to be placed at</param>
 		/// <param name="ignoreNull">If this structure should place null tiles or not</param>
 		/// <returns>If the structure successfully generated or not</returns>
+		[Obsolete("Legacy generation API is deprecated. Please port your structures to the 3.0 format and use StructureHelper.API.Generator. If you truly need legacy API access, use StructureHelper.API.Legacy.LegacyGenerator.", true)]
 		public static unsafe bool Generate(TagCompound tag, Point16 pos, bool ignoreNull = false, GenFlags flags = GenFlags.None)
 		{
-			var data = (List<LegacyTileSaveData>)tag.GetList<LegacyTileSaveData>("TileData");
-
-			if (data is null)
-			{
-				StructureHelper.Instance.Logger.Warn("Corrupt or Invalid structure data.");
-				return false;
-			}
-
-			int width = tag.GetInt("Width");
-			int height = tag.GetInt("Height");
-
-			for (int y = 0; y <= height; y++)
-			{
-				for (int x = 0; x <= width; x++)
-				{
-					int index = y + x * (height + 1);
-					LegacyTileSaveData d = data[index];
-					Tile tile = Framing.GetTileSafely(pos.X + x, pos.Y + y);
-
-					bool isNullTile = false;
-
-					bool isNullWall = false;
-					ushort oldWall = tile.WallType; //Saved incase there is a null wall and we need to restore
-
-					if (!int.TryParse(d.tile, out int type))
-					{
-						string[] parts = d.tile.Split();
-
-						if (parts[0] == "StructureHelper" && parts[1] == "NullBlock" && !ignoreNull)
-							isNullTile = true;
-						else if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModTile>(parts[1], out ModTile modTileType))
-							type = modTileType.Type;
-						else
-							type = 0;
-					}
-
-					if (!int.TryParse(d.wall, out int wallType))
-					{
-						string[] parts = d.wall.Split();
-
-						if (parts[0] == "StructureHelper" && parts[1] == "NullWall" && !ignoreNull)
-							isNullWall = true;
-						else if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModWall>(parts[1], out ModWall modWallType))
-							wallType = modWallType.Type;
-						else
-							wallType = 0;
-					}
-
-					if (!d.Active)
-						isNullTile = false;
-
-					if (!isNullTile || ignoreNull) //leave everything else about the tile alone if its a null block
-					{
-						tile.ClearEverything();
-						tile.TileType = (ushort)type;
-						tile.TileFrameX = d.frameX;
-						tile.TileFrameY = d.frameY;
-
-						fixed (void* ptr = &tile.Get<TileWallWireStateData>())
-						{
-							int* intPtr = (int*)ptr;
-							intPtr++;
-
-							*intPtr = d.wallWireData;
-						}
-
-						fixed (void* ptr = &tile.Get<LiquidData>())
-						{
-							short* shortPtr = (short*)ptr;
-
-							*shortPtr = d.packedLiquidData;
-						}
-
-						fixed (void* ptr = &tile.Get<TileWallBrightnessInvisibilityData>())
-						{
-							byte* bytePtr = (byte*)ptr;
-
-							*bytePtr = d.brightInvisibleData;
-						}
-
-						if (!d.Active)
-							tile.HasTile = false;
-
-						if (d.TEType != "") //place and load a tile entity
-						{
-							if (d.TEType == "StructureHelper ChestEntity" && !ignoreNull)
-							{
-								GenerateChest(new Point16(pos.X + x, pos.Y + y), d.TEData);
-							}
-							else if ((flags & GenFlags.IgnoreTileEnttiyData) == 0)
-							{
-								if (!int.TryParse(d.TEType, out int typ))
-								{
-									string[] parts = d.TEType.Split();
-
-									if (ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModTileEntity>(parts[1], out ModTileEntity te))
-										typ = te.Type;
-								}
-
-								if (typ != 0)
-								{
-									TileEntity.PlaceEntityNet(pos.X + x, pos.Y + y, typ);
-
-									if (d.TEData != null && typ != 2) // We specifically exclude logic sensors (type 2) because these store their absolute pos
-										TileEntity.ByPosition[new Point16(pos.X + x, pos.Y + y)].LoadData(d.TEData);
-								}
-							}
-						}
-						else if ((type == TileID.Containers || TileID.Sets.BasicChest[tile.TileType]) && d.frameX % 36 == 0 && d.frameY % 36 == 0) //generate an empty chest if there is no chest data
-						{
-							Chest.CreateChest(pos.X + x, pos.Y + y);
-						}
-					}
-
-					var wallwire = new TileWallWireStateData();
-					wallwire.SetAllBitsClearFrame(d.wallWireData);
-
-					if (isNullTile)
-					{
-						if ((flags & GenFlags.NullsKeepGivenSlope) == GenFlags.NullsKeepGivenSlope)
-							tile.Slope = wallwire.Slope;
-
-						if ((flags & GenFlags.NullsKeepGivenPaint) == GenFlags.NullsKeepGivenPaint)
-							tile.TileColor = wallwire.TileColor;
-					}
-
-					if (isNullWall)
-					{
-						if ((flags & GenFlags.NullsKeepGivenPaint) == GenFlags.NullsKeepGivenPaint)
-							tile.WallColor = wallwire.TileColor;
-					}
-
-					if (!isNullWall || ignoreNull)
-						tile.WallType = (ushort)wallType;
-					else
-						tile.WallType = oldWall; //revert to old wall if its a null wall and not a null tile, else would be overridden by the WallWireData struct
-				}
-			}
-
-			if (Main.netMode != NetmodeID.SinglePlayer)
-				NetMessage.SendTileSquare(-1, pos.X, pos.Y, width, height);
-
-			return true;
-		}
-
-		/// <summary>
-		/// Places a chest in the world and fills it according to a set of chest rules
-		/// </summary>
-		/// <param name="pos">The position of the top-leftmost corner of the chest</param>
-		/// <param name="rules">The TagCompound containing the chest rules you want to generate your chest with</param>
-		internal static void GenerateChest(Point16 pos, TagCompound rules)
-		{
-			int i = Chest.CreateChest(pos.X, pos.Y);
-
-			if (i == -1)
-				return;
-
-			Chest chest = Main.chest[i];
-			ChestEntity.SetChest(chest, ChestEntity.LoadChestRules(rules));
-		}
-
-		/// <summary>
-		/// Loads and caches a structure file.
-		/// </summary>
-		/// <param name="path">The path to the struture file to load</param>
-		/// <param name="mod">The mod to load the structure file from</param>
-		/// <param name="fullPath">If the given path is fully qualified</param>
-		/// <returns>If the file could successfully be loaded or not</returns>
-		internal static bool LoadFile(string path, Mod mod, bool fullPath = false)
-		{
-			TagCompound tag;
-
-			if (!fullPath)
-			{
-				System.IO.Stream stream = mod.GetFileStream(path);
-				tag = TagIO.FromStream(stream);
-				stream.Close();
-			}
-			else
-			{
-				tag = TagIO.FromFile(path);
-			}
-
-			if (tag is null)
-				throw new FileNotFoundException(ErrorHelper.GenerateErrorMessage($"A structure at the path {path} could not be found.", mod));
-
-			StructureDataCache.Add(path, tag);
-			return true;
-		}
-
-		/// <summary>
-		/// Attempts to get data from a structure/multistructure file. If the data is not cached, it will be loaded and cached.
-		/// </summary>
-		/// <param name="path">The path of the file to retrieve data from</param>
-		/// <param name="mod">The mod to load the structure file from</param>
-		/// <param name="fullPath">If the given path is fully qualified</param>
-		/// <returns>The TagCompound containing the structure/multistructure data</returns>
-		internal static TagCompound GetTag(string path, Mod mod, bool fullPath = false)
-		{
-			TagCompound tag;
-
-			if (!StructureDataCache.ContainsKey(path))
-			{
-				if (!LoadFile(path, mod, fullPath))
-					return null;
-
-				tag = StructureDataCache[path];
-			}
-			else
-			{
-				tag = StructureDataCache[path];
-			}
-
-			return tag;
+			return API.Legacy.LegacyGenerator.Generate(tag, pos, ignoreNull, flags);
 		}
 	}
 }

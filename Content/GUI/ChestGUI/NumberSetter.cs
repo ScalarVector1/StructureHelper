@@ -1,7 +1,7 @@
-﻿using StructureHelper.GUI;
+﻿using StructureHelper.ChestHelper;
 using Terraria.UI;
 
-namespace StructureHelper.ChestHelper.GUI
+namespace StructureHelper.Content.GUI.ChestGUI
 {
 	class NumberSetter : UIElement
 	{

@@ -1,6 +1,7 @@
-﻿using System;
+﻿using StructureHelper.ChestHelper;
+using System;
 
-namespace StructureHelper.ChestHelper.GUI
+namespace StructureHelper.Content.GUI.ChestGUI
 {
 	class GuaranteedRuleElement : ChestRuleElement
 	{

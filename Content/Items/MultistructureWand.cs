@@ -1,8 +1,9 @@
-﻿using StructureHelper.GUI;
+﻿using StructureHelper.API.Legacy;
+using StructureHelper.Content.GUI;
 using System.Collections.Generic;
 using Terraria.ModLoader.IO;
 
-namespace StructureHelper.Items
+namespace StructureHelper.Content.Items
 {
 	class MultistructureWand : StructureWand
 	{

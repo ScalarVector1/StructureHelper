@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
-namespace StructureHelper.GUI
+namespace StructureHelper.Content.GUI
 {
 	/// <summary>
 	/// Draws the popup tooltip when various elements of the UI are hovered over.
@@ -18,7 +18,7 @@ namespace StructureHelper.GUI
 
 		public void Load(Mod mod)
 		{
-			Terraria.On_Main.DrawInterface += Reset;
+			On_Main.DrawInterface += Reset;
 		}
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
