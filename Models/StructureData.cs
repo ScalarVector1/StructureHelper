@@ -430,7 +430,7 @@ namespace StructureHelper.Models
 					}
 
 					// Save sign as NBT data
-					if (Main.tileSign[tile.TileType] && tile.TileFrameX == 0 && tile.TileFrameY == 0)
+					if (Main.tileSign[tile.TileType] && Main.sign.Any(n => n != null && n.x == point.X && n.y == point.Y))
 					{
 						int signIdx = Sign.ReadSign(point.X, point.Y, false);
 						if (signIdx != -1)
