@@ -50,6 +50,11 @@ Mods: {
 					 for walls only, use null blocks for other things
 					'''
 			}
+
+			PortingWand: {
+				DisplayName: Porting Wand
+				Tooltip: Automatically ports every structure in your SavedStructures directory.
+			}
 		}
 	}
 }

@@ -1,7 +1,6 @@
 ﻿using StructureHelper.ChestHelper;
 using StructureHelper.Helpers;
 using StructureHelper.Models;
-using StructureHelper.Models.Legacy;
 using System;
 using System.Collections.Generic;
 using System.IO;

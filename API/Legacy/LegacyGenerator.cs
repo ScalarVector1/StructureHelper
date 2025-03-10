@@ -1,6 +1,5 @@
 ﻿using StructureHelper.ChestHelper;
 using StructureHelper.Helpers;
-using StructureHelper.Models.Legacy;
 using StructureHelper.Models;
 using System;
 using System.Collections.Generic;
@@ -206,7 +205,7 @@ namespace StructureHelper.API.Legacy
 		/// <returns>If the structure successfully generated or not</returns>
 		public static unsafe bool Generate(TagCompound tag, Point16 pos, bool ignoreNull = false, GenFlags flags = GenFlags.None)
 		{
-			var data = (List<LegacyTileSaveData>)tag.GetList<LegacyTileSaveData>("TileData");
+			var data = (List<TileSaveData>)tag.GetList<TileSaveData>("TileData");
 
 			if (data is null)
 			{
@@ -222,7 +221,7 @@ namespace StructureHelper.API.Legacy
 				for (int x = 0; x <= width; x++)
 				{
 					int index = y + x * (height + 1);
-					LegacyTileSaveData d = data[index];
+					TileSaveData d = data[index];
 					Tile tile = Framing.GetTileSafely(pos.X + x, pos.Y + y);
 
 					bool isNullTile = false;

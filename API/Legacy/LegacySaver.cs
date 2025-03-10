@@ -1,5 +1,4 @@
-﻿using StructureHelper.Models.Legacy;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -96,7 +95,7 @@ namespace StructureHelper.API.Legacy
 				{ "Height", target.Height }
 			};
 
-			var data = new List<LegacyTileSaveData>();
+			var data = new List<TileSaveData>();
 			for (int x = target.X; x <= target.X + target.Width; x++)
 			{
 				for (int y = target.Y; y <= target.Y + target.Height; y++)
@@ -167,7 +166,7 @@ namespace StructureHelper.API.Legacy
 					}
 
 					data.Add(
-						new LegacyTileSaveData(
+						new TileSaveData(
 							tileName,
 							wallName,
 							tile.TileFrameX,

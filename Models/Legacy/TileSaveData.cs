@@ -1,12 +1,12 @@
 ﻿using System;
 using Terraria.ModLoader.IO;
 
-namespace StructureHelper.Models.Legacy
+namespace StructureHelper
 {
 	/// <summary>
 	/// A struct representing tile data to be saved/loaded from structure files.
 	/// </summary>
-	public struct LegacyTileSaveData : TagSerializable
+	public struct TileSaveData : TagSerializable
 	{
 		/// <summary>
 		/// The tile to be placed, either a number if a vanilla tile (ID), or a fully qualified internal name for modded tiles.
@@ -46,14 +46,14 @@ namespace StructureHelper.Models.Legacy
 		/// </summary>
 		public TagCompound TEData;
 
-		public static Func<TagCompound, LegacyTileSaveData> DESERIALIZER = DeserializeData;
+		public static Func<TagCompound, TileSaveData> DESERIALIZER = DeserializeData;
 
 		/// <summary>
 		/// If the tile here is air or not. (Note that TileID 0 is dirt, this is all that differentiates air and dirt.)
 		/// </summary>
 		public bool Active => TileDataPacking.GetBit(wallWireData, 0);
 
-		public LegacyTileSaveData(string tile, string wall, short frameX, short frameY, int wallWireData, short packedLiquidData, byte brightInvisibleData, string teType = "", TagCompound teData = null)
+		public TileSaveData(string tile, string wall, short frameX, short frameY, int wallWireData, short packedLiquidData, byte brightInvisibleData, string teType = "", TagCompound teData = null)
 		{
 			this.tile = tile;
 			this.wall = wall;
@@ -71,9 +71,9 @@ namespace StructureHelper.Models.Legacy
 		/// </summary>
 		/// <param name="tag">The tag to interpret</param>
 		/// <returns>The unpacked TileSaveData</returns>
-		public static LegacyTileSaveData DeserializeData(TagCompound tag)
+		public static TileSaveData DeserializeData(TagCompound tag)
 		{
-			var output = new LegacyTileSaveData(
+			var output = new TileSaveData(
 			tag.GetString("Tile"),
 			tag.GetString("Wall"),
 			tag.GetShort("FrameX"),

@@ -52,21 +52,20 @@ namespace StructureHelper.API
 			string thisPath = targetPath ?? Path.Combine(path, name);
 
 			int counter = 2;
-			while (File.Exists(thisPath))
+			while (File.Exists(thisPath + ".shstruct"))
 			{
-				thisPath = targetPath ?? Path.Combine(path, name) + $"({counter})";
+				thisPath = (targetPath ?? Path.Combine(path, name)) + $"({counter})";
 				counter++;
 			}
 
 			thisPath += ".shstruct";
 
-			Main.NewText("Structure saved as " + thisPath, Color.Yellow);
-
-
 			using FileStream fileStream = File.Create(thisPath);
 			using var compressionStream = new GZipStream(fileStream, CompressionLevel.Optimal);
 			using var writer = new BinaryWriter(compressionStream);
 			data.Serialize(writer);
+
+			Main.NewText("Structure saved as " + thisPath, Color.Yellow);
 		}
 
 		/// <summary>
@@ -88,21 +87,20 @@ namespace StructureHelper.API
 			string thisPath = targetPath ?? Path.Combine(path, name);
 
 			int counter = 2;
-			while (File.Exists(thisPath))
+			while (File.Exists(thisPath + ".shmstruct"))
 			{
-				thisPath = targetPath ?? Path.Combine(path, name) + $"({counter})";
+				thisPath = (targetPath ?? Path.Combine(path, name)) + $"({counter})";
 				counter++;
 			}
 
 			thisPath += ".shmstruct";
 
-			Main.NewText("MultiStructure saved as " + thisPath, Color.Yellow);
-
-
 			using FileStream fileStream = File.Create(thisPath);
 			using var compressionStream = new GZipStream(fileStream, CompressionLevel.Optimal);
 			using var writer = new BinaryWriter(compressionStream);
 			data.Serialize(writer);
+
+			Main.NewText("MultiStructure saved as " + thisPath, Color.Yellow);
 		}
 	}
 }
