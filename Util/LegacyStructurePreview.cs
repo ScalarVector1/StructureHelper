@@ -1,11 +1,16 @@
-﻿using StructureHelper.Models;
+﻿using StructureHelper.Models.Legacy;
+using System;
 using System.Collections.Generic;
+using Terraria.ModLoader.IO;
 
 namespace StructureHelper.Util
 {
-	public class StructurePreview
+	/// <summary>
+	/// Container for a structure's preview image. 
+	/// </summary>
+	public class LegacyStructurePreview : IDisposable
 	{
-		public StructureData data;
+		private readonly TagCompound tag;
 
 		/// <summary>
 		/// The name of the structure this is previewing
@@ -27,26 +32,28 @@ namespace StructureHelper.Util
 		/// </summary>
 		public int Height => preview?.Height ?? 1;
 
-		public StructurePreview(string name, StructureData data)
+		public LegacyStructurePreview(string name, TagCompound structure)
 		{
 			this.name = name;
-			this.data = data;
+			tag = structure;
 
-			PreviewRenderQueue.queue.Add(this);
+			LegacyPreviewRenderQueue.queue.Add(this);
 		}
 
 		/// <summary>
 		/// Renders and saves the actual preview to a RenderTarget.
 		/// </summary>
 		/// <returns>The texture created</returns>
-		internal unsafe Texture2D GeneratePreview()
+		internal Texture2D GeneratePreview()
 		{
-			int width = data.width;
-			int height = data.height;
+			int width = tag.GetInt("Width");
+			int height = tag.GetInt("Height");
+
+			var data = (List<LegacyTileSaveData>)tag.GetList<LegacyTileSaveData>("TileData");
 
 			RenderTargetBinding[] oldTargets = Main.graphics.GraphicsDevice.GetRenderTargets();
 
-			RenderTarget2D newTexture = new(Main.graphics.GraphicsDevice, (width) * 16, (height) * 16, false, default, default, default, RenderTargetUsage.PreserveContents);
+			RenderTarget2D newTexture = new(Main.graphics.GraphicsDevice, (width + 1) * 16, (height + 1) * 16, false, default, default, default, RenderTargetUsage.PreserveContents);
 
 			Main.graphics.GraphicsDevice.SetRenderTarget(newTexture);
 
@@ -54,27 +61,43 @@ namespace StructureHelper.Util
 
 			Main.spriteBatch.Begin();
 
-			for (int x = 0; x < width; x++)
+			for (int x = 0; x <= width; x++)
 			{
-				for (int y = 0; y < height; y++)
+				for (int y = 0; y <= height; y++)
 				{
-					TileWallWireStateData wireStateData = *(TileWallWireStateData*)data.dataEntries["Terraria/TileWallWireStateData"].GetSingleEntry(x, y);
-					ushort tileType = (*(TileTypeData*)data.dataEntries["Terraria/TileTypeData"].GetSingleEntry(x, y)).Type;
-					ushort wallType = (*(WallTypeData*)data.dataEntries["Terraria/WallTypeData"].GetSingleEntry(x, y)).Type;
-					int frameX = wireStateData.TileFrameX;
-					int frameY = wireStateData.TileFrameY;
-					bool hasTile = wireStateData.HasTile;
+					int index = y + x * (height + 1);
+					LegacyTileSaveData d = data[index];
 
-					if (wallType != 0 && wallType != StructureHelper.NULL_IDENTIFIER && wallType < Terraria.GameContent.TextureAssets.Wall.Length)
+					if (!int.TryParse(d.tile, out int type))
+					{
+						string[] parts = d.tile.Split();
+
+						if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModTile>(parts[1], out ModTile modTileType))
+							type = modTileType.Type;
+						else
+							type = 0;
+					}
+
+					if (!int.TryParse(d.wall, out int wallType))
+					{
+						string[] parts = d.wall.Split();
+
+						if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModWall>(parts[1], out ModWall modWallType))
+							wallType = modWallType.Type;
+						else
+							wallType = 0;
+					}
+
+					if (wallType != 0 && d.wall != "StructureHelper NullWall")
 					{
 						Texture2D tex = Terraria.GameContent.TextureAssets.Wall[wallType].Value;
 						Main.spriteBatch.Draw(tex, new Rectangle(x * 16, y * 16, 16, 16), new Rectangle(8, 8, 16, 16), Color.White);
 					}
 
-					if (hasTile && tileType != StructureHelper.NULL_IDENTIFIER && tileType < Terraria.GameContent.TextureAssets.Tile.Length)
+					if (d.Active && d.tile != "StructureHelper NullBlock")
 					{
-						Texture2D tex = Terraria.GameContent.TextureAssets.Tile[tileType].Value;
-						Main.spriteBatch.Draw(tex, new Rectangle(x * 16, y * 16, 16, 16), new Rectangle(frameX, frameY, 16, 16), Color.White);
+						Texture2D tex = Terraria.GameContent.TextureAssets.Tile[type].Value;
+						Main.spriteBatch.Draw(tex, new Rectangle(x * 16, y * 16, 16, 16), new Rectangle(d.frameX, d.frameY, 16, 16), Color.White);
 					}
 				}
 			}
@@ -92,12 +115,12 @@ namespace StructureHelper.Util
 		}
 	}
 
-	public class PreviewRenderQueue : ILoadable
+	public class LegacyPreviewRenderQueue : ILoadable
 	{
 		/// <summary>
 		/// A queue of previews to render textures for when the next opportunity arises
 		/// </summary>
-		public static List<StructurePreview> queue = [];
+		public static List<LegacyStructurePreview> queue = [];
 
 		public void Load(Mod mod)
 		{
@@ -115,7 +138,7 @@ namespace StructureHelper.Util
 		/// <param name="orig"></param>
 		private void DrawQueuedPreview(On_Main.orig_CheckMonoliths orig)
 		{
-			foreach (StructurePreview queued in queue)
+			foreach (LegacyStructurePreview queued in queue)
 			{
 				queued.preview = queued.GeneratePreview();
 			}

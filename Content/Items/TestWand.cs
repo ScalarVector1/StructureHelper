@@ -64,7 +64,6 @@ namespace StructureHelper.Content.Items
 		private void DrawPreview(On_Main.orig_DrawPlayers_AfterProjectiles orig, Main self)
 		{
 			orig(self);
-			return;
 
 			if (ManualGeneratorMenu.selected != null && ManualGeneratorMenu.preview != null && Main.LocalPlayer.HeldItem.type == Item.type)
 			{

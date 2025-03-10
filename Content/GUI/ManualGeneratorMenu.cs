@@ -1,12 +1,12 @@
-﻿using StructureHelper.Content.Items;
+﻿using StructureHelper.API;
+using StructureHelper.Content.Items;
 using StructureHelper.Core.Loaders.UILoading;
-using StructureHelper.Util;
 using StructureHelper.Models;
+using StructureHelper.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.GameContent.UI.Elements;
-using Terraria.ModLoader.IO;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 
@@ -226,43 +226,41 @@ namespace StructureHelper.Content.GUI
 			ManualGeneratorMenu.multiIndex = 0;
 			ManualGeneratorMenu.multiMode = false;
 
-			return;
-
-			/*if (!LegacyGenerator.StructureDataCache.ContainsKey(path))
-				LegacyGenerator.LoadFile(path, StructureHelper.Instance, true);
-
-			if (LegacyGenerator.StructureDataCache[path].ContainsKey("Structures"))
+			if (Path.GetExtension(path) == ".shstruct")
 			{
-				ManualGeneratorMenu.multiMode = true;
-
-				List<TagCompound> structures = LegacyGenerator.StructureDataCache[path].Get<List<TagCompound>>("Structures");
+				ManualGeneratorMenu.multiMode = false;
 
 				ManualGeneratorMenu.preview?.Dispose();
-				ManualGeneratorMenu.preview = new StructurePreview("", structures[0]);
+				ManualGeneratorMenu.preview = new StructurePreview(name, API.Generator.GetStructureData(path, StructureHelper.Instance, true));
+			}
+			else if (Path.GetExtension(path) == ".shmstruct")
+			{
+				ManualGeneratorMenu.multiMode = true;
+				MultiStructureData data = MultiStructureGenerator.GetMultiStructureData(path, StructureHelper.Instance, true);
 
-				int count = structures.Count;
-				Height.Set(36 + 96 * (int)Math.Ceiling(count / 4f), 0);
+				ManualGeneratorMenu.preview?.Dispose();
+				ManualGeneratorMenu.preview = new StructurePreview("", data.structures[0]);
+
+				Height.Set(36 + 96 * (int)Math.Ceiling(data.count / 4f), 0);
 
 				var list = new UIGrid();
 
-				for (int k = 0; k < count; k++)
+				for (int k = 0; k < data.count; k++)
 				{
-					list.Add(new MultiSelectionEntry(k, structures[k]));
+					list.Add(new MultiSelectionEntry(k, data.structures[k]));
 				}
 
 				list.Width.Set(400, 0);
-				list.Height.Set(96 * (int)Math.Ceiling(count / 4f), 0);
+				list.Height.Set(96 * (int)Math.Ceiling(data.count / 4f), 0);
 				list.Left.Set(0, 0);
 				list.Top.Set(36, 0);
 				Append(list);
 			}
 			else
 			{
-				ManualGeneratorMenu.multiMode = false;
-
-				ManualGeneratorMenu.preview?.Dispose();
-				ManualGeneratorMenu.preview = new StructurePreview(name, LegacyGenerator.StructureDataCache[path]);
-			}*/
+				Main.NewText("This isnt a structure, or is an unported, old 2.0 format structure! You should port your structures.");
+				return;
+			}
 		}
 
 		public override int CompareTo(object obj)
@@ -277,12 +275,12 @@ namespace StructureHelper.Content.GUI
 	class MultiSelectionEntry : UIElement
 	{
 		public int value;
-		private readonly TagCompound structure;
+		private readonly StructureData structure;
 		private readonly StructurePreview preview;
 
 		bool Active => ManualGeneratorMenu.multiIndex == value;
 
-		public MultiSelectionEntry(int index, TagCompound structure)
+		public MultiSelectionEntry(int index, StructureData structure)
 		{
 			value = index;
 			Width.Set(96, 0);

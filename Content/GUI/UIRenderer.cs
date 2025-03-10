@@ -42,8 +42,8 @@ namespace StructureHelper.Content.GUI
 					Helpers.GUIHelper.DrawOutline(spriteBatch, target, Color.Gold);
 					spriteBatch.Draw(tex2, target, tex2.Frame(), Color.White * 0.15f);
 
-					spriteBatch.Draw(tex, wand.point1.ToVector2() * 16 - Main.screenPosition, tex.Frame(), Color.Cyan, 0, tex.Frame().Size() / 2, 1, 0, 0);
-					//spriteBatch.Draw(tex, point2.ToVector2() * 16 - Main.screenPosition, tex.Frame(), Color.White * 0.5f, 0, tex.Frame().Size() / 2, 1, 0, 0);
+					spriteBatch.Draw(tex, wand.point1.ToVector2() * 16 - Main.screenPosition, tex.Frame(), new Color(50, 200, 255), 0, tex.Frame().Size() / 2, 1, 0, 0);
+					spriteBatch.Draw(tex, wand.point1.ToVector2() * 16 - Main.screenPosition, tex.Frame(), new Color(155, 155, 50, 0), 0, tex.Frame().Size() / 2, 1, 0, 0);
 				}
 				else if (wand.Ready)
 				{
@@ -55,10 +55,12 @@ namespace StructureHelper.Content.GUI
 					spriteBatch.Draw(tex2, target, tex2.Frame(), Color.White * 0.15f);
 
 					float scale1 = Vector2.Distance(Main.MouseWorld, wand.point1.ToVector2() * 16) < 32 ? 1.5f : 1f;
-					spriteBatch.Draw(tex, wand.point1.ToVector2() * 16 - Main.screenPosition, tex.Frame(), Color.Cyan * scale1, 0, tex.Frame().Size() / 2, scale1, 0, 0);
+					spriteBatch.Draw(tex, wand.point1.ToVector2() * 16 - Main.screenPosition, tex.Frame(), new Color(50, 200, 255) * scale1, 0, tex.Frame().Size() / 2, scale1, 0, 0);
+					spriteBatch.Draw(tex, wand.point1.ToVector2() * 16 - Main.screenPosition, tex.Frame(), new Color(155, 155, 50, 0), 0, tex.Frame().Size() / 2, scale1, 0, 0);
 
 					float scale2 = Vector2.Distance(Main.MouseWorld, wand.point2.ToVector2() * 16) < 32 ? 1.5f : 1f;
-					spriteBatch.Draw(tex, wand.point2.ToVector2() * 16 - Main.screenPosition, tex.Frame(), Color.Red * scale2, 0, tex.Frame().Size() / 2, scale2, 0, 0);
+					spriteBatch.Draw(tex, wand.point2.ToVector2() * 16 - Main.screenPosition, tex.Frame(), new Color(255, 50, 50) * scale2, 0, tex.Frame().Size() / 2, scale2, 0, 0);
+					spriteBatch.Draw(tex, wand.point2.ToVector2() * 16 - Main.screenPosition, tex.Frame(), new Color(255, 110, 110, 0), 0, tex.Frame().Size() / 2, scale2, 0, 0);
 
 					if (scale1 > 1 || scale2 > 1)
 						drawPreview = false;
