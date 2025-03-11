@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StructureHelper.Models
+namespace StructureHelper
 {
 	/// <summary>
 	/// Flags that allow users to define special behavior for structure generation.
