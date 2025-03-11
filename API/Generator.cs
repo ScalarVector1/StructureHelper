@@ -75,6 +75,9 @@ namespace StructureHelper.API
 		/// <exception cref="FileNotFoundException"></exception>
 		public static StructureData GetStructureData(string path, Mod mod, bool fullPath = false)
 		{
+			if (!path.EndsWith(".shstruct"))
+				path += ".shstruct";
+
 			string key = Path.Combine(mod.Name, path);
 
 			if (StructureCache.ContainsKey(key))
