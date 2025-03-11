@@ -55,6 +55,11 @@ Mods: {
 				DisplayName: Porting Wand
 				Tooltip: Automatically ports every structure in your SavedStructures directory.
 			}
+
+			UnitWand: {
+				DisplayName: The Wand
+				Tooltip: A test for myself If I leave this in bonk me.
+			}
 		}
 	}
 }

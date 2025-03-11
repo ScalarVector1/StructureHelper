@@ -83,7 +83,7 @@ namespace StructureHelper.API
 			if (fullPath && !File.Exists(path))
 				throw new FileNotFoundException(ErrorHelper.GenerateErrorMessage($"A file at the path {path} does not exist! (did you mean to not pass true to fullPath? You should pass false if the file is in your mod!)", mod));
 
-			if (!fullPath && mod.FileExists(path))
+			if (!fullPath && !mod.FileExists(path))
 				throw new FileNotFoundException(ErrorHelper.GenerateErrorMessage($"A file at the path {path} in mod {mod.DisplayName}({mod.Name}) does not exist! Did you accidentally include your mods name in the path? (for example, you should not pass 'MyMod/Structures/House', but rather 'Structures/House')", mod));
 
 			using Stream stream = fullPath ? File.OpenRead(path) : mod.GetFileStream(path);
