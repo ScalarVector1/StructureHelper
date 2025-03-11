@@ -40,7 +40,7 @@ namespace StructureHelper.API
 		/// <param name="mod">The mod to search for the structure file in</param>
 		/// <param name="pos">The position to check from, this would be the top-left of the structure.</param>
 		/// <returns>If the structure is in bounds or not</returns>
-		public static bool IsInBound(string path, Mod mod, Point16 pos, bool fullPath = false)
+		public static bool IsInBounds(string path, Mod mod, Point16 pos, bool fullPath = false)
 		{
 			StructureData data = GetStructureData(path, mod, fullPath);
 
