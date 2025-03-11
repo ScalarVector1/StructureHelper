@@ -51,7 +51,7 @@ namespace StructureHelper.API
 		/// <param name="index">The index in the multistructure to check the dimensions of.</param>
 		/// <param name="fullPath">If the search path starts at the root of your file system(true) or the provided mod(false). This should usually be false.</param>
 		/// <returns>If the structure is in bounds or not</returns>
-		public static bool IsInBound(string path, Mod mod, int index, Point16 pos, bool fullPath = false)
+		public static bool IsInBounds(string path, Mod mod, int index, Point16 pos, bool fullPath = false)
 		{
 			MultiStructureData data = GetMultiStructureData(path, mod, fullPath);
 
