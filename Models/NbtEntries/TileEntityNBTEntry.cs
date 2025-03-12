@@ -47,7 +47,7 @@ namespace StructureHelper.Models.NbtEntries
 
 		public override void OnGenerate(Point16 generatingAt, bool ignoreNull, GenFlags flags)
 		{
-			if (tileEntityType == "StructureHelper ChestEntity" && !ignoreNull)
+			if (tileEntityType == "StructureHelper/ChestEntity" && !ignoreNull)
 			{
 				GenerateChest(generatingAt, tileEntityData);
 			}

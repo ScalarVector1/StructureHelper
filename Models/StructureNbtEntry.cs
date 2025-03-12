@@ -27,6 +27,18 @@ namespace StructureHelper.Models
 		public int y;
 
 		/// <summary>
+		/// Temporary hack deserializer because TML fails to find subtype deserializers
+		/// </summary>
+		public static readonly Func<TagCompound, StructureNBTEntry> DESERIALIZER = tag => {
+			var typeName = tag.GetString("<type>");
+			var type = typeof(StructureNBTEntry).Assembly.GetType(typeName) ?? ModLoader.Mods.Select(mod => mod.Code?.GetType(typeName)).Where(t => t != null).FirstOrDefault();
+			if (TagSerializer.TryGetSerializer(type, out var serializer))
+				return (StructureNBTEntry)serializer.Deserialize(tag);
+
+			throw new ArgumentException($"Missing deserializer for subtype '{typeName}'");
+		};
+
+		/// <summary>
 		/// What needs to happen on structure generation to properly place the object
 		/// represented by this NBT entry into the world.
 		/// </summary>
