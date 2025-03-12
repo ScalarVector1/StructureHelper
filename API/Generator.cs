@@ -15,7 +15,7 @@ namespace StructureHelper.API
 	/// </summary>
 	public class Generator
 	{
-		private static readonly Dictionary<string, StructureData> StructureCache = [];
+		internal static readonly Dictionary<string, StructureData> StructureCache = [];
 
 		/// <summary>
 		/// Helper to check bounds on a generation call. You can also use this to check the bounds

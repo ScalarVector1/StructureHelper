@@ -16,9 +16,9 @@ namespace StructureHelper.API
 	/// In this class you will find various utilities related to generating multi structures and getting important
 	/// information from them such as their dimensions or structure count.
 	/// </summary>
-	internal class MultiStructureGenerator
+	public class MultiStructureGenerator
 	{
-		private static readonly Dictionary<string, MultiStructureData> MultiStructureCache = [];
+		internal static readonly Dictionary<string, MultiStructureData> MultiStructureCache = [];
 
 		/// <summary>
 		/// Helper to check bounds on a generation call. You can also use this to check the bounds
