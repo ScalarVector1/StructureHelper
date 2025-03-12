@@ -1,12 +1,12 @@
-The famous world generation library, now better, faster, and more efficient than ever!
+[h1]The famous world generation library, now better, faster, and more efficient than ever![/h1]
 
 StructureHelper 3.0 has arrived, with slimmer files, faster generation, and an easier to use API! You can find porting instructions here if you're a developer: https://github.com/ScalarVector1/StructureHelper/wiki/3.0-Porting-Guide
 
-[[[About]]]
+[h1]About[/h1]
 
 StructureHelper is a simple tool which allows mod creators to build world generation structures in-game and save them to external files, as opposed to manually encoding them into their source code (usually to the detriment of readability and maintainability). It allows both programmer and non-programmer mod creators to easily build complex world generation using all of the games features, like paint, wiring, tile entities, and liquid. Once structures are saved, they're easy to share, swap out, and keep track of in source control like any other asset. The mod can also be used to easily copy and move sections of the world around during the game!
 
-[[[Links]]]
+[h1]Links[/h1]
 
 For developers looking to use the mod, check out the documentation here:
 - https://github.com/ScalarVector1/StructureHelper/wiki
@@ -17,7 +17,7 @@ For developers or players looking for support, join my discord server:
 For those that want to support me, you can do so on ko-fi:
 - https://ko-fi.com/scalarvector
 
-[[[Credits and Special Thanks]]]
+[h1]Credits and Special Thanks[/h1]
 
 https://steamcommunity.com/id/Mirsario Who is responsible for the tile reworks in TML enabling some of the changes I made to speed things up, and for giving some great suggestions on how the generation can be optimized
 (Check out their mod! https://steamcommunity.com/sharedfiles/filedetails/?id=2811803870)
