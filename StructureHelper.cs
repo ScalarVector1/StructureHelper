@@ -27,6 +27,8 @@ namespace StructureHelper
 		public override void Unload()
 		{
 			API.Legacy.LegacyGenerator.StructureDataCache.Clear();
+			API.Generator.StructureCache.Clear();
+			API.MultiStructureGenerator.MultiStructureCache.Clear();
 		}
 	}
 }
