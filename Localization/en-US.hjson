@@ -60,6 +60,11 @@ Mods: {
 				DisplayName: The Wand
 				Tooltip: A test for myself If I leave this in bonk me.
 			}
+
+			CustomDataWand: {
+				DisplayName: Custom Data Wand
+				Tooltip: ""
+			}
 		}
 	}
 }

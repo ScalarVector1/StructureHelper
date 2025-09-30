@@ -146,19 +146,19 @@ namespace StructureHelper.API
 				{
 					if (!data.slowColumns[k] || ignoreNull)
 					{
-						data.ExportDataColumn<TileTypeData>(pos.X + k, pos.Y, k, null);
-						data.ExportDataColumn<WallTypeData>(pos.X + k, pos.Y, k, null);
-						data.ExportDataColumn<LiquidData>(pos.X + k, pos.Y, k, null);
-						data.ExportDataColumn<TileWallBrightnessInvisibilityData>(pos.X + k, pos.Y, k, null);
-						data.ExportDataColumn<TileWallWireStateData>(pos.X + k, pos.Y, k, null);
+						data.ExportDataColumn<TileTypeData>(pos.X + k, pos.Y, k, "Terraria/TileTypeData");
+						data.ExportDataColumn<WallTypeData>(pos.X + k, pos.Y, k, "Terraria/WallTypeData");
+						data.ExportDataColumn<LiquidData>(pos.X + k, pos.Y, k, "Terraria/LiquidData");
+						data.ExportDataColumn<TileWallBrightnessInvisibilityData>(pos.X + k, pos.Y, k, "Terraria/TileWallBrightnessInvisibilityData");
+						data.ExportDataColumn<TileWallWireStateData>(pos.X + k, pos.Y, k, "Terraria/TileWallWireStateData");
 					}
 					else
 					{
-						data.ExportDataColumnSlow<TileTypeData>(pos.X + k, pos.Y, k, null);
-						data.ExportDataColumnSlow<WallTypeData>(pos.X + k, pos.Y, k, null);
-						data.ExportDataColumnSlow<LiquidData>(pos.X + k, pos.Y, k, null);
-						data.ExportDataColumnSlow<TileWallBrightnessInvisibilityData>(pos.X + k, pos.Y, k, null);
-						data.ExportDataColumnSlow<TileWallWireStateData>(pos.X + k, pos.Y, k, null);
+						data.ExportDataColumnSlow<TileTypeData>(pos.X + k, pos.Y, k, "Terraria/TileTypeData");
+						data.ExportDataColumnSlow<WallTypeData>(pos.X + k, pos.Y, k, "Terraria/WallTypeData");
+						data.ExportDataColumnSlow<LiquidData>(pos.X + k, pos.Y, k, "Terraria/LiquidData");
+						data.ExportDataColumnSlow<TileWallBrightnessInvisibilityData>(pos.X + k, pos.Y, k, "Terraria/TileWallBrightnessInvisibilityData");
+						data.ExportDataColumnSlow<TileWallWireStateData>(pos.X + k, pos.Y, k, "Terraria/TileWallWireStateData");
 					}
 				}
 			}

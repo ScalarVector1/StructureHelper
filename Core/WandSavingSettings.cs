@@ -8,8 +8,8 @@ namespace StructureHelper.Core
 {
 	public static class WandSavingSettings
 	{
-		internal static List<Type> activeCustomDataTypes;
-		internal static Dictionary<string, Type> possibleCustomDataTypes;
+		internal static List<Type> activeCustomDataTypes = new();
+		internal static Dictionary<string, Type> possibleCustomDataTypes = new();
 
 		/// <summary>
 		/// Registers a custom ITileData type to be able to be enabled for structure saving.

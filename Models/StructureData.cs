@@ -1,19 +1,15 @@
-﻿using Microsoft.Xna.Framework.Input;
-using StructureHelper.ChestHelper;
+﻿using StructureHelper.ChestHelper;
 using StructureHelper.Helpers;
 using StructureHelper.Models.NbtEntries;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 using Terraria.ModLoader.IO;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace StructureHelper.Models
 {
@@ -95,8 +91,8 @@ namespace StructureHelper.Models
 		public void PreProcessModdedTypes()
 		{
 			// Tracks types for repopulating with valid mapping later
-			HashSet<ushort> tileTypesToRepopulate = new();
-			HashSet<ushort> wallTypesToRepopulate = new();
+			HashSet<ushort> tileTypesToRepopulate = [];
+			HashSet<ushort> wallTypesToRepopulate = [];
 
 			ITileDataEntry tileTypes = dataEntries["Terraria/TileTypeData"];
 			ITileDataEntry wallTypes = dataEntries["Terraria/WallTypeData"];
@@ -125,13 +121,13 @@ namespace StructureHelper.Models
 			// We repopulate the table with the updated types so that this data can be re-serialized
 			// and remain valid if anyone ever needs to do that
 			moddedTileTable.Clear();
-			for(int k = 0; k < tileTypesToRepopulate.Count; k++)
+			for (int k = 0; k < tileTypesToRepopulate.Count; k++)
 			{
 				moddedTileTable.Add(tileTypesToRepopulate.ElementAt(k), tileTypesToRepopulate.ElementAt(k));
 			}
 
 			moddedWallTable.Clear();
-			for(int k = 0; k < wallTypesToRepopulate.Count; k++)
+			for (int k = 0; k < wallTypesToRepopulate.Count; k++)
 			{
 				moddedWallTable.Add(wallTypesToRepopulate.ElementAt(k), wallTypesToRepopulate.ElementAt(k));
 			}
@@ -245,7 +241,7 @@ namespace StructureHelper.Models
 			}
 
 			// Read slow column table
-			for(int k = 0; k < data.width; k++)
+			for (int k = 0; k < data.width; k++)
 			{
 				data.slowColumns.Add(k, reader.ReadBoolean());
 			}
@@ -329,10 +325,10 @@ namespace StructureHelper.Models
 		/// <param name="colIdx"></param>
 		internal void ExportAllDataColumns(int x, int y, int colIdx)
 		{
-			foreach (var entry in dataEntries)
+			foreach (KeyValuePair<string, ITileDataEntry> entry in dataEntries)
 			{
-				var dataType = entry.Value.GetDataType();
-				var methodInfo = typeof(StructureData).GetMethod("ExportDataColumn").MakeGenericMethod(dataType);
+				Type dataType = entry.Value.GetDataType();
+				MethodInfo methodInfo = typeof(StructureData).GetMethod("ExportDataColumn").MakeGenericMethod(dataType);
 				methodInfo.Invoke(this, [x, y, colIdx, entry.Key]);
 			}
 		}
@@ -390,10 +386,10 @@ namespace StructureHelper.Models
 		/// <param name="colIdx"></param>
 		internal void ExportAllDataColumnsSlow(int x, int y, int colIdx)
 		{
-			foreach (var entry in dataEntries)
+			foreach (KeyValuePair<string, ITileDataEntry> entry in dataEntries)
 			{
-				var dataType = entry.Value.GetDataType();
-				var methodInfo = typeof(StructureData).GetMethod("ExportDataColumnSlow").MakeGenericMethod(dataType);
+				Type dataType = entry.Value.GetDataType();
+				MethodInfo methodInfo = typeof(StructureData).GetMethod("ExportDataColumnSlow").MakeGenericMethod(dataType);
 				methodInfo.Invoke(this, [x, y, colIdx, entry.Key]);
 			}
 		}
@@ -418,11 +414,11 @@ namespace StructureHelper.Models
 
 			for (int scanX = 0; scanX < w; scanX++)
 			{
-				data.ImportDataColumn<TileTypeData>(x + scanX, y, scanX, null);
-				data.ImportDataColumn<WallTypeData>(x + scanX, y, scanX, null);
-				data.ImportDataColumn<LiquidData>(x + scanX, y, scanX, null);
-				data.ImportDataColumn<TileWallBrightnessInvisibilityData>(x + scanX, y, scanX, null);
-				data.ImportDataColumn<TileWallWireStateData>(x + scanX, y, scanX, null);
+				data.ImportDataColumn<TileTypeData>(x + scanX, y, scanX, "Terraria/TileTypeData");
+				data.ImportDataColumn<WallTypeData>(x + scanX, y, scanX, "Terraria/WallTypeData");
+				data.ImportDataColumn<LiquidData>(x + scanX, y, scanX, "Terraria/LiquidData");
+				data.ImportDataColumn<TileWallBrightnessInvisibilityData>(x + scanX, y, scanX, "Terraria/TileWallBrightnessInvisibilityData");
+				data.ImportDataColumn<TileWallWireStateData>(x + scanX, y, scanX, "Terraria/TileWallWireStateData");
 
 				data.slowColumns.Add(scanX, false);
 
@@ -454,7 +450,7 @@ namespace StructureHelper.Models
 							teName = modTileEntity.FullName;
 						else
 							teName = entity.type.ToString();
-						
+
 						if (!string.IsNullOrEmpty(teName))
 						{
 							data.nbtData ??= [];
@@ -571,7 +567,7 @@ namespace StructureHelper.Models
 			}
 
 			// Write slow column table
-			for(int k = 0; k < width; k++)
+			for (int k = 0; k < width; k++)
 			{
 				writer.Write(slowColumns[k]);
 			}
@@ -589,7 +585,7 @@ namespace StructureHelper.Models
 			// Write NBT if applicable
 			if (containsNbt && nbtData != null && nbtData.Count > 0)
 			{
-				TagIO.Write(new() {["nbtEntries"] = nbtData}, writer);
+				TagIO.Write(new() { ["nbtEntries"] = nbtData }, writer);
 			}
 		}
 	}
