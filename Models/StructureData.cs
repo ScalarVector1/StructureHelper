@@ -1,4 +1,5 @@
-﻿using StructureHelper.Helpers;
+﻿using StructureHelper.ChestHelper;
+using StructureHelper.Helpers;
 using StructureHelper.Models.NbtEntries;
 using System;
 using System.Collections.Generic;
@@ -407,6 +408,8 @@ namespace StructureHelper.Models
 					if (tileType == StructureHelper.NullTileID || wallType == StructureHelper.NullWallID)
 						data.slowColumns[scanX] = true;
 
+					bool isCustomChest = false; // Marks a custom chest TE is here and to not save static chest data
+
 					// Save tile enttiy as NBT data
 					if (TileEntity.ByPosition.TryGetValue(point, out TileEntity entity))
 					{
@@ -426,6 +429,9 @@ namespace StructureHelper.Models
 							TagCompound tag = [];
 							entity.SaveData(tag);
 							data.nbtData.Add(new TileEntityNBTEntry(scanX, scanY, teName, tag));
+
+							if (entity is ChestEntity)
+								isCustomChest = true;
 						}
 					}
 
@@ -439,6 +445,19 @@ namespace StructureHelper.Models
 							data.containsNbt = true;
 
 							data.nbtData.Add(new SignNBTEntry(scanX, scanY, Main.sign[signIdx].text));
+						}
+					}
+
+					// Save potential static chest contents
+					if (!isCustomChest && Main.tileContainer[tile.TileType] && Main.chest.Any(n => n != null && n.x == point.X && n.y == point.Y))
+					{
+						int chestIdx = Chest.FindChest(point.X, point.Y);
+						if (chestIdx != -1)
+						{
+							data.nbtData ??= [];
+							data.containsNbt = true;
+
+							data.nbtData.Add(new StaticChestNBTEntry(scanX, scanY, Main.chest[chestIdx].item));
 						}
 					}
 				}
