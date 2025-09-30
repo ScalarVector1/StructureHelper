@@ -128,23 +128,38 @@ namespace StructureHelper.API
 			if (!IsInBounds(data, pos))
 				throw new ArgumentException(ErrorHelper.GenerateErrorMessage($"Attempted to generate a structure out of bounds! {pos} is not a valid position for the structure. Mods are responsible for bounds-checking their own structures. You can fetch dimension data using GetDimensions or GetMultistructureDimensions.", null));
 
-			for (int k = 0; k < data.width; k++)
+			// The all columns methods use reflection to grab the appropriate tile data pointers and are thus slower,
+			// so if not needed they are avoided if possible. (only needed if custom ITileData is contained in the structure)
+			if (data.containsCustomTileData)
 			{
-				if (!data.slowColumns[k] || ignoreNull)
+				for (int k = 0; k < data.width; k++)
 				{
-					data.ExportDataColumn<TileTypeData>(pos.X + k, pos.Y, k, null);
-					data.ExportDataColumn<WallTypeData>(pos.X + k, pos.Y, k, null);
-					data.ExportDataColumn<LiquidData>(pos.X + k, pos.Y, k, null);
-					data.ExportDataColumn<TileWallBrightnessInvisibilityData>(pos.X + k, pos.Y, k, null);
-					data.ExportDataColumn<TileWallWireStateData>(pos.X + k, pos.Y, k, null);
+					if (!data.slowColumns[k] || ignoreNull)
+						data.ExportAllDataColumns(pos.X + k, pos.Y, k);
+					else
+						data.ExportAllDataColumnsSlow(pos.X + k, pos.Y, k);
 				}
-				else
+			}
+			else
+			{
+				for (int k = 0; k < data.width; k++)
 				{
-					data.ExportDataColumnSlow<TileTypeData>(pos.X + k, pos.Y, k, null);
-					data.ExportDataColumnSlow<WallTypeData>(pos.X + k, pos.Y, k, null);
-					data.ExportDataColumnSlow<LiquidData>(pos.X + k, pos.Y, k, null);
-					data.ExportDataColumnSlow<TileWallBrightnessInvisibilityData>(pos.X + k, pos.Y, k, null);
-					data.ExportDataColumnSlow<TileWallWireStateData>(pos.X + k, pos.Y, k, null);
+					if (!data.slowColumns[k] || ignoreNull)
+					{
+						data.ExportDataColumn<TileTypeData>(pos.X + k, pos.Y, k, null);
+						data.ExportDataColumn<WallTypeData>(pos.X + k, pos.Y, k, null);
+						data.ExportDataColumn<LiquidData>(pos.X + k, pos.Y, k, null);
+						data.ExportDataColumn<TileWallBrightnessInvisibilityData>(pos.X + k, pos.Y, k, null);
+						data.ExportDataColumn<TileWallWireStateData>(pos.X + k, pos.Y, k, null);
+					}
+					else
+					{
+						data.ExportDataColumnSlow<TileTypeData>(pos.X + k, pos.Y, k, null);
+						data.ExportDataColumnSlow<WallTypeData>(pos.X + k, pos.Y, k, null);
+						data.ExportDataColumnSlow<LiquidData>(pos.X + k, pos.Y, k, null);
+						data.ExportDataColumnSlow<TileWallBrightnessInvisibilityData>(pos.X + k, pos.Y, k, null);
+						data.ExportDataColumnSlow<TileWallWireStateData>(pos.X + k, pos.Y, k, null);
+					}
 				}
 			}
 

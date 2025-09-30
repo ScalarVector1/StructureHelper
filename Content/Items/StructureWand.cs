@@ -1,5 +1,6 @@
 using StructureHelper.API;
 using StructureHelper.Content.GUI;
+using StructureHelper.Core;
 using StructureHelper.Models;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -68,9 +69,11 @@ namespace StructureHelper.Content.Items
 		{
 			NameConfirmPopup.OpenConfirmation((name) =>
 			{
-				Saver.SaveToFile(StructureData.FromWorld(TopLeft.X, TopLeft.Y, Width, Height), null, name);
+				if (WandSavingSettings.activeCustomDataTypes.Count > 0)
+					Saver.SaveToFile(Saver.SaveToStructureDataWithCustom(TopLeft.X, TopLeft.Y, Width, Height, WandSavingSettings.activeCustomDataTypes), null, name);
+				else
+					Saver.SaveToFile(StructureData.FromWorld(TopLeft.X, TopLeft.Y, Width, Height), null, name);
 			});
-
 
 			//NameConfirmPopup.OpenConfirmation((name) => LegacySaver.SaveToFile(new Rectangle(TopLeft.X, TopLeft.Y, Width - 1, Height - 1), name: name));
 		}

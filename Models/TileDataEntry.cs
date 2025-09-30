@@ -56,6 +56,12 @@ namespace StructureHelper.Models
 		public int GetSingleSize();
 
 		/// <summary>
+		/// Returns the ITileData Type this structure holds
+		/// </summary>
+		/// <returns></returns>
+		public Type GetDataType();
+
+		/// <summary>
 		/// Imports a column of data from the world into this structure
 		/// </summary>
 		/// <param name="source">The topmost point of the column</param>
@@ -144,6 +150,11 @@ namespace StructureHelper.Models
 		public int GetSingleSize()
 		{
 			return sizeof(T);
+		}
+
+		public Type GetDataType()
+		{
+			return typeof(T);
 		}
 
 		public void ImportColumn(void* source, int colIdx)

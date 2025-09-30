@@ -1,5 +1,6 @@
 ﻿using StructureHelper.API.Legacy;
 using StructureHelper.Content.GUI;
+using StructureHelper.Core;
 using StructureHelper.Models;
 using System.Collections.Generic;
 using Terraria.ModLoader.IO;
@@ -42,7 +43,11 @@ namespace StructureHelper.Content.Items
 
 		public override void OnConfirmRectangle()
 		{
-			capturedData.Add(API.Saver.SaveToStructureData(TopLeft.X, TopLeft.Y, Width, Height));
+			if (WandSavingSettings.activeCustomDataTypes.Count > 0)
+				capturedData.Add(API.Saver.SaveToStructureDataWithCustom(TopLeft.X, TopLeft.Y, Width, Height, WandSavingSettings.activeCustomDataTypes));
+			else
+				capturedData.Add(API.Saver.SaveToStructureData(TopLeft.X, TopLeft.Y, Width, Height));
+
 			Main.NewText("Structure captured! Total structures to save: " + capturedData.Count);
 		}
 	}

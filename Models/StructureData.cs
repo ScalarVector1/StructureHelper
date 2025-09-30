@@ -1,4 +1,5 @@
-﻿using StructureHelper.ChestHelper;
+﻿using Microsoft.Xna.Framework.Input;
+using StructureHelper.ChestHelper;
 using StructureHelper.Helpers;
 using StructureHelper.Models.NbtEntries;
 using System;
@@ -6,11 +7,13 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 using Terraria.ModLoader.IO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace StructureHelper.Models
 {
@@ -41,6 +44,11 @@ namespace StructureHelper.Models
 		/// If the structure contains NBT data or not
 		/// </summary>
 		public bool containsNbt;
+
+		/// <summary>
+		/// If the structure contains custom ITileData entries
+		/// </summary>
+		public bool containsCustomTileData;
 
 		/// <summary>
 		/// The version this structure was saved in.
@@ -286,10 +294,8 @@ namespace StructureHelper.Models
 		/// <param name="y">The topmost point of the column</param>
 		/// <param name="colIdx">The column in the data map to insert the data into</param>
 		/// <param name="mod">The mod the ITileData type is from, or null if vanilla</param>
-		internal void ImportDataColumn<T>(int x, int y, int colIdx, Mod mod) where T : unmanaged, ITileData
+		internal void ImportDataColumn<T>(int x, int y, int colIdx, string key) where T : unmanaged, ITileData
 		{
-			string key = $"{mod?.Name ?? "Terraria"}/{typeof(T).Name}";
-
 			if (!dataEntries.ContainsKey(key))
 				dataEntries.Add(key, new TileDataEntry<T>(width * height, height));
 
@@ -307,13 +313,27 @@ namespace StructureHelper.Models
 		/// <param name="y">The topmost point of the column</param>
 		/// <param name="colIdx">The column in the data map to insert the data into</param>
 		/// <param name="mod">The mod the ITileData type is from, or null if vanilla</param>
-		internal void ExportDataColumn<T>(int x, int y, int colIdx, Mod mod) where T : unmanaged, ITileData
+		internal void ExportDataColumn<T>(int x, int y, int colIdx, string key) where T : unmanaged, ITileData
 		{
-			string key = $"{mod?.Name ?? "Terraria"}/{typeof(T).Name}";
-
 			fixed (void* ptr = &Main.tile[x, y].Get<T>())
 			{
 				dataEntries[key].ExportColumn(ptr, colIdx);
+			}
+		}
+
+		/// <summary>
+		/// Exports all data columns, for use when custom ITileData is present so reflection is required
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="colIdx"></param>
+		internal void ExportAllDataColumns(int x, int y, int colIdx)
+		{
+			foreach (var entry in dataEntries)
+			{
+				var dataType = entry.Value.GetDataType();
+				var methodInfo = typeof(StructureData).GetMethod("ExportDataColumn").MakeGenericMethod(dataType);
+				methodInfo.Invoke(this, [x, y, colIdx, entry.Key]);
 			}
 		}
 
@@ -326,10 +346,8 @@ namespace StructureHelper.Models
 		/// <param name="y">The topmost point of the column</param>
 		/// <param name="colIdx">The column in the data map to insert the data into</param>
 		/// <param name="mod">The mod the ITileData type is from, or null if vanilla</param>
-		internal void ExportDataColumnSlow<T>(int x, int y, int colIdx, Mod mod) where T : unmanaged, ITileData
+		internal void ExportDataColumnSlow<T>(int x, int y, int colIdx, string key) where T : unmanaged, ITileData
 		{
-			string key = $"{mod?.Name ?? "Terraria"}/{typeof(T).Name}";
-
 			if (key != "Terraria/WallTypeData")
 			{
 				ITileDataEntry typeData = dataEntries["Terraria/TileTypeData"];
@@ -362,6 +380,22 @@ namespace StructureHelper.Models
 			}
 
 			return;
+		}
+
+		/// <summary>
+		/// Exports all data columns that may have null blocks or walls in it, for use when custom ITileData is present so reflection is required
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="colIdx"></param>
+		internal void ExportAllDataColumnsSlow(int x, int y, int colIdx)
+		{
+			foreach (var entry in dataEntries)
+			{
+				var dataType = entry.Value.GetDataType();
+				var methodInfo = typeof(StructureData).GetMethod("ExportDataColumnSlow").MakeGenericMethod(dataType);
+				methodInfo.Invoke(this, [x, y, colIdx, entry.Key]);
+			}
 		}
 
 		/// <summary>
@@ -475,6 +509,27 @@ namespace StructureHelper.Models
 			}
 
 			return data;
+		}
+
+		/// <summary>
+		/// Adds custom ITileData from the region of the world, to be called after FromWorld initializes a StructureData
+		/// </summary>
+		/// <param name="x">The leftmost point of the region</param>
+		/// <param name="y">The topmost point of the region</param>
+		/// <param name="w">The width of the region</param>
+		/// <param name="h">The height of the region</param>
+		/// <param name="toSave">A list of custom ITileData types to save</param>
+		public void AddCustomDataFromWorld(int x, int y, int w, int h, List<Type> toSave)
+		{
+			foreach (Type type in toSave)
+			{
+				if (type.IsAssignableFrom(typeof(ITileData)))
+					typeof(StructureData).GetMethod("ImportDataColumn").MakeGenericMethod(type).Invoke(this, [x, y, w, h]);
+				else
+					throw new ArgumentException("All types passed to AddCustomDataFromWorld must implement ITileData");
+			}
+
+			containsCustomTileData = true;
 		}
 
 		/// <summary>
