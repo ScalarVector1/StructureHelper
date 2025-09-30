@@ -1,4 +1,5 @@
 ﻿using StructureHelper.Models;
+using System;
 using System.Collections.Generic;
 
 namespace StructureHelper.Util
@@ -41,12 +42,12 @@ namespace StructureHelper.Util
 		/// <returns>The texture created</returns>
 		internal unsafe Texture2D GeneratePreview()
 		{
-			int width = data.width;
-			int height = data.height;
-
+			int width = Math.Min(data.width, 8096 / 16);
+			int height = Math.Min(data.height, 8096 / 16);
+			
 			RenderTargetBinding[] oldTargets = Main.graphics.GraphicsDevice.GetRenderTargets();
 
-			RenderTarget2D newTexture = new(Main.graphics.GraphicsDevice, (width) * 16, (height) * 16, false, default, default, default, RenderTargetUsage.PreserveContents);
+			RenderTarget2D newTexture = new(Main.graphics.GraphicsDevice, width * 16, height * 16, false, default, default, default, RenderTargetUsage.PreserveContents);
 
 			Main.graphics.GraphicsDevice.SetRenderTarget(newTexture);
 
