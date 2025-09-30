@@ -3,7 +3,8 @@ global using Microsoft.Xna.Framework.Graphics;
 global using Terraria;
 global using Terraria.ModLoader;
 using StructureHelper.Content.Tiles;
-using System.Reflection.Metadata;
+using StructureHelper.Core;
+using System;
 
 namespace StructureHelper
 {
@@ -29,6 +30,26 @@ namespace StructureHelper
 			API.Legacy.LegacyGenerator.StructureDataCache.Clear();
 			API.Generator.StructureCache.Clear();
 			API.MultiStructureGenerator.MultiStructureCache.Clear();
+		}
+
+		public override object Call(params object[] args)
+		{
+			if (args[0] is string callCode)
+			{
+				if (callCode == "RegisterCustomData" && args.Length == 3 && args[1] is Type type && args[2] is Mod mod)
+				{
+					WandSavingSettings.RegisterCustomTypeForSaving(type, mod);
+					return null;
+				}
+				else
+				{
+					throw new System.ArgumentException("Invalid call arguments! Please see the documentation for valid call arguments.");
+				}
+			}
+			else
+			{
+				throw new System.ArgumentException("First parameter to any StructureHelper call must be a valid call code string!");
+			}
 		}
 	}
 }

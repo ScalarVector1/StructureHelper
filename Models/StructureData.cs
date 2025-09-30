@@ -196,7 +196,7 @@ namespace StructureHelper.Models
 				if (!ModLoader.TryGetMod(parts[0], out Mod mod))
 					return null;
 
-				return AssemblyManager.GetLoadableTypes(mod.Code).FirstOrDefault(n => n.FullName == parts[1]);
+				return AssemblyManager.GetLoadableTypes(mod.Code).FirstOrDefault(n => n.Name == parts[1]);
 			}
 		}
 
@@ -260,7 +260,7 @@ namespace StructureHelper.Models
 
 				if (dataType is null)
 				{
-					reader.BaseStream.Position += blockLength;
+					_ = reader.ReadBytes(blockLength);
 					continue;
 				}
 				else
@@ -277,6 +277,8 @@ namespace StructureHelper.Models
 				TagCompound tag = TagIO.Read(reader);
 				data.nbtData = (List<StructureNBTEntry>)tag.GetList<StructureNBTEntry>("nbtEntries");
 			}
+
+			data.containsCustomTileData = dataEntryCount > 5;
 
 			data.PreProcessModdedTypes();
 			return data;
@@ -328,7 +330,7 @@ namespace StructureHelper.Models
 			foreach (KeyValuePair<string, ITileDataEntry> entry in dataEntries)
 			{
 				Type dataType = entry.Value.GetDataType();
-				MethodInfo methodInfo = typeof(StructureData).GetMethod("ExportDataColumn").MakeGenericMethod(dataType);
+				MethodInfo methodInfo = typeof(StructureData).GetMethod("ExportDataColumn", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(dataType);
 				methodInfo.Invoke(this, [x, y, colIdx, entry.Key]);
 			}
 		}
@@ -389,7 +391,7 @@ namespace StructureHelper.Models
 			foreach (KeyValuePair<string, ITileDataEntry> entry in dataEntries)
 			{
 				Type dataType = entry.Value.GetDataType();
-				MethodInfo methodInfo = typeof(StructureData).GetMethod("ExportDataColumnSlow").MakeGenericMethod(dataType);
+				MethodInfo methodInfo = typeof(StructureData).GetMethod("ExportDataColumnSlow", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(dataType);
 				methodInfo.Invoke(this, [x, y, colIdx, entry.Key]);
 			}
 		}
@@ -519,10 +521,19 @@ namespace StructureHelper.Models
 		{
 			foreach (Type type in toSave)
 			{
-				if (type.IsAssignableFrom(typeof(ITileData)))
-					typeof(StructureData).GetMethod("ImportDataColumn").MakeGenericMethod(type).Invoke(this, [x, y, w, h]);
+				if (typeof(ITileData).IsAssignableFrom(type))
+				{
+					var mi = typeof(StructureData).GetMethod("ImportDataColumn", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(type);
+
+					for (int scanX = 0; scanX < w; scanX++)
+					{
+						mi.Invoke(this, [x + scanX, y, scanX, $"{type.Assembly.GetName().Name}/{type.Name}"]);
+					}
+				}
 				else
+				{
 					throw new ArgumentException("All types passed to AddCustomDataFromWorld must implement ITileData");
+				}
 			}
 
 			containsCustomTileData = true;

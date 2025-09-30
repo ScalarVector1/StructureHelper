@@ -53,6 +53,9 @@ namespace StructureHelper.Content.GUI
 		public static void OpenMenu()
 		{
 			visible = true;
+
+			toggles.Clear();
+
 			foreach(var pair in WandSavingSettings.possibleCustomDataTypes)
 			{
 				toggles.Add(new CustomDataToggleButton(pair.Value, pair.Key));

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StructureHelper.Core
 {
-	public static class WandSavingSettings
+	internal static class WandSavingSettings
 	{
 		internal static List<Type> activeCustomDataTypes = new();
 		internal static Dictionary<string, Type> possibleCustomDataTypes = new();
@@ -19,9 +19,9 @@ namespace StructureHelper.Core
 		/// <param name="type">The type to register. This should extend ITileData</param>
 		/// <param name="mod">An instance of your mod</param>
 		/// <exception cref="ArgumentException"></exception>
-		public static void RegisterCustomTypeForSaving(Type type, Mod mod)
+		internal static void RegisterCustomTypeForSaving(Type type, Mod mod)
 		{
-			if (type.IsAssignableFrom(typeof(ITileData)))
+			if (typeof(ITileData).IsAssignableFrom(type))
 				possibleCustomDataTypes.Add($"{mod.Name}/{type.Name}", type);
 			else
 				throw new ArgumentException("You can only register ITileData types as custom data for saving!");
@@ -29,14 +29,14 @@ namespace StructureHelper.Core
 
 		internal static void ActivateTypeForSaving(string key)
 		{
-			if (possibleCustomDataTypes.ContainsKey(key))
+			if (possibleCustomDataTypes.ContainsKey(key) && !activeCustomDataTypes.Contains(possibleCustomDataTypes[key]))
 				activeCustomDataTypes.Add(possibleCustomDataTypes[key]);
 		}
 
 		internal static void DeactivateTypeForSaving(string key)
 		{
 			if (possibleCustomDataTypes.ContainsKey(key) && activeCustomDataTypes.Contains(possibleCustomDataTypes[key]))
-				activeCustomDataTypes.Add(possibleCustomDataTypes[key]);
+				activeCustomDataTypes.Remove(possibleCustomDataTypes[key]);
 		}
 	}
 }
