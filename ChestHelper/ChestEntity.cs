@@ -62,7 +62,7 @@ namespace StructureHelper.ChestHelper
 
 		public override void Update()
 		{
-			Dust.NewDustPerfect(Position.ToVector2() * 16 + Vector2.UnitY * 8 + Vector2.One.RotatedByRandom(6.28f) * 6, 111, Vector2.Zero, 0, default, 0.5f);
+			Dust.NewDustPerfect(Position.ToVector2() * 16 + Vector2.UnitY * 8 + Vector2.One.RotatedByRandom(6.28f) * 6, DustID.HallowSpray, Vector2.Zero, 0, default, 0.5f);
 		}
 
 		public override void SaveData(TagCompound tag)

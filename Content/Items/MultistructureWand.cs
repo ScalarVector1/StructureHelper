@@ -13,12 +13,6 @@ namespace StructureHelper.Content.Items
 
 		public override string Texture => "StructureHelper/Assets/Items/" + Name;
 
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Multistructure Wand");
-			Tooltip.SetDefault("Select 2 points in the world, then right click to add a structure. Right click in your inventory when done to save.");
-		}
-
 		public override bool CanRightClick()
 		{
 			return true;

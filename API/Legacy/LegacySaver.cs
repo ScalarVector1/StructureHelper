@@ -126,7 +126,9 @@ namespace StructureHelper.API.Legacy
 						var modTileEntity = teTarget as ModTileEntity;
 
 						if (modTileEntity != null)
+						{
 							teName = modTileEntity.Mod.Name + " " + modTileEntity.Name;
+						}
 						else
 						{
 							teName = teTarget.type.ToString();

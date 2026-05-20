@@ -1,10 +1,6 @@
 ﻿using StructureHelper.Helpers;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StructureHelper.Models
 {
@@ -41,10 +37,12 @@ namespace StructureHelper.Models
 			if (headerText != HEADER_TEXT)
 				throw new InvalidDataException(ErrorHelper.GenerateErrorMessage("Attempted to deserialize binary data that is not a 3.0 multi structure file! Did you pass the path to a .shmstruct file? If so, did you change the file extension without actually porting your multi structure file from 2.0?", null));
 
-			var data = new MultiStructureData();
-			data.count = reader.ReadInt32();
+			var data = new MultiStructureData
+			{
+				count = reader.ReadInt32()
+			};
 
-			for(int k = 0; k < data.count; k++)
+			for (int k = 0; k < data.count; k++)
 			{
 				data.structures.Add(StructureData.FromStream(reader));
 			}
@@ -59,8 +57,10 @@ namespace StructureHelper.Models
 		/// <returns>The constructed MultiStructureData containing all elements in the source list</returns>
 		public static MultiStructureData FromStructureList(List<StructureData> source)
 		{
-			MultiStructureData data = new();
-			data.count = source.Count;
+			MultiStructureData data = new()
+			{
+				count = source.Count
+			};
 			data.structures.AddRange(source);
 
 			return data;
@@ -74,7 +74,7 @@ namespace StructureHelper.Models
 			writer.Write(HEADER_TEXT);
 			writer.Write(count);
 
-			for(int k = 0; k < count; k++)
+			for (int k = 0; k < count; k++)
 			{
 				structures[k].Serialize(writer);
 			}

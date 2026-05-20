@@ -523,7 +523,7 @@ namespace StructureHelper.Models
 			{
 				if (typeof(ITileData).IsAssignableFrom(type))
 				{
-					var mi = typeof(StructureData).GetMethod("ImportDataColumn", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(type);
+					MethodInfo mi = typeof(StructureData).GetMethod("ImportDataColumn", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(type);
 
 					for (int scanX = 0; scanX < w; scanX++)
 					{

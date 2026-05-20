@@ -5,65 +5,91 @@ Mods: {
 				DisplayName: Chest Wand
 				Tooltip:
 					'''
-					Right click to open the chest rule menu
-					Left click a chest to set the current rules on it
-					Right click a chest with rules to copy them
+					Usage:
+					- Right click to open the chest rule menu
+					- Use the chest rule menu to configure your chest generation rules
+					- Left click a chest to set the current rules on it
+
+					Alternate Usage:
+					- Right click a chest with rules to copy them into the chest rule menu
 					'''
 			}
 
 			MultistructureWand: {
 				DisplayName: Multistructure Wand
-				Tooltip: Select 2 points in the world, then right click to add a structure. Right click in your inventory when done to save.
+				Tooltip: 
+				'''
+				Usage:
+				- Left click twice to select the corners of a structure
+				- Rhen right click to add the structure to the current multistructure
+				- Repeat for all desired structures
+				- Right click the item in your inventory when done to save the multistructure
+				'''
 			}
 
 			StructureWand: {
 				DisplayName: Structure Wand
-				Tooltip: Select 2 points in the world, then right click to save a structure
+				Tooltip: 
+				'''
+				Usage:
+				- Left click twice to select the corners of your structure
+				- Right click to save a structure
+				'''
 			}
 
 			TestWand: {
 				DisplayName: Structure Placer Wand
-				Tooltip: left click to place the selected structure, right click to open the structure selector
+				Tooltip: 
+				'''
+				Usage:
+				- Right click to open the structure selector
+				- Left click to place the selected structure
+				'''
 			}
 
 			NullBlockItem: {
-				DisplayName: Null Block
+				DisplayName: Passthrough Block
 				Tooltip:
 					'''
 					Use these in a structure to indicate where the generator
-					 should leave whatever already exists in the world untouched
-					 ignores walls, use null walls for that :3
+					should leave whatever already exists in the world untouched
+					(ignores walls, use passthrough walls for this)
 					'''
 			}
 
 			NullTileAndWallPlacer: {
-				DisplayName: Null Tile Place-O-Matic
-				Tooltip: Places a null tile and null wall at the same time!
+				DisplayName: Passthrough Combo Placer
+				Tooltip: Places a passthrough tile and passthrough wall at the same time
 			}
 
 			NullWallItem: {
-				DisplayName: Null Wall
+				DisplayName: Passthrough Wall
 				Tooltip:
 					'''
 					Use these in a structure to indicate where the generator
-					 should leave walls that already exists in the world untouched
-					 for walls only, use null blocks for other things
+					should leave walls that already exists in the world untouched
+					(for walls only, use passthrough blocks for other data)
 					'''
 			}
 
 			PortingWand: {
 				DisplayName: Porting Wand
-				Tooltip: Automatically ports every structure in your SavedStructures directory.
-			}
-
-			UnitWand: {
-				DisplayName: The Wand
-				Tooltip: A test for myself If I leave this in bonk me.
+				Tooltip: 
+				'''
+				Usage:
+				- Place all pre-3.0 structures in your SavedStructures directory
+				- Use the item in-game to automatically port every structure in your SavedStructures directory
+				- Replace your legacy structure files with the new '.shstruct' and '.shmstruct' files
+				'''
 			}
 
 			CustomDataWand: {
 				DisplayName: Custom Data Wand
-				Tooltip: ""
+				Tooltip: 
+				'''
+				Advanced tool. Allows toggling of custom tile data for structure saving after registration.
+				See documentation for more information. (https://github.com/ScalarVector1/StructureHelper/wiki/Saving-Custom-Data)
+				'''
 			}
 		}
 	}

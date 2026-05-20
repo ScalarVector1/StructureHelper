@@ -56,7 +56,7 @@ namespace StructureHelper.Content.GUI
 
 			toggles.Clear();
 
-			foreach(var pair in WandSavingSettings.possibleCustomDataTypes)
+			foreach (KeyValuePair<string, Type> pair in WandSavingSettings.possibleCustomDataTypes)
 			{
 				toggles.Add(new CustomDataToggleButton(pair.Value, pair.Key));
 			}

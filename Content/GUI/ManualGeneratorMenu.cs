@@ -59,6 +59,8 @@ namespace StructureHelper.Content.GUI
 				string name = path.Replace(folderPath + Path.DirectorySeparatorChar, "");
 				structureElements.Add(new StructureEntry(name, path));
 			}
+
+			structureElements.UpdateOrder();
 		}
 
 		public override void OnInitialize()
@@ -249,6 +251,8 @@ namespace StructureHelper.Content.GUI
 				{
 					list.Add(new MultiSelectionEntry(k, data.structures[k]));
 				}
+
+				list.UpdateOrder();
 
 				list.Width.Set(400, 0);
 				list.Height.Set(96 * (int)Math.Ceiling(data.count / 4f), 0);

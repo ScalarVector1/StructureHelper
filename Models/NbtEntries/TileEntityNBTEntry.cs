@@ -1,9 +1,5 @@
 ﻿using StructureHelper.ChestHelper;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
@@ -11,13 +7,13 @@ namespace StructureHelper.Models.NbtEntries
 {
 	internal class TileEntityNBTEntry : StructureNBTEntry
 	{
-		string tileEntityType;
-		TagCompound tileEntityData;
+		readonly string tileEntityType;
+		readonly TagCompound tileEntityData;
 
 		public static Func<TagCompound, TileEntityNBTEntry> DESERIALIZER = Deserialize;
 
-		public TileEntityNBTEntry(int x, int y, string tileEntityType, TagCompound tileEntityData) : base(x, y) 
-		{ 
+		public TileEntityNBTEntry(int x, int y, string tileEntityType, TagCompound tileEntityData) : base(x, y)
+		{
 			this.tileEntityType = tileEntityType;
 			this.tileEntityData = tileEntityData;
 		}
@@ -25,7 +21,7 @@ namespace StructureHelper.Models.NbtEntries
 		public static TileEntityNBTEntry Deserialize(TagCompound tag)
 		{
 			TileEntityNBTEntry entry = new(
-				tag.GetInt("x"), 
+				tag.GetInt("x"),
 				tag.GetInt("y"),
 				tag.GetString("tileEntityType"),
 				tag.Get<TagCompound>("tileEntityData"));
@@ -57,7 +53,7 @@ namespace StructureHelper.Models.NbtEntries
 				{
 					string[] parts = tileEntityType.Split("/", 2);
 
-					if (ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModTileEntity>(parts[1], out ModTileEntity te))
+					if (ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind(parts[1], out ModTileEntity te))
 						typ = te.Type;
 				}
 

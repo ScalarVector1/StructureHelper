@@ -1,11 +1,5 @@
-﻿using StructureHelper.NewFolder;
-using System;
-using System.Collections.Generic;
+﻿using StructureHelper.Porting;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StructureHelper.Content.Items
@@ -13,12 +7,6 @@ namespace StructureHelper.Content.Items
 	internal class PortingWand : ModItem
 	{
 		public override string Texture => "StructureHelper/Assets/Items/" + Name;
-
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Porting Wand");
-			Tooltip.SetDefault("Automatically ports every structure in your SavedStructures directory.");
-		}
 
 		public override void SetDefaults()
 		{

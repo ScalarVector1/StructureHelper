@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
@@ -14,7 +10,7 @@ namespace StructureHelper.Models.NbtEntries
 
 		public static Func<TagCompound, SignNBTEntry> DESERIALIZER = Deserialize;
 
-		public SignNBTEntry(int x, int y, string text) : base(x, y) 
+		public SignNBTEntry(int x, int y, string text) : base(x, y)
 		{
 			this.text = text;
 		}
@@ -22,7 +18,7 @@ namespace StructureHelper.Models.NbtEntries
 		public static SignNBTEntry Deserialize(TagCompound tag)
 		{
 			SignNBTEntry entry = new
-				(tag.GetInt("x"), 
+				(tag.GetInt("x"),
 				tag.GetInt("y"),
 				tag.GetString("text"));
 

@@ -166,9 +166,9 @@ namespace StructureHelper.API
 			// replace nulls from the placeholder null value to the current null ID
 			if (ignoreNull)
 			{
-				for(int x = 0; x < data.width; x++)
+				for (int x = 0; x < data.width; x++)
 				{
-					for(int y = 0; y < data.height; y++)
+					for (int y = 0; y < data.height; y++)
 					{
 						Tile tile = Main.tile[pos.X + x, pos.Y + y];
 

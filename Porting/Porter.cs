@@ -1,25 +1,17 @@
 ﻿using StructureHelper.API;
-using StructureHelper.Content.GUI;
 using StructureHelper.Models;
 using StructureHelper.Models.NbtEntries;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using static System.Net.WebRequestMethods;
 
-namespace StructureHelper.NewFolder
+namespace StructureHelper.Porting
 {
 	internal class Porter
 	{
-		public static void AddDataEntry<T>(StructureData target, Mod mod) where T:unmanaged, ITileData
+		public static void AddDataEntry<T>(StructureData target, Mod mod) where T : unmanaged, ITileData
 		{
 			string key = $"{mod?.Name ?? "Terraria"}/{typeof(T).Name}";
 
@@ -32,12 +24,12 @@ namespace StructureHelper.NewFolder
 			string key = $"{mod?.Name ?? "Terraria"}/{typeof(T).Name}";
 
 			void* memTarget = target.dataEntries[key].GetSingleEntry(x, y);
-			Buffer.MemoryCopy(value, memTarget, sizeof(T), sizeof(T));		
+			Buffer.MemoryCopy(value, memTarget, sizeof(T), sizeof(T));
 		}
 
 		public static unsafe StructureData PortStructure(TagCompound tag)
 		{
-			StructureData ported = new StructureData();
+			var ported = new StructureData();
 
 			var data = (List<TileSaveData>)tag.GetList<TileSaveData>("TileData");
 
@@ -54,7 +46,7 @@ namespace StructureHelper.NewFolder
 			AddDataEntry<TileWallBrightnessInvisibilityData>(ported, null);
 			AddDataEntry<TileWallWireStateData>(ported, null);
 
-			for (int x = 0; x <= width; x++)			
+			for (int x = 0; x <= width; x++)
 			{
 				bool isSlow = false;
 
@@ -76,7 +68,7 @@ namespace StructureHelper.NewFolder
 							type = StructureHelper.NULL_IDENTIFIER;
 							isSlow = true;
 						}
-						else if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModTile>(parts[1], out ModTile modTileType))
+						else if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind(parts[1], out ModTile modTileType))
 						{
 							ported.moddedTileTable.TryAdd(modTileType.Type, modTileType.Type);
 							type = modTileType.Type;
@@ -97,7 +89,7 @@ namespace StructureHelper.NewFolder
 							wallType = StructureHelper.NULL_IDENTIFIER;
 							isSlow = true;
 						}
-						else if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModWall>(parts[1], out ModWall modWallType))
+						else if (parts.Length > 1 && ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind(parts[1], out ModWall modWallType))
 						{
 							ported.moddedWallTable.TryAdd(modWallType.Type, modWallType.Type);
 							wallType = modWallType.Type;
@@ -116,9 +108,11 @@ namespace StructureHelper.NewFolder
 					InsertDataEntry<LiquidData>(ported, null, x, y, &d.packedLiquidData);
 					InsertDataEntry<TileWallBrightnessInvisibilityData>(ported, null, x, y, &d.brightInvisibleData);
 
-					var reconstructed = new TileWallWireStateData();
-					reconstructed.TileFrameX = d.frameX;
-					reconstructed.TileFrameY = d.frameY;
+					var reconstructed = new TileWallWireStateData
+					{
+						TileFrameX = d.frameX,
+						TileFrameY = d.frameY
+					};
 
 					void* ptr = &reconstructed;
 
@@ -132,7 +126,6 @@ namespace StructureHelper.NewFolder
 
 					InsertDataEntry<TileWallWireStateData>(ported, null, x, y, &reconstructed);
 
-
 					if (d.TEType != "") //place and load a tile entity
 					{
 
@@ -140,13 +133,13 @@ namespace StructureHelper.NewFolder
 						{
 							string[] parts = d.TEType.Split();
 
-							if (ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind<ModTileEntity>(parts[1], out ModTileEntity te))
+							if (ModLoader.TryGetMod(parts[0], out Mod mod) && mod.TryFind(parts[1], out ModTileEntity te))
 								typ = te.Type;
 						}
 
 						if (typ != 0)
 						{
-							var entity = TileEntity.manager.GenerateInstance(typ);
+							TileEntity entity = TileEntity.manager.GenerateInstance(typ);
 
 							var modTileEntity = entity as ModTileEntity;
 							string teName;
@@ -157,12 +150,13 @@ namespace StructureHelper.NewFolder
 								teName = entity.type.ToString();
 
 							ported.containsNbt = true;
-							ported.nbtData ??= new();
+							ported.nbtData ??= [];
 
 							ported.nbtData.Add(new TileEntityNBTEntry(x, y, teName, d.TEData));
 						}
 					}
 				}
+
 				ported.slowColumns.Add(x, isSlow);
 			}
 
@@ -171,13 +165,13 @@ namespace StructureHelper.NewFolder
 
 		public static MultiStructureData PortMultiStructure(TagCompound tag)
 		{
-			MultiStructureData ported = new MultiStructureData();
+			var ported = new MultiStructureData();
 
 			var oldStructures = (List<TagCompound>)tag.GetList<TagCompound>("Structures");
 
 			ported.count = oldStructures.Count;
 
-			for(int k = 0; k < oldStructures.Count; k++)
+			for (int k = 0; k < oldStructures.Count; k++)
 			{
 				ported.structures.Add(PortStructure(oldStructures[k]));
 			}
@@ -187,16 +181,16 @@ namespace StructureHelper.NewFolder
 
 		public static void PortFile(string path)
 		{
-			var tag = API.Legacy.LegacyGenerator.GetTag(path, StructureHelper.Instance, true);
-			var data = PortStructure(tag);
+			TagCompound tag = API.Legacy.LegacyGenerator.GetTag(path, StructureHelper.Instance, true);
+			StructureData data = PortStructure(tag);
 
 			Saver.SaveToFile(data, path);
 		}
 
 		public static void PortMultiFile(string path)
 		{
-			var tag = API.Legacy.LegacyGenerator.GetTag(path, StructureHelper.Instance, true);
-			var data = PortMultiStructure(tag);
+			TagCompound tag = API.Legacy.LegacyGenerator.GetTag(path, StructureHelper.Instance, true);
+			MultiStructureData data = PortMultiStructure(tag);
 
 			Saver.SaveMultistructureToFile(data, path);
 		}

@@ -4,9 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StructureHelper.API
 {
@@ -45,7 +42,7 @@ namespace StructureHelper.API
 		/// <exception cref="ArgumentException">If any part of the region is outside of the world</exception>
 		public static StructureData SaveToStructureDataWithCustom(int x, int y, int width, int height, List<Type> customTypes)
 		{
-			var data = SaveToStructureData(x, y, width, height);
+			StructureData data = SaveToStructureData(x, y, width, height);
 			data.AddCustomDataFromWorld(x, y, width, height, customTypes);
 
 			return data;

@@ -16,12 +16,6 @@ namespace StructureHelper.Content.Items
 			On_Main.DrawPlayers_AfterProjectiles += DrawPreview;
 		}
 
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Structure Placer Wand");
-			Tooltip.SetDefault("left click to place the selected structure, right click to open the structure selector");
-		}
-
 		public override void SetDefaults()
 		{
 			Item.useStyle = ItemUseStyleID.Swing;

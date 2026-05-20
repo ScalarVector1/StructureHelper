@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
@@ -29,10 +26,11 @@ namespace StructureHelper.Models
 		/// <summary>
 		/// Temporary hack deserializer because TML fails to find subtype deserializers
 		/// </summary>
-		public static readonly Func<TagCompound, StructureNBTEntry> DESERIALIZER = tag => {
-			var typeName = tag.GetString("<type>");
-			var type = typeof(StructureNBTEntry).Assembly.GetType(typeName) ?? ModLoader.Mods.Select(mod => mod.Code?.GetType(typeName)).Where(t => t != null).FirstOrDefault();
-			if (TagSerializer.TryGetSerializer(type, out var serializer))
+		public static readonly Func<TagCompound, StructureNBTEntry> DESERIALIZER = tag =>
+		{
+			string typeName = tag.GetString("<type>");
+			Type type = typeof(StructureNBTEntry).Assembly.GetType(typeName) ?? ModLoader.Mods.Select(mod => mod.Code?.GetType(typeName)).Where(t => t != null).FirstOrDefault();
+			if (TagSerializer.TryGetSerializer(type, out TagSerializer serializer))
 				return (StructureNBTEntry)serializer.Deserialize(tag);
 
 			throw new ArgumentException($"Missing deserializer for subtype '{typeName}'");

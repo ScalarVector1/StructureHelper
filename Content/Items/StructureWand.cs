@@ -26,12 +26,6 @@ namespace StructureHelper.Content.Items
 
 		public override string Texture => "StructureHelper/Assets/Items/" + Name;
 
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Structure Wand");
-			Tooltip.SetDefault("Select 2 points in the world, then right click to save a structure");
-		}
-
 		public override void SetDefaults()
 		{
 			Item.useStyle = ItemUseStyleID.Swing;
