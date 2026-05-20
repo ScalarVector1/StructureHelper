@@ -9,6 +9,14 @@
   <ItemGroup>
     <None Remove="Localization\en-US.hjson" />
   </ItemGroup>
+	
+  <ItemGroup>
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Update="$(tMLSteamPath)$(tMLPath)" Publicize="true" />
+  </ItemGroup>
+	
   <ItemGroup>
 	<PackageReference Include="AssGen" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Version="3.0.0" />
   </ItemGroup>

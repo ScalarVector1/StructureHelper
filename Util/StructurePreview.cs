@@ -42,8 +42,10 @@ namespace StructureHelper.Util
 		/// <returns>The texture created</returns>
 		internal unsafe Texture2D GeneratePreview()
 		{
-			int width = Math.Min(data.width, 8096 / 16);
-			int height = Math.Min(data.height, 8096 / 16);
+			int maxTextureSize = Main._renderTargetMaxSize;
+
+			int width = Math.Min(data.width, maxTextureSize / 16);
+			int height = Math.Min(data.height, maxTextureSize / 16);
 			
 			RenderTargetBinding[] oldTargets = Main.graphics.GraphicsDevice.GetRenderTargets();
 

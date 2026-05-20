@@ -10,8 +10,8 @@ namespace StructureHelper
 {
 	public class StructureHelper : Mod
 	{
-		public static ushort NullTileID;
-		public static ushort NullWallID;
+		public static ushort NullTileID = ushort.MaxValue; // Impossible to encounter defaults for when running as a refference assembly
+		public static ushort NullWallID = ushort.MaxValue;
 
 		public const ushort NULL_IDENTIFIER = ushort.MaxValue;
 

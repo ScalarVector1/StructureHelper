@@ -410,7 +410,7 @@ namespace StructureHelper.Models
 			{
 				width = w,
 				height = h,
-				version = StructureHelper.Instance.Version
+				version = StructureHelper.Instance?.Version ?? Version.Parse("999.999.999")
 			};
 			// Has NBT will be determined after scanning for NBT data
 
