@@ -17,34 +17,34 @@ Mods: {
 
 			MultistructureWand: {
 				DisplayName: Multistructure Wand
-				Tooltip: 
-				'''
-				Usage:
-				- Left click twice to select the corners of a structure
-				- Rhen right click to add the structure to the current multistructure
-				- Repeat for all desired structures
-				- Right click the item in your inventory when done to save the multistructure
-				'''
+				Tooltip:
+					'''
+					Usage:
+					- Left click twice to select the corners of a structure
+					- Rhen right click to add the structure to the current multistructure
+					- Repeat for all desired structures
+					- Right click the item in your inventory when done to save the multistructure
+					'''
 			}
 
 			StructureWand: {
 				DisplayName: Structure Wand
-				Tooltip: 
-				'''
-				Usage:
-				- Left click twice to select the corners of your structure
-				- Right click to save a structure
-				'''
+				Tooltip:
+					'''
+					Usage:
+					- Left click twice to select the corners of your structure
+					- Right click to save a structure
+					'''
 			}
 
 			TestWand: {
 				DisplayName: Structure Placer Wand
-				Tooltip: 
-				'''
-				Usage:
-				- Right click to open the structure selector
-				- Left click to place the selected structure
-				'''
+				Tooltip:
+					'''
+					Usage:
+					- Right click to open the structure selector
+					- Left click to place the selected structure
+					'''
 			}
 
 			NullBlockItem: {
@@ -74,22 +74,22 @@ Mods: {
 
 			PortingWand: {
 				DisplayName: Porting Wand
-				Tooltip: 
-				'''
-				Usage:
-				- Place all pre-3.0 structures in your SavedStructures directory
-				- Use the item in-game to automatically port every structure in your SavedStructures directory
-				- Replace your legacy structure files with the new '.shstruct' and '.shmstruct' files
-				'''
+				Tooltip:
+					'''
+					Usage:
+					- Place all pre-3.0 structures in your SavedStructures directory
+					- Use the item in-game to automatically port every structure in your SavedStructures directory
+					- Replace your legacy structure files with the new '.shstruct' and '.shmstruct' files
+					'''
 			}
 
 			CustomDataWand: {
 				DisplayName: Custom Data Wand
-				Tooltip: 
-				'''
-				Advanced tool. Allows toggling of custom tile data for structure saving after registration.
-				See documentation for more information. (https://github.com/ScalarVector1/StructureHelper/wiki/Saving-Custom-Data)
-				'''
+				Tooltip:
+					'''
+					Advanced tool. Allows toggling of custom tile data for structure saving after registration.
+					See documentation for more information. (https://github.com/ScalarVector1/StructureHelper/wiki/Saving-Custom-Data)
+					'''
 			}
 		}
 	}
