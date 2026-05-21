@@ -42,7 +42,7 @@ namespace StructureHelper.Util
 		/// <returns>The texture created</returns>
 		internal unsafe Texture2D GeneratePreview()
 		{
-			int maxTextureSize = Main._renderTargetMaxSize;
+			int maxTextureSize = 4096; // TODO: See if there is a FNA3D API that can get this dynamically
 
 			int width = Math.Min(data.width, maxTextureSize / 16);
 			int height = Math.Min(data.height, maxTextureSize / 16);
