@@ -1,0 +1,1512 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>StructureHelper</name>
+    </assembly>
+    <members>
+        <member name="T:StructureHelper.API.Generator">
+            <summary>
+            In this class you will find various utilities related to generating structures and getting important
+            information from them such as their dimensions.
+            </summary>
+        </member>
+        <member name="M:StructureHelper.API.Generator.IsInBounds(StructureHelper.Models.StructureData,Terraria.DataStructures.Point16)">
+            <summary>
+            Helper to check bounds on a generation call. You can also use this to check the bounds
+            of your own structure
+            </summary>
+            <param name="data">The StructureData to check</param>
+            <param name="pos">The position to check from, this would be the top-left of the structure.</param>
+            <returns>If the structure is in bounds or not</returns>
+        </member>
+        <member name="M:StructureHelper.API.Generator.IsInBounds(System.String,Terraria.ModLoader.Mod,Terraria.DataStructures.Point16,System.Boolean)">
+            <summary>
+            Helper to check bounds on a generation call. You can also use this to check the bounds
+            of your own structure
+            </summary>
+            <param name="path">The path to search for the structure file</param>
+            <param name="mod">The mod to search for the structure file in</param>
+            <param name="pos">The position to check from, this would be the top-left of the structure.</param>
+            <returns>If the structure is in bounds or not</returns>
+        </member>
+        <member name="M:StructureHelper.API.Generator.GetStructureDimensions(System.String,Terraria.ModLoader.Mod,System.Boolean)">
+            <summary>
+            Gets the dimensions (width and height) of a structure.
+            </summary>
+            <param name="path">The path to search for the structure file. If it is in a mod, it should not include the mods name (for example, it should be "structures/coolHouse", not "CoolHouseMod/structures/coolHouse")</param>
+            <param name="mod">The mod to search for the structure file in</param>
+            <param name="fullPath">If the search path starts at the root of your file system(true) or the provided mod(false). This should usually be false.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StructureHelper.API.Generator.GetStructureData(System.String,Terraria.ModLoader.Mod,System.Boolean)">
+            <summary>
+            Gets the StructureData for a given path in a given mod (or absolute path if fullPath is true).
+            Will attempt to retrieve from the StructureData cache first if possible before doing I/O
+            </summary>
+            <param name="path">The path to search for the structure file. If it is in a mod, it should not include the mods name (for example, it should be "structures/coolHouse", not "CoolHouseMod/structures/coolHouse")</param>
+            <param name="mod">The mod to search for the structure file in</param>
+            <param name="fullPath">If the search path starts at the root of your file system(true) or the provided mod(false). This should usually be false.</param>
+            <returns>The StructureData associated with the desired file</returns>
+            <exception cref="T:System.IO.FileNotFoundException"></exception>
+        </member>
+        <member name="M:StructureHelper.API.Generator.GenerateStructure(System.String,Terraria.DataStructures.Point16,Terraria.ModLoader.Mod,System.Boolean,System.Boolean,StructureHelper.GenFlags)">
+            <summary>
+            This method generates a structure from a structure file.
+            </summary>
+            <param name="path">The path to search for the structure file. If it is in a mod, it should not include the mods name (for example, it should be "structures/coolHouse", not "CoolHouseMod/structures/coolHouse")</param>
+            <param name="pos">The position in the world to place the top-left of the structure, in tile coordinates.</param>
+            <param name="mod">The mod to search for the structure file in</param>
+            <param name="fullPath">If the search path starts at the root of your file system(true) or the provided mod(false). This should usually be false.</param>
+            <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll reference.</param>
+            <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="T:StructureHelper.GenFlags"/> </param>
+        </member>
+        <member name="M:StructureHelper.API.Generator.GenerateFromData(StructureHelper.Models.StructureData,Terraria.DataStructures.Point16,System.Boolean,StructureHelper.GenFlags)">
+            <summary>
+            Directly generates a given StructureData into the world. Use this directly if you have
+            a StructureData object in memory you want to generate from.
+            </summary>
+            <param name="data">The StructureData to generate</param>
+            <param name="pos">The position in the world to place the top-left of the structure, in tile coordinates.</param>
+            <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll reference.</param>
+            <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="T:StructureHelper.GenFlags"/> </param>
+        </member>
+        <member name="T:StructureHelper.API.Legacy.LegacyGenerator">
+            <summary>
+            A static class providing utilities to generate structures.
+            </summary>
+        </member>
+        <member name="M:StructureHelper.API.Legacy.LegacyGenerator.GenerateStructure(System.String,Terraria.DataStructures.Point16,Terraria.ModLoader.Mod,System.Boolean,System.Boolean,StructureHelper.GenFlags)">
+            <summary>
+            This method generates a structure from a structure file within your mod.
+            </summary>
+            <param name="path">The path to your structure file within your mod - this should not include your mod's folder, only the path beyond it.</param>
+            <param name="pos">The position in the world in which you want your structure to generate, in tile coordinates.</param>
+            <param name="mod">The instance of your mod to grab the file from.</param>
+            <param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
+            <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll reference.</param>
+            <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="T:StructureHelper.GenFlags"/> </param>
+            <returns>If the structure generated successfully or not</returns>
+        </member>
+        <member name="M:StructureHelper.API.Legacy.LegacyGenerator.GenerateMultistructureRandom(System.String,Terraria.DataStructures.Point16,Terraria.ModLoader.Mod,System.Boolean,System.Boolean,StructureHelper.GenFlags)">
+            <summary>
+            This method generates a structure selected randomly from a multistructure file within your mod.
+            </summary>
+            <param name="path">The path to your multistructure file within your mod - this should not include your mod's folder, only the path beyond it.</param>
+            <param name="pos">The position in the world in which you want your structure to generate, in tile coordinates.</param>
+            <param name="mod">The instance of your mod to grab the file from.</param>
+            <param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
+            <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll refference.</param>
+            <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="T:StructureHelper.GenFlags"/> </param>
+            <returns>If the structure generated successfully or not</returns>
+        </member>
+        <member name="M:StructureHelper.API.Legacy.LegacyGenerator.GenerateMultistructureSpecific(System.String,Terraria.DataStructures.Point16,Terraria.ModLoader.Mod,System.Int32,System.Boolean,System.Boolean,StructureHelper.GenFlags)">
+            <summary>
+            This method generates a structure you select from a multistructure file within your mod. Useful if you want to do your own weighted randomization or want additional logic based on dimensions gotten from GetMultistructureDimensions.
+            </summary>
+            <param name="path">The path to your multistructure file within your mod - this should not include your mod's folder, only the path beyond it.</param>
+            <param name="pos">The position in the world in which you want your structure to generate, in tile coordinates.</param>
+            <param name="mod">The instance of your mod to grab the file from.</param>
+            <param name="index">The index of the structure you want to generate out of the multistructure file, structure indicies are 0-based and match the order they were saved in.</param>
+            <param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
+            <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll refference.</param>
+            <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="T:StructureHelper.GenFlags"/> </param>
+            <returns>If the structure generated successfully or not</returns>
+        </member>
+        <member name="M:StructureHelper.API.Legacy.LegacyGenerator.IsInBounds(Terraria.ModLoader.IO.TagCompound,Terraria.DataStructures.Point16)">
+            <summary>
+            Helper to check bounds on a generation call
+            </summary>
+            <param name="tag">The tag to check</param>
+            <param name="pos">The position to check from</param>
+            <returns>If the structure is in bounds or not</returns>
+        </member>
+        <member name="M:StructureHelper.API.Legacy.LegacyGenerator.GetDimensions(System.String,Terraria.ModLoader.Mod,Terraria.DataStructures.Point16@,System.Boolean)">
+            <summary>
+            Gets the dimensions of a structure from a structure file within your mod.
+            </summary>
+            <param name="path">The path to your structure file within your mod - this should not include your mod's folder, only the path beyond it.</param>
+            <param name="mod">The instance of your mod to grab the file from.</param>
+            <param name="dims">The Point16 variable which you want to be set to the dimensions of the structure.</param>
+            <param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StructureHelper.API.Legacy.LegacyGenerator.GetMultistructureDimensions(System.String,Terraria.ModLoader.Mod,System.Int32,Terraria.DataStructures.Point16@,System.Boolean)">
+            <summary>
+            Gets the dimensions of a structure from a structure file within your mod.
+            </summary>
+            <param name="path">The path to your structure file within your mod - this should not include your mod's folder, only the path beyond it.</param>
+            <param name="mod">The instance of your mod to grab the file from.</param>
+            <param name="index">The index of the structure you want to get the dimensions of out of the multistructure file, structure indicies are 0-based and match the order they were saved in.</param>
+            <param name="dims">The Point16 variable which you want to be set to the dimensions of the structure.</param>
+            <param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StructureHelper.API.Legacy.LegacyGenerator.IsMultistructure(System.String,Terraria.ModLoader.Mod)">
+            <summary>
+            Checks if a structure file is a multistructure or not. Can be used to easily add support for parameterizing strucutres or multistructures in your mod.
+            </summary>
+            <param name="path">The path to the structure file you wish to check.</param>
+            <param name="mod">The instance of your mod to grab the file from.</param>
+            <returns>True if the file is a multistructure, False if the file is a structure, null if it is invalid.</returns>
+        </member>
+        <member name="M:StructureHelper.API.Legacy.LegacyGenerator.GetStructureCount(System.String,Terraria.ModLoader.Mod)">
+            <summary>
+            Gets the quantity of structures in a multistructure file if possible. Returns null if the structure is invalid or not a multistructure.
+            </summary>
+            <param name="path">The path to the structure file you wish to check.</param>
+            <param name="mod">The instance of your mod to grab the file from.</param>
+            <returns>The amount of structures in a multistructure, or null if invalid.</returns>
+        </member>
+        <member name="M:StructureHelper.API.Legacy.LegacyGenerator.Generate(Terraria.ModLoader.IO.TagCompound,Terraria.DataStructures.Point16,System.Boolean,StructureHelper.GenFlags)">
+            <summary>
+            Parses and generates the actual tiles from a structure file
+            </summary>
+            <param name="tag">The structure data TagCompound to generate from</param>
+            <param name="pos">The position in the world of the top-leftmost tile to be placed at</param>
+            <param name="ignoreNull">If this structure should place null tiles or not</param>
+            <returns>If the structure successfully generated or not</returns>
+        </member>
+        <member name="M:StructureHelper.API.Legacy.LegacyGenerator.GenerateChest(Terraria.DataStructures.Point16,Terraria.ModLoader.IO.TagCompound)">
+            <summary>
+            Places a chest in the world and fills it according to a set of chest rules
+            </summary>
+            <param name="pos">The position of the top-leftmost corner of the chest</param>
+            <param name="rules">The TagCompound containing the chest rules you want to generate your chest with</param>
+        </member>
+        <member name="M:StructureHelper.API.Legacy.LegacyGenerator.LoadFile(System.String,Terraria.ModLoader.Mod,System.Boolean)">
+            <summary>
+            Loads and caches a structure file.
+            </summary>
+            <param name="path">The path to the struture file to load</param>
+            <param name="mod">The mod to load the structure file from</param>
+            <param name="fullPath">If the given path is fully qualified</param>
+            <returns>If the file could successfully be loaded or not</returns>
+        </member>
+        <member name="M:StructureHelper.API.Legacy.LegacyGenerator.GetTag(System.String,Terraria.ModLoader.Mod,System.Boolean)">
+            <summary>
+            Attempts to get data from a structure/multistructure file. If the data is not cached, it will be loaded and cached.
+            </summary>
+            <param name="path">The path of the file to retrieve data from</param>
+            <param name="mod">The mod to load the structure file from</param>
+            <param name="fullPath">If the given path is fully qualified</param>
+            <returns>The TagCompound containing the structure/multistructure data</returns>
+        </member>
+        <member name="T:StructureHelper.API.Legacy.LegacySaver">
+            <summary>
+            A static class providing utilities for saving structures.
+            </summary>
+        </member>
+        <member name="M:StructureHelper.API.Legacy.LegacySaver.SaveToFile(Microsoft.Xna.Framework.Rectangle,System.String,System.String)">
+            <summary>
+            Saves a given region of the world as a structure file
+            </summary>
+            <param name="target">The region of the world to save, in tile coordinates</param>
+            <param name="targetPath">The name of the file to save. Automatically defaults to a file named after the date in the SavedStructures folder</param>
+        </member>
+        <member name="M:StructureHelper.API.Legacy.LegacySaver.SaveMultistructureToFile(System.Collections.Generic.List{Terraria.ModLoader.IO.TagCompound}@,System.String,System.String)">
+            <summary>
+            Saves a given list of TagCompounds together as a multistructure file
+            </summary>
+            <param name="toSave">The tags to save</param>
+            <param name="targetPath">The name of the file to save. Automatically defaults to a file named after the date in the SavedStructures folder</param>
+        </member>
+        <member name="M:StructureHelper.API.Legacy.LegacySaver.SaveStructure(Microsoft.Xna.Framework.Rectangle)">
+            <summary>
+            Transforms a region of the world into a structure TagCompound. Must be called in an unsafe context!
+            </summary>
+            <param name="target">The region to transform</param>
+            <returns>The TagCompound that can be saved to a structure file</returns>
+        </member>
+        <member name="T:StructureHelper.API.MultiStructureGenerator">
+            <summary>
+            In this class you will find various utilities related to generating multi structures and getting important
+            information from them such as their dimensions or structure count.
+            </summary>
+        </member>
+        <member name="M:StructureHelper.API.MultiStructureGenerator.IsInBounds(StructureHelper.Models.MultiStructureData,System.Int32,Terraria.DataStructures.Point16)">
+            <summary>
+            Helper to check bounds on a generation call. You can also use this to check the bounds
+            of your own structure
+            </summary>
+            <param name="data">The MultiStructureData to check</param>
+            <param name="pos">The position to check from, this would be the top-left of the structure.</param>
+            <param name="index">The index in the multistructure to check the dimensions of.</param>
+            <returns>If the structure is in bounds or not</returns>
+        </member>
+        <member name="M:StructureHelper.API.MultiStructureGenerator.IsInBounds(System.String,Terraria.ModLoader.Mod,System.Int32,Terraria.DataStructures.Point16,System.Boolean)">
+            <summary>
+            Helper to check bounds on a generation call. You can also use this to check the bounds
+            of your own structure
+            </summary>
+            <param name="path">The path to search for the multi structure file</param>
+            <param name="mod">The mod to search for the multi structure file in</param>
+            <param name="pos">The position to check from, this would be the top-left of the structure.</param>
+            <param name="index">The index in the multistructure to check the dimensions of.</param>
+            <param name="fullPath">If the search path starts at the root of your file system(true) or the provided mod(false). This should usually be false.</param>
+            <returns>If the structure is in bounds or not</returns>
+        </member>
+        <member name="M:StructureHelper.API.MultiStructureGenerator.GetStructureDimensions(System.String,Terraria.ModLoader.Mod,System.Int32,System.Boolean)">
+            <summary>
+            Gets the dimensions (width and height) of a structure in a multistructure.
+            </summary>
+            <param name="path">The path to search for the structure file. If it is in a mod, it should not include the mods name (for example, it should be "structures/coolHouse", not "CoolHouseMod/structures/coolHouse")</param>
+            <param name="mod">The mod to search for the structure file in</param>
+            <param name="index">The index in the multistructure to check the dimensions of.</param>
+            <param name="fullPath">If the search path starts at the root of your file system(true) or the provided mod(false). This should usually be false.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StructureHelper.API.MultiStructureGenerator.GetStructureCount(System.String,Terraria.ModLoader.Mod,System.Boolean)">
+            <summary>
+            Gets the amount of structures inside of a multi structure file
+            </summary>
+            <param name="path">The path to search for the structure file. If it is in a mod, it should not include the mods name (for example, it should be "structures/coolHouse", not "CoolHouseMod/structures/coolHouse")</param>
+            <param name="mod">The mod to search for the structure file in</param>
+            <param name="fullPath">If the search path starts at the root of your file system(true) or the provided mod(false). This should usually be false.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StructureHelper.API.MultiStructureGenerator.GetMultiStructureData(System.String,Terraria.ModLoader.Mod,System.Boolean)">
+            <summary>
+            Gets the MultiStructureData for a given path in a given mod (or absolute path if fullPath is true).
+            Will attempt to retrieve from the MultiStructureData cache first if possible before doing I/O
+            </summary>
+            <param name="path">The path to search for the multi structure file. If it is in a mod, it should not include the mods name (for example, it should be "structures/coolHouse", not "CoolHouseMod/structures/coolHouse")</param>
+            <param name="mod">The mod to search for the multi structure file in</param>
+            <param name="fullPath">If the search path starts at the root of your file system(true) or the provided mod(false). This should usually be false.</param>
+            <returns>The MultiStructureData associated with the desired file</returns>
+            <exception cref="T:System.IO.FileNotFoundException"></exception>
+        </member>
+        <member name="M:StructureHelper.API.MultiStructureGenerator.GenerateMultistructureRandom(System.String,Terraria.DataStructures.Point16,Terraria.ModLoader.Mod,System.Boolean,System.Boolean,StructureHelper.GenFlags)">
+            <summary>
+            This method generates a random structure from a multi structure file.
+            </summary>
+            <param name="path">The path to search for the structure file. If it is in a mod, it should not include the mods name (for example, it should be "structures/coolHouse", not "CoolHouseMod/structures/coolHouse")</param>
+            <param name="pos">The position in the world to place the top-left of the structure, in tile coordinates.</param>
+            <param name="mod">The mod to search for the structure file in</param>
+            <param name="fullPath">If the search path starts at the root of your file system(true) or the provided mod(false). This should usually be false.</param>
+            <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll reference.</param>
+            <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="T:StructureHelper.GenFlags"/> </param>
+        </member>
+        <member name="M:StructureHelper.API.MultiStructureGenerator.GenerateMultistructureSpecific(System.String,System.Int32,Terraria.DataStructures.Point16,Terraria.ModLoader.Mod,System.Boolean,System.Boolean,StructureHelper.GenFlags)">
+            <summary>
+            Generates a specific structure from a multi structure file
+            </summary>
+            <param name="path">The path to search for the structure file. If it is in a mod, it should not include the mods name (for example, it should be "structures/coolHouse", not "CoolHouseMod/structures/coolHouse")</param>
+            <param name="index">The index of the structure to generate out of the multistructure</param>
+            <param name="pos">The position in the world to place the top-left of the structure, in tile coordinates.</param>
+            <param name="mod">The mod to search for the structure file in</param>
+            <param name="fullPath">If the search path starts at the root of your file system(true) or the provided mod(false). This should usually be false.</param>
+            <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll reference.</param>
+            <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="T:StructureHelper.GenFlags"/> </param>
+            <exception cref="T:System.IndexOutOfRangeException"></exception>
+        </member>
+        <member name="T:StructureHelper.API.Saver">
+            <summary>
+            In this class you will find utilities for saving regions of the world into structure data,
+            and then saving that data into files if needed.
+            </summary>
+        </member>
+        <member name="M:StructureHelper.API.Saver.SaveToStructureData(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Saves a region of the world into a StructureData object.
+            </summary>
+            <param name="x">The leftmost point of the region</param>
+            <param name="y">The topmost point of the region</param>
+            <param name="width">The width of the region</param>
+            <param name="height">The height of the region</param>
+            <returns>a StructureData object representing that region of the world</returns>
+            <exception cref="T:System.ArgumentException">If any part of the region is outside of the world</exception>
+        </member>
+        <member name="M:StructureHelper.API.Saver.SaveToStructureDataWithCustom(System.Int32,System.Int32,System.Int32,System.Int32,System.Collections.Generic.List{System.Type})">
+            <summary>
+            Saves a region of the world into a StructureData object, including the specified custom ITileData types.
+            </summary>
+            <param name="x">The leftmost point of the region</param>
+            <param name="y">The topmost point of the region</param>
+            <param name="width">The width of the region</param>
+            <param name="height">The height of the region</param>
+            <param name="customTypes">The types of ITileData to save in addition to vanilla ITileData. These should all be blittable ITileData types.</param>
+            <returns>a StructureData object representing that region of the world</returns>
+            <exception cref="T:System.ArgumentException">If any part of the region is outside of the world</exception>
+        </member>
+        <member name="M:StructureHelper.API.Saver.SaveToFile(StructureHelper.Models.StructureData,System.String,System.String)">
+            <summary>
+            Saves a given StructureData to a file, the location is by the target path, and with the given name.
+            </summary>
+            <param name="data">The StructureData to save</param>
+            <param name="targetPath">The path to the directory save the file into</param>
+            <param name="name">The name of the file, NOT including the extension</param>
+        </member>
+        <member name="M:StructureHelper.API.Saver.SaveMultistructureToFile(StructureHelper.Models.MultiStructureData,System.String,System.String)">
+            <summary>
+            Saves a given MultiStructureData to a file, the location is by the target path, and with the given name.
+            </summary>
+            <param name="data">The MultiStructureData to save</param>
+            <param name="targetPath">The path to the directory save the file into</param>
+            <param name="name">The name of the file, NOT including the extension</param>
+        </member>
+        <member name="F:StructureHelper.ChestHelper.ChestRuleChance.chance">
+            <summary>
+            the chance for any individual item from this pool to generate, from 0 to 1. (0 = 0%, 1 = 100%) If you want to generate X items from the pool, use ChestRulePool instead. If you want multiple different chances, add another rule of this type.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.ChestHelper.ChestRulePool.itemsToGenerate">
+            <summary>
+            How many items from the pool, picked at random, should be placed in the chest.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.ChestHelper.ChestRulePoolChance.itemsToGenerate">
+            <summary>
+            How many items from the pool, picked at random, should be placed in the chest.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.ChestHelper.ChestRulePoolChance.chance">
+            <summary>
+            the chance for this item pool to generate at all.
+            </summary>
+        </member>
+        <member name="T:StructureHelper.Content.GUI.FieldEditor`1">
+            <summary>
+            A UI element for changing the value of 'something'. 
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Content.GUI.FieldEditor`1.name">
+            <summary>
+            The name that gets displated above the panel to the user
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Content.GUI.FieldEditor`1.description">
+            <summary>
+            The info sown when hovering over this panel
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Content.GUI.FieldEditor`1.value">
+            <summary>
+            The current value this editor believes the field its tied to to have. This wont update in real time so be careful
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Content.GUI.FieldEditor`1.onValueChanged">
+            <summary>
+            The callback that should happen when this editor thinks the value its tracking has changed. You'll likely need to cast the object parameter to the correct type.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Content.GUI.FieldEditor`1.listenForUpdate">
+            <summary>
+            This function, called every frame while the editor is not being used, is used to update the editor's value to the current value of the tracked value.
+            </summary>
+        </member>
+        <member name="P:StructureHelper.Content.GUI.FieldEditor`1.Editing">
+            <summary>
+            If this editor is currently being used to change a value, and thus shouldn't listen for update
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Content.GUI.FieldEditor`1.#ctor(System.Int32,System.String,System.Action{`0},System.Func{`0},`0,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="height">Height of the panel</param>
+            <param name="name">The name that gets displated above the panel to the user</param>
+            <param name="onValueChanged">The callback that should happen when this editor thinks the value its tracking has changed. You'll likely need to cast the object parameter to the correct type.</param>
+            <param name="initialValue">A hint for what the initial value of the field tracked by this editor is</param>
+        </member>
+        <member name="M:StructureHelper.Content.GUI.FieldEditor`1.OnRecieveNewValue(`0)">
+            <summary>
+            Defines what should happen when a new value is recieved from the value update listener. Note that value has not yet been updated when this is called, so you can compare to the old value.
+            </summary>
+            <param name="newValue">The new value that was recieved</param>
+        </member>
+        <member name="M:StructureHelper.Content.GUI.ManualGeneratorMenu.LoadStructures">
+            <summary>
+            Loads all structure files and generates elements to be clicked for them
+            </summary>
+        </member>
+        <member name="T:StructureHelper.Content.GUI.Tooltip">
+            <summary>
+            Draws the popup tooltip when various elements of the UI are hovered over.
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Content.GUI.Tooltip.SetName(System.String)">
+            <summary>
+            Sets the brightly colored main line of the tooltip. This should be a short descriptor of what you're hovering over, like its name
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:StructureHelper.Content.GUI.Tooltip.SetTooltip(System.String)">
+            <summary>
+            Sets the more dimly colored 'description' of the tooltip. This should be the 'body' of the tooltip.
+            </summary>
+            <param name="newTooltip"></param>
+        </member>
+        <member name="M:StructureHelper.Content.Items.StructureWand.OnConfirmRectangle">
+            <summary>
+            What happens when you right click after a finazed rectangle is present
+            </summary>
+        </member>
+        <member name="T:StructureHelper.Core.Loaders.UILoading.SmartUIElement">
+            <summary>
+            Wrapper class that enforces Safe interoperability between event listeners and virtual methods for UI elements
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeXButton1MouseUp(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton1MouseUp that allows both an override and the OnXButton1MouseUp event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeXButton1MouseDown(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton1MouseDown that allows both an override and the OnXButton1MouseDown event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeXButton1Click(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton1Click that allows both an override and the OnXButton1Click event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeXButton1DoubleClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton1DoubleClick that allows both an override and the OnXButton1DoubleClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeXButton2MouseUp(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton2MouseUp that allows both an override and the OnXButton2MouseUp event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeXButton2MouseDown(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton2MouseDown that allows both an override and the OnXButton2MouseDown event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeXButton2Click(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton2Click that allows both an override and the OnXButton2Click event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeXButton2DoubleClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton2DoubleClick that allows both an override and the OnXButton2DoubleClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeMouseUp(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around MouseUp that allows both an override and the OnMouseUp event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeMouseDown(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around MouseDown that allows both an override and the OnMouseDown event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around Click that allows both an override and the OnClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeDoubleClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around DoubleClick that allows both an override and the OnDoubleClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeRightMouseUp(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around RightMouseUp that allows both an override and the OnRightMouseUp event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeRightMouseDown(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around RightMouseDown that allows both an override and the OnRightMouseDown event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeRightClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around RightClick that allows both an override and the OnRightClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeRightDoubleClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around RightDoubleClick that allows both an override and the OnRightDoubleClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeMiddleMouseUp(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around MiddleMouseUp that allows both an override and the OnMiddleMouseUp event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeMiddleMouseDown(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around MiddleMouseDown that allows both an override and the OnMiddleMouseDown event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeMiddleClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around MiddleClick that allows both an override and the OnMiddleClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeMiddleDoubleClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around MiddleDoubleClick that allows both an override and the OnMiddleDoubleClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeMouseOver(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around MouseOver that allows both an override and the OnMouseOver event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeUpdate(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            A Safe wrapper around Update that allows both an override and the OnUpdate event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIElement.SafeScrollWheel(Terraria.UI.UIScrollWheelEvent)">
+            <summary>
+            A Safe wrapper around ScrollWheel that allows both an override and the OnScrollWheel event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="T:StructureHelper.Core.Loaders.UILoading.SmartUIState">
+            <summary>
+            An auto-loaded UI State, that knows information about its own visibility.
+            </summary>
+        </member>
+        <member name="P:StructureHelper.Core.Loaders.UILoading.SmartUIState.UserInterface">
+            <summary>
+            The UserInterface automatically assigned to this UIState on load.
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.InsertionIndex(System.Collections.Generic.List{Terraria.UI.GameInterfaceLayer})">
+            <summary>
+            Where this UI state should be inserted relative to the vanilla UI layers.
+            </summary>
+            <param name="layers">The vanilla UI layers</param>
+            <returns>The insertion index of this UI state</returns>
+        </member>
+        <member name="P:StructureHelper.Core.Loaders.UILoading.SmartUIState.Visible">
+            <summary>
+            If the UI should be visible and interactable or not
+            </summary>
+        </member>
+        <member name="P:StructureHelper.Core.Loaders.UILoading.SmartUIState.Scale">
+            <summary>
+            What scale setting this UI should scale with
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.Unload">
+            <summary>
+            Allows you to unload anything that might need to be unloaded
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.AddElement(Terraria.UI.UIElement,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Appends an element to this state with the given dimensions
+            </summary>
+            <param name="element">The element to append</param>
+            <param name="x">The x position in pixels</param>
+            <param name="y">The y position in pixels</param>
+            <param name="width">The width in pixels</param>
+            <param name="height">The height in pixels</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.AddElement(Terraria.UI.UIElement,System.Int32,System.Int32,System.Int32,System.Int32,Terraria.UI.UIElement)">
+            <summary>
+            Appends an element to another element with the given dimensions
+            </summary>
+            <param name="element">The element to append</param>
+            <param name="x">The x position in pixels</param>
+            <param name="y">The y position in pixels</param>
+            <param name="width">The width in pixels</param>
+            <param name="height">The height in pixels</param>
+            <param name="appendTo">The element to append to</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.AddElement(Terraria.UI.UIElement,System.Int32,System.Single,System.Int32,System.Single,System.Int32,System.Single,System.Int32,System.Single)">
+            <summary>
+            Appends an element to this state with the given dimensions
+            </summary>
+            <param name="element">The element to append</param>
+            <param name="x">The x position in pixels</param>
+            <param name="xPercent">The x position in percentage of the parents width</param>
+            <param name="y">The y position in pixels</param>
+            <param name="yPercent">The y position in percentage of the parents height</param>
+            <param name="width">The width in pixels</param>
+            <param name="widthPercent">The width in percentage of the parents width</param>
+            <param name="height">The height in pixels</param>
+            <param name="heightPercent">The height in percentage of the parents height</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.AddElement(Terraria.UI.UIElement,System.Int32,System.Single,System.Int32,System.Single,System.Int32,System.Single,System.Int32,System.Single,Terraria.UI.UIElement)">
+            <summary>
+            Appends an element to this state with the given dimensions
+            </summary>
+            <param name="element">The element to append</param>
+            <param name="x">The x position in pixels</param>
+            <param name="xPercent">The x position in percentage of the parents width</param>
+            <param name="y">The y position in pixels</param>
+            <param name="yPercent">The y position in percentage of the parents height</param>
+            <param name="width">The width in pixels</param>
+            <param name="widthPercent">The width in percentage of the parents width</param>
+            <param name="height">The height in pixels</param>
+            <param name="heightPercent">The height in percentage of the parents height</param>
+            <param name="appendTo">The element to append to</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeXButton1MouseUp(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton1MouseUp that allows both an override and the OnXButton1MouseUp event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeXButton1MouseDown(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton1MouseDown that allows both an override and the OnXButton1MouseDown event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeXButton1Click(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton1Click that allows both an override and the OnXButton1Click event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeXButton1DoubleClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton1DoubleClick that allows both an override and the OnXButton1DoubleClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeXButton2MouseUp(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton2MouseUp that allows both an override and the OnXButton2MouseUp event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeXButton2MouseDown(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton2MouseDown that allows both an override and the OnXButton2MouseDown event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeXButton2Click(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton2Click that allows both an override and the OnXButton2Click event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeXButton2DoubleClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around XButton2DoubleClick that allows both an override and the OnXButton2DoubleClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeMouseUp(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around MouseUp that allows both an override and the OnMouseUp event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeMouseDown(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around MouseDown that allows both an override and the OnMouseDown event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around Click that allows both an override and the OnClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeDoubleClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around DoubleClick that allows both an override and the OnDoubleClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeRightMouseUp(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around RightMouseUp that allows both an override and the OnRightMouseUp event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeRightMouseDown(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around RightMouseDown that allows both an override and the OnRightMouseDown event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeRightClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around RightClick that allows both an override and the OnRightClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeRightDoubleClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around RightDoubleClick that allows both an override and the OnRightDoubleClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeMiddleMouseUp(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around MiddleMouseUp that allows both an override and the OnMiddleMouseUp event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeMiddleMouseDown(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around MiddleMouseDown that allows both an override and the OnMiddleMouseDown event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeMiddleClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around MiddleClick that allows both an override and the OnMiddleClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeMiddleDoubleClick(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around MiddleDoubleClick that allows both an override and the OnMiddleDoubleClick event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeMouseOver(Terraria.UI.UIMouseEvent)">
+            <summary>
+            A Safe wrapper around MouseOver that allows both an override and the OnMouseOver event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeUpdate(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            A Safe wrapper around Update that allows both an override and the OnUpdate event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.SmartUIState.SafeScrollWheel(Terraria.UI.UIScrollWheelEvent)">
+            <summary>
+            A Safe wrapper around ScrollWheel that allows both an override and the OnScrollWheel event to be used together
+            </summary>
+            <param name="evt">The mouse event that occured to fire this listener</param>
+        </member>
+        <member name="T:StructureHelper.Core.Loaders.UILoading.UILoader">
+            <summary>
+            Automatically loads SmartUIStates ala IoC.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Core.Loaders.UILoading.UILoader.UserInterfaces">
+            <summary>
+            The collection of automatically craetaed UserInterfaces for SmartUIStates.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Core.Loaders.UILoading.UILoader.UIStates">
+            <summary>
+            The collection of all automatically loaded SmartUIStates.
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.UILoader.Load">
+            <summary>
+            Uses reflection to scan through and find all types extending SmartUIState that arent abstract, and loads an instance of them.
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.UILoader.AddLayer(System.Collections.Generic.List{Terraria.UI.GameInterfaceLayer},Terraria.UI.UIState,System.Int32,System.Boolean,Terraria.UI.InterfaceScaleType)">
+            <summary>
+            Helper method for creating and inserting a LegacyGameInterfaceLayer automatically
+            </summary>
+            <param name="layers">The vanilla layers</param>
+            <param name="state">the UIState to bind to the layer</param>
+            <param name="index">Where this layer should be inserted</param>
+            <param name="visible">The logic dictating the visibility of this layer</param>
+            <param name="scale">The scale settings this layer should scale with</param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.UILoader.UpdateUI(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            Handles updating the UI states correctly
+            </summary>
+            <param name="gameTime"></param>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.UILoader.GetUIState``1">
+            <summary>
+            Gets the autoloaded SmartUIState instance for a given SmartUIState subclass
+            </summary>
+            <typeparam name="T">The SmartUIState subclass to get the instance of</typeparam>
+            <returns>The autoloaded instance of the desired SmartUIState</returns>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.UILoader.ReloadState``1">
+            <summary>
+            Forcibly reloads a SmartUIState and it's associated UserInterface
+            </summary>
+            <typeparam name="T">The SmartUIState subclass to reload</typeparam>
+        </member>
+        <member name="M:StructureHelper.Core.Loaders.UILoading.UILoader.ModifyInterfaceLayers(System.Collections.Generic.List{Terraria.UI.GameInterfaceLayer})">
+            <summary>
+            Handles the insertion of the automatically generated UIs
+            </summary>
+            <param name="layers"></param>
+        </member>
+        <member name="M:StructureHelper.Core.WandSavingSettings.RegisterCustomTypeForSaving(System.Type,Terraria.ModLoader.Mod)">
+            <summary>
+            Registers a custom ITileData type to be able to be enabled for structure saving.
+            After you do this to save your custom data you will need to enable it in-game using
+            the data configurator tool.
+            </summary>
+            <param name="type">The type to register. This should extend ITileData</param>
+            <param name="mod">An instance of your mod</param>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="T:StructureHelper.Generator">
+            <summary>
+            The legacy API left as is to prevent runtime breakage.
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Generator.GenerateStructure(System.String,Terraria.DataStructures.Point16,Terraria.ModLoader.Mod,System.Boolean,System.Boolean,StructureHelper.GenFlags)">
+            <summary>
+            This method generates a structure from a structure file within your mod.
+            </summary>
+            <param name="path">The path to your structure file within your mod - this should not include your mod's folder, only the path beyond it.</param>
+            <param name="pos">The position in the world in which you want your structure to generate, in tile coordinates.</param>
+            <param name="mod">The instance of your mod to grab the file from.</param>
+            <param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
+            <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll reference.</param>
+            <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="T:StructureHelper.GenFlags"/> </param>
+            <returns>If the structure generated successfully or not</returns>
+        </member>
+        <member name="M:StructureHelper.Generator.GenerateMultistructureRandom(System.String,Terraria.DataStructures.Point16,Terraria.ModLoader.Mod,System.Boolean,System.Boolean,StructureHelper.GenFlags)">
+            <summary>
+            This method generates a structure selected randomly from a multistructure file within your mod.
+            </summary>
+            <param name="path">The path to your multistructure file within your mod - this should not include your mod's folder, only the path beyond it.</param>
+            <param name="pos">The position in the world in which you want your structure to generate, in tile coordinates.</param>
+            <param name="mod">The instance of your mod to grab the file from.</param>
+            <param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
+            <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll refference.</param>
+            <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="T:StructureHelper.GenFlags"/> </param>
+            <returns>If the structure generated successfully or not</returns>
+        </member>
+        <member name="M:StructureHelper.Generator.GenerateMultistructureSpecific(System.String,Terraria.DataStructures.Point16,Terraria.ModLoader.Mod,System.Int32,System.Boolean,System.Boolean,StructureHelper.GenFlags)">
+            <summary>
+            This method generates a structure you select from a multistructure file within your mod. Useful if you want to do your own weighted randomization or want additional logic based on dimensions gotten from GetMultistructureDimensions.
+            </summary>
+            <param name="path">The path to your multistructure file within your mod - this should not include your mod's folder, only the path beyond it.</param>
+            <param name="pos">The position in the world in which you want your structure to generate, in tile coordinates.</param>
+            <param name="mod">The instance of your mod to grab the file from.</param>
+            <param name="index">The index of the structure you want to generate out of the multistructure file, structure indicies are 0-based and match the order they were saved in.</param>
+            <param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
+            <param name="ignoreNull">If the structure should repsect the normal behavior of null tiles or not. This should never be true if you're using the mod as a dll refference.</param>
+            <param name="flags">Allows you to pass flags for special generation behavior. See <see cref="T:StructureHelper.GenFlags"/> </param>
+            <returns>If the structure generated successfully or not</returns>
+        </member>
+        <member name="M:StructureHelper.Generator.GetDimensions(System.String,Terraria.ModLoader.Mod,Terraria.DataStructures.Point16@,System.Boolean)">
+            <summary>
+            Gets the dimensions of a structure from a structure file within your mod.
+            </summary>
+            <param name="path">The path to your structure file within your mod - this should not include your mod's folder, only the path beyond it.</param>
+            <param name="mod">The instance of your mod to grab the file from.</param>
+            <param name="dims">The Point16 variable which you want to be set to the dimensions of the structure.</param>
+            <param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StructureHelper.Generator.GetMultistructureDimensions(System.String,Terraria.ModLoader.Mod,System.Int32,Terraria.DataStructures.Point16@,System.Boolean)">
+            <summary>
+            Gets the dimensions of a structure from a structure file within your mod.
+            </summary>
+            <param name="path">The path to your structure file within your mod - this should not include your mod's folder, only the path beyond it.</param>
+            <param name="mod">The instance of your mod to grab the file from.</param>
+            <param name="index">The index of the structure you want to get the dimensions of out of the multistructure file, structure indicies are 0-based and match the order they were saved in.</param>
+            <param name="dims">The Point16 variable which you want to be set to the dimensions of the structure.</param>
+            <param name="fullPath">Indicates if you want to use a fully qualified path to get the structure file instead of one from your mod - generally should only be used for debugging.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StructureHelper.Generator.IsMultistructure(System.String,Terraria.ModLoader.Mod)">
+            <summary>
+            Checks if a structure file is a multistructure or not. Can be used to easily add support for parameterizing strucutres or multistructures in your mod.
+            </summary>
+            <param name="path">The path to the structure file you wish to check.</param>
+            <param name="mod">The instance of your mod to grab the file from.</param>
+            <returns>True if the file is a multistructure, False if the file is a structure, null if it is invalid.</returns>
+        </member>
+        <member name="M:StructureHelper.Generator.GetStructureCount(System.String,Terraria.ModLoader.Mod)">
+            <summary>
+            Gets the quantity of structures in a multistructure file if possible. Returns null if the structure is invalid or not a multistructure.
+            </summary>
+            <param name="path">The path to the structure file you wish to check.</param>
+            <param name="mod">The instance of your mod to grab the file from.</param>
+            <returns>The amount of structures in a multistructure, or null if invalid.</returns>
+        </member>
+        <member name="M:StructureHelper.Generator.Generate(Terraria.ModLoader.IO.TagCompound,Terraria.DataStructures.Point16,System.Boolean,StructureHelper.GenFlags)">
+            <summary>
+            Parses and generates the actual tiles from a structure file
+            </summary>
+            <param name="tag">The structure data TagCompound to generate from</param>
+            <param name="pos">The position in the world of the top-leftmost tile to be placed at</param>
+            <param name="ignoreNull">If this structure should place null tiles or not</param>
+            <returns>If the structure successfully generated or not</returns>
+        </member>
+        <member name="M:StructureHelper.Helper.RandomizeList``1(System.Collections.Generic.List{``0}@)">
+            <summary>
+            Randomizes the order of a list using the Fischer-Yates algorithm
+            </summary>
+            <typeparam name="T">The type of the list to randomize</typeparam>
+            <param name="input">The list to randomize</param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:StructureHelper.Helpers.GUIHelper.DrawBox(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Rectangle,Microsoft.Xna.Framework.Color)" -->
+        <member name="M:StructureHelper.Helpers.GUIHelper.DrawOutline(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Rectangle,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Draws the outline of a box in the style of the DragonLens GUI.
+            </summary>
+            <param name="spriteBatch">the spriteBatch to draw the outline with</param>
+            <param name="target">where/how big the outline should be drawn</param>
+            <param name="color">the color of the outline</param>
+        </member>
+        <member name="M:StructureHelper.Helpers.GUIHelper.InvertColor(Microsoft.Xna.Framework.Color)">
+            <summary>
+            Gets the inverse of a color. Used for 'constrasting' elements of the StructureHelper GUI, such as outlines indicating something being on.
+            </summary>
+            <param name="color">the color to invert</param>
+            <returns>the inverted color</returns>
+        </member>
+        <member name="M:StructureHelper.Helpers.GUIHelper.WrapString(System.String,System.Int32,ReLogic.Graphics.DynamicSpriteFont,System.Single)">
+            <summary>
+            Wraps a string to a given maximum width, by forcibly adding newlines. Normal newlines will be removed, put the text 'NEWBLOCK' in your string to break a paragraph if needed.
+            </summary>
+            <param name="input">The input string to be wrapped</param>
+            <param name="length">The maximum width of the text</param>
+            <param name="font">The font the text will be drawn in, to calculate its size</param>
+            <param name="scale">The scale the text will be drawn at, to calculate its size</param>
+            <returns>Input text with linebreaks inserted so it obeys the width constraint.</returns>
+        </member>
+        <member name="M:StructureHelper.Helpers.GUIHelper.OpenConfig(Terraria.ModLoader.Config.ModConfig)">
+            <summary>
+            Uses reflection to forcibly open the TModLoader configuration UI to a given ModConfig's screen.
+            </summary>
+            <param name="config">The config to open up</param>
+        </member>
+        <member name="M:StructureHelper.Helpers.GUIHelper.OpenUrl(System.String)">
+            <summary>
+            Opens a URL in the web browser
+            </summary>
+            <param name="url">The URL to open to</param>
+        </member>
+        <member name="M:StructureHelper.Helpers.LocalizationHelper.GetText(System.String,System.Object[])">
+            <summary>
+            Gets a localized text value of the mod.
+            If no localization is found, the key itself is returned.
+            </summary>
+            <param name="key">the localization key</param>
+            <param name="args">optional args that should be passed</param>
+            <returns>the text should be displayed</returns>
+        </member>
+        <member name="T:StructureHelper.GenFlags">
+            <summary>
+            Flags that allow users to define special behavior for structure generation.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.GenFlags.None">
+            <summary>
+            No special generation
+            </summary>
+        </member>
+        <member name="F:StructureHelper.GenFlags.NullsKeepGivenSlope">
+            <summary>
+            Null tiles will inherit the type of the tile behind them, but keep their slope if that tile is slopable
+            </summary>
+        </member>
+        <member name="F:StructureHelper.GenFlags.NullsKeepGivenPaint">
+            <summary>
+            Null tiles and walls will inherit the type of the tile/wall behind them, but will keep the paint they are given
+            </summary>
+        </member>
+        <member name="F:StructureHelper.GenFlags.IgnoreTileEnttiyData">
+            <summary>
+            Tile entities will not have their saved data placed in the generated structures, instead falling back to acting as if they are newly created
+            </summary>
+        </member>
+        <member name="T:StructureHelper.TileSaveData">
+            <summary>
+            A struct representing tile data to be saved/loaded from structure files.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.TileSaveData.tile">
+            <summary>
+            The tile to be placed, either a number if a vanilla tile (ID), or a fully qualified internal name for modded tiles.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.TileSaveData.wall">
+            <summary>
+            The wall to be placed, either a number if a vanilla wall (ID), or a fully qualified internal name for modded walls.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.TileSaveData.frameX">
+            <summary>
+            The X frame of a tile
+            </summary>
+        </member>
+        <member name="F:StructureHelper.TileSaveData.frameY">
+            <summary>
+            the Y frame of a tile
+            </summary>
+        </member>
+        <member name="F:StructureHelper.TileSaveData.wallWireData">
+            <summary>
+            One part of the packed vanilla data about a tile
+            </summary>
+        </member>
+        <member name="F:StructureHelper.TileSaveData.packedLiquidData">
+            <summary>
+            The other part of the packed vanilla data about a tile
+            </summary>
+        </member>
+        <member name="F:StructureHelper.TileSaveData.brightInvisibleData">
+            <summary>
+            Data about certain coatings added by 1.4.4
+            </summary>
+        </member>
+        <member name="F:StructureHelper.TileSaveData.TEType">
+            <summary>
+            The fully qualiified name of a modded tile entity, if one should exist here
+            </summary>
+        </member>
+        <member name="F:StructureHelper.TileSaveData.TEData">
+            <summary>
+            The data associated with a tile entity associated here
+            </summary>
+        </member>
+        <member name="P:StructureHelper.TileSaveData.Active">
+            <summary>
+            If the tile here is air or not. (Note that TileID 0 is dirt, this is all that differentiates air and dirt.)
+            </summary>
+        </member>
+        <member name="M:StructureHelper.TileSaveData.DeserializeData(Terraria.ModLoader.IO.TagCompound)">
+            <summary>
+            Deserialize a TagCompound into an instance of this struct
+            </summary>
+            <param name="tag">The tag to interpret</param>
+            <returns>The unpacked TileSaveData</returns>
+        </member>
+        <member name="M:StructureHelper.TileSaveData.SerializeData">
+            <summary>
+            Serialize this struct into a TagCompound for saving
+            </summary>
+            <returns>The packed TagCompound</returns>
+        </member>
+        <member name="T:StructureHelper.Models.MultiStructureData">
+            <summary>
+            Represents the contents of a multi structure file in-memory. This object is only valid
+            for a given mod load instance, as modded tile types will be parsed out from the table
+            into the body data. If you are storing these and your mod reloads, you should consider
+            them invalid afterwards.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.MultiStructureData.count">
+            <summary>
+            The amount of structures in this multistructure
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.MultiStructureData.structures">
+            <summary>
+            The structure data in this multistructure
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Models.MultiStructureData.FromStream(System.IO.BinaryReader)">
+            <summary>
+            Constructs a MultiStructureData from raw binary data
+            </summary>
+            <param name="reader">A reader for the raw binary data, such as from a file</param>
+            <returns>A MultiStructureData constructed from the raw bytes</returns>
+            <exception cref="T:System.IO.InvalidDataException"></exception>
+        </member>
+        <member name="M:StructureHelper.Models.MultiStructureData.FromStructureList(System.Collections.Generic.List{StructureHelper.Models.StructureData})">
+            <summary>
+            Generates a MultiStructureData from a list of StructureData
+            </summary>
+            <param name="source">The StructureData to put into this MultiStructureData</param>
+            <returns>The constructed MultiStructureData containing all elements in the source list</returns>
+        </member>
+        <member name="M:StructureHelper.Models.MultiStructureData.Serialize(System.IO.BinaryWriter)">
+            <summary>
+            Serialize this MultiStructureData into a binary writer, such as to write to a file
+            </summary>
+        </member>
+        <member name="T:StructureHelper.Models.StructureData">
+            <summary>
+            Represents the contents of a structure file in-memory. This object is only valid
+            for a given mod load instance, as modded tile types will be parsed out from the table
+            into the body data. If you are storing these and your mod reloads, you should consider
+            them invalid afterwards.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.StructureData.HEADER_TEXT">
+            <summary>
+            Header text to denote that this binary file is a SH structure
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.StructureData.width">
+            <summary>
+            The width of the structure
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.StructureData.height">
+            <summary>
+            The height of the structure
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.StructureData.containsNbt">
+            <summary>
+            If the structure contains NBT data or not
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.StructureData.containsCustomTileData">
+            <summary>
+            If the structure contains custom ITileData entries
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.StructureData.version">
+            <summary>
+            The version this structure was saved in.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.StructureData.moddedTileTable">
+            <summary>
+            Represents the mapping between the stored tile type and the actual ID of the modded tiles.
+            There is a table of fully qualified names in the structure file that is used to populate
+            this when it is loaded.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.StructureData.moddedWallTable">
+            <summary>
+            Represents the mapping between the stored wall type and the actual ID of the modded walls.
+            There is a table of fully qualified names in the structure file that is used to populate
+            this when it is loaded.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.StructureData.slowColumns">
+            <summary>
+            Represents columns which contain null tiles or walls. These are slow as we have to copy data
+            piecemeal to allow those effects to take place instead of copying the entire column as a
+            memory span
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.StructureData.dataEntries">
+            <summary>
+            The actual tile data entries. Each entry represents an ITileData sequence. Vanilla by default
+            has 5 of these, and mods may add more.
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.StructureData.nbtData">
+            <summary>
+            This represents the NBT component of the structure file, used to store information such as
+            tile entity data and chest loot pools.
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Models.StructureData.PreProcessModdedTypes">
+            <summary>
+            Processes the tile and wall type data to replace the types with those that should correspond to them
+            in the current game instance, since those IDs shift with every reload
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Models.StructureData.TileIDFromString(System.String)">
+            <summary>
+            Gets the current numeric ID of a tile given its fully qualified name
+            </summary>
+            <param name="entry">The fully qualified name of a modded tile</param>
+            <returns>The current numeric ID of that tile, or 0 (dirt) if it does not exist</returns>
+        </member>
+        <member name="M:StructureHelper.Models.StructureData.WallIDFromString(System.String)">
+            <summary>
+            Gets the current numeric ID of a wall given its fully qualified name
+            </summary>
+            <param name="entry">The fully qualified name of a modded wall</param>
+            <returns>The current numeric ID of that wall, or 0 (empty) if it does not exist</returns>
+        </member>
+        <member name="M:StructureHelper.Models.StructureData.ITileDataFromString(System.String)">
+            <summary>
+            Attempts to get the Type of an ITileData given a string representing it
+            </summary>
+            <param name="entry">The string for the ITileData</param>
+            <returns>The Type representing the ITileData, or null it not found</returns>
+        </member>
+        <member name="M:StructureHelper.Models.StructureData.FromStream(System.IO.BinaryReader)">
+            <summary>
+            Constructs a StructureData from raw binary data
+            </summary>
+            <param name="reader">A reader for the raw binary data, such as from a file</param>
+            <returns>A StructureData constructed from the raw bytes</returns>
+            <exception cref="T:System.IO.InvalidDataException">If the stream does not represent a structure</exception>
+        </member>
+        <member name="M:StructureHelper.Models.StructureData.ImportDataColumn``1(System.Int32,System.Int32,System.Int32,System.String)">
+            <summary>
+            Internal function used to copy a column of tile data into this StructureData
+            </summary>
+            <typeparam name="T">The type of the ITileData to copy in</typeparam>
+            <param name="x">The X position of the column</param>
+            <param name="y">The topmost point of the column</param>
+            <param name="colIdx">The column in the data map to insert the data into</param>
+            <param name="mod">The mod the ITileData type is from, or null if vanilla</param>
+        </member>
+        <member name="M:StructureHelper.Models.StructureData.ExportDataColumn``1(System.Int32,System.Int32,System.Int32,System.String)">
+            <summary>
+            Internal function used to copy a column of tile data into the world from this StructureData
+            </summary>
+            <typeparam name="T">The type of the ITileData to copy out</typeparam>
+            <param name="x">The X position of the column</param>
+            <param name="y">The topmost point of the column</param>
+            <param name="colIdx">The column in the data map to insert the data into</param>
+            <param name="mod">The mod the ITileData type is from, or null if vanilla</param>
+        </member>
+        <member name="M:StructureHelper.Models.StructureData.ExportAllDataColumns(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Exports all data columns, for use when custom ITileData is present so reflection is required
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="colIdx"></param>
+        </member>
+        <member name="M:StructureHelper.Models.StructureData.ExportDataColumnSlow``1(System.Int32,System.Int32,System.Int32,System.String)">
+            <summary>
+            Internal function used to copy a column of tile data into the world from this StructureData
+            that may have null blocks or walls in it
+            </summary>
+            <typeparam name="T">The type of the ITileData to copy out</typeparam>
+            <param name="x">The X position of the column</param>
+            <param name="y">The topmost point of the column</param>
+            <param name="colIdx">The column in the data map to insert the data into</param>
+            <param name="mod">The mod the ITileData type is from, or null if vanilla</param>
+        </member>
+        <member name="M:StructureHelper.Models.StructureData.ExportAllDataColumnsSlow(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Exports all data columns that may have null blocks or walls in it, for use when custom ITileData is present so reflection is required
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="colIdx"></param>
+        </member>
+        <member name="M:StructureHelper.Models.StructureData.FromWorld(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Constructs a structure data from a region in the world
+            </summary>
+            <param name="x">The leftmost point of the region</param>
+            <param name="y">The topmost point of the region</param>
+            <param name="w">The width of the region</param>
+            <param name="h">The height of the region</param>
+            <returns>A StructureData representing the specified world region</returns>
+        </member>
+        <member name="M:StructureHelper.Models.StructureData.AddCustomDataFromWorld(System.Int32,System.Int32,System.Int32,System.Int32,System.Collections.Generic.List{System.Type})">
+            <summary>
+            Adds custom ITileData from the region of the world, to be called after FromWorld initializes a StructureData
+            </summary>
+            <param name="x">The leftmost point of the region</param>
+            <param name="y">The topmost point of the region</param>
+            <param name="w">The width of the region</param>
+            <param name="h">The height of the region</param>
+            <param name="toSave">A list of custom ITileData types to save</param>
+        </member>
+        <member name="M:StructureHelper.Models.StructureData.Serialize(System.IO.BinaryWriter)">
+            <summary>
+            Serialize this StructureData into a binary writer, such as to write to a file
+            </summary>
+        </member>
+        <member name="T:StructureHelper.Models.StructureNBTEntry">
+            <summary>
+            Represents an NBT entry within the NBT section of the structure file. These are used for sparse,
+            complex data within structures like tile entities or chest pools.
+            
+            You MUST implement a DESERIALIZER as per TagSerializable!
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.StructureNBTEntry.x">
+            <summary>
+            X coordinate local to the strucure associated with this NBT entry
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.StructureNBTEntry.y">
+            <summary>
+            Y coordinate local to the structure associated with this NBT entry
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Models.StructureNBTEntry.DESERIALIZER">
+            <summary>
+            Temporary hack deserializer because TML fails to find subtype deserializers
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Models.StructureNBTEntry.OnGenerate(Terraria.DataStructures.Point16,System.Boolean,StructureHelper.GenFlags)">
+            <summary>
+            What needs to happen on structure generation to properly place the object
+            represented by this NBT entry into the world.
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Models.StructureNBTEntry.Serialize(Terraria.ModLoader.IO.TagCompound)">
+            <summary>
+            Serialize the custom data for this StructureNbtEntry here
+            </summary>
+            <param name="tag">The tag to serialize to</param>
+        </member>
+        <member name="M:StructureHelper.Models.ITileDataEntry.GetRawPtr">
+            <summary>
+            Returns the pointer to the backing data of this TileDataEntry
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:StructureHelper.Models.ITileDataEntry.SetData(System.Byte[])">
+            <summary>
+            Sets the data for this TileDataEntry from a byte array, such as one read from a binary file
+            </summary>
+            <param name="data">The raw data to populate this entry with</param>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:StructureHelper.Models.ITileDataEntry.GetData">
+            <summary>
+            Gets the raw data of this tile data entry as a byte array.
+            </summary>
+            <returns>The raw data as a byte array</returns>
+        </member>
+        <member name="M:StructureHelper.Models.ITileDataEntry.GetSingleEntry(System.Int32,System.Int32)">
+            <summary>
+            Gets a single entry at this location in the data. Returns as a void pointer,
+            you will have to derefference this yourself.
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="M:StructureHelper.Models.ITileDataEntry.GetRawSize">
+            <summary>
+            Returns the raw size of this tile data entry, in bytes.
+            </summary>
+            <returns>The total size of this data entry in bytes</returns>
+        </member>
+        <member name="M:StructureHelper.Models.ITileDataEntry.GetColumnSize">
+            <summary>
+            Returns the size in bytes of one column of this data
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:StructureHelper.Models.ITileDataEntry.GetSingleSize">
+            <summary>
+            Returns the size in bytes of a single entry of this data
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:StructureHelper.Models.ITileDataEntry.GetDataType">
+            <summary>
+            Returns the ITileData Type this structure holds
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:StructureHelper.Models.ITileDataEntry.ImportColumn(System.Void*,System.Int32)">
+            <summary>
+            Imports a column of data from the world into this structure
+            </summary>
+            <param name="source">The topmost point of the column</param>
+            <param name="columnIdx">The index of the column to read into</param>
+        </member>
+        <member name="M:StructureHelper.Models.ITileDataEntry.ExportColumn(System.Void*,System.Int32)">
+            <summary>
+            Copies an entire column of data from this data entry into the world.
+            </summary>
+            <param name="target">The pointer to the topmost tiles ITileData of this type to copy into</param>
+            <param name="columnIdx">The column of data to place at that location</param>
+        </member>
+        <member name="M:StructureHelper.Models.ITileDataEntry.ExportSingle(System.Void*,System.Int32,System.Int32)">
+            <summary>
+            Copies a single entry of data into the world.
+            </summary>
+            <param name="target">The pointer to the tiles ITileData of this type to copy into</param>
+            <param name="columnIdx">The X position to copy from</param>
+            <param name="rowIdx">The Y position to copy from</param>
+        </member>
+        <member name="T:StructureHelper.Util.LegacyStructurePreview">
+            <summary>
+            Container for a structure's preview image. 
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Util.LegacyStructurePreview.name">
+            <summary>
+            The name of the structure this is previewing
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Util.LegacyStructurePreview.preview">
+            <summary>
+            The actual texture of the preview
+            </summary>
+        </member>
+        <member name="P:StructureHelper.Util.LegacyStructurePreview.Width">
+            <summary>
+            Width of the preview texture, in pixels
+            </summary>
+        </member>
+        <member name="P:StructureHelper.Util.LegacyStructurePreview.Height">
+            <summary>
+            Height of the preview texture, in pixels
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Util.LegacyStructurePreview.GeneratePreview">
+            <summary>
+            Renders and saves the actual preview to a RenderTarget.
+            </summary>
+            <returns>The texture created</returns>
+        </member>
+        <member name="F:StructureHelper.Util.LegacyPreviewRenderQueue.queue">
+            <summary>
+            A queue of previews to render textures for when the next opportunity arises
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Util.LegacyPreviewRenderQueue.DrawQueuedPreview(Terraria.On_Main.orig_CheckMonoliths)">
+            <summary>
+            When the opportunity in the rendering cycle arises, render out all of the queued previews
+            </summary>
+            <param name="orig"></param>
+        </member>
+        <member name="F:StructureHelper.Util.StructurePreview.name">
+            <summary>
+            The name of the structure this is previewing
+            </summary>
+        </member>
+        <member name="F:StructureHelper.Util.StructurePreview.preview">
+            <summary>
+            The actual texture of the preview
+            </summary>
+        </member>
+        <member name="P:StructureHelper.Util.StructurePreview.Width">
+            <summary>
+            Width of the preview texture, in pixels
+            </summary>
+        </member>
+        <member name="P:StructureHelper.Util.StructurePreview.Height">
+            <summary>
+            Height of the preview texture, in pixels
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Util.StructurePreview.GeneratePreview">
+            <summary>
+            Renders and saves the actual preview to a RenderTarget.
+            </summary>
+            <returns>The texture created</returns>
+        </member>
+        <member name="F:StructureHelper.Util.PreviewRenderQueue.queue">
+            <summary>
+            A queue of previews to render textures for when the next opportunity arises
+            </summary>
+        </member>
+        <member name="M:StructureHelper.Util.PreviewRenderQueue.DrawQueuedPreview(Terraria.On_Main.orig_CheckMonoliths)">
+            <summary>
+            When the opportunity in the rendering cycle arises, render out all of the queued previews
+            </summary>
+            <param name="orig"></param>
+        </member>
+    </members>
+</doc>

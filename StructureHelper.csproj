@@ -5,6 +5,8 @@
     <AssemblyName>StructureHelper</AssemblyName>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Localization\en-US.hjson" />
@@ -18,6 +20,6 @@
   </ItemGroup>
 	
   <ItemGroup>
-	<PackageReference Include="AssGen" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Version="3.0.0" />
+    <PackageReference Include="AssGen" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Version="3.0.0" />
   </ItemGroup>
 </Project>
